@@ -2,139 +2,315 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import {
   Github,
-  GitBranch,
+  GitCommit,
   Star,
-  Users,
+  GitFork,
   Calendar,
-  Code,
+  Code2,
+  Activity,
   TrendingUp,
+  ExternalLink,
+  Users,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { personalInfo } from "@/lib/data";
+import GitHubCalendar from "react-github-calendar";
 
-// Mock GitHub data - in a real implementation, this would come from GitHub API
-const mockGitHubData = {
-  totalContributions: 1247,
-  currentStreak: 23,
-  longestStreak: 67,
-  publicRepos: 42,
-  followers: 156,
-  following: 89,
-  totalStars: 342,
-  topLanguages: [
-    { name: "TypeScript", percentage: 28, color: "#3178c6" },
-    { name: "Python", percentage: 24, color: "#3776ab" },
-    { name: "JavaScript", percentage: 18, color: "#f7df1e" },
-    { name: "React", percentage: 15, color: "#61dafb" },
-    { name: "CSS", percentage: 8, color: "#1572b6" },
-    { name: "Other", percentage: 7, color: "#6b7280" },
-  ],
-  recentRepos: [
-    {
-      name: "ai-code-reviewer",
-      description: "AI-powered code review assistant using machine learning",
-      language: "Python",
-      stars: 89,
-      forks: 23,
-      updatedAt: "2024-01-15",
-    },
-    {
-      name: "3d-portfolio",
-      description: "Interactive 3D portfolio built with React Three Fiber",
-      language: "TypeScript",
-      stars: 156,
-      forks: 34,
-      updatedAt: "2024-01-14",
-    },
-    {
-      name: "smart-lms",
-      description:
-        "Adaptive learning management system with AI recommendations",
-      language: "TypeScript",
-      stars: 97,
-      forks: 18,
-      updatedAt: "2024-01-12",
-    },
-  ],
-  contributionCalendar: Array.from({ length: 365 }, (_, i) => ({
-    date: new Date(Date.now() - (364 - i) * 24 * 60 * 60 * 1000),
-    count: Math.floor(Math.random() * 5),
-  })),
-};
+// Types for GitHub API responses
+interface GitHubRepo {
+  id: number;
+  name: string;
+  description: string;
+  stargazers_count: number;
+  forks_count: number;
+  language: string;
+  html_url: string;
+  updated_at: string;
+}
+
+interface GitHubUser {
+  login: string;
+  name: string;
+  public_repos: number;
+  followers: number;
+  following: number;
+  avatar_url: string;
+}
+
+interface LanguageStats {
+  [key: string]: number;
+}
+
+interface GitHubCommit {
+  sha: string;
+  commit: {
+    message: string;
+    author: {
+      date: string;
+    };
+  };
+  html_url: string;
+  repository: {
+    name: string;
+    full_name: string;
+  };
+}
+
+// GitHub username - replace with actual username
+const GITHUB_USERNAME = "alexjohnson"; // Replace with actual GitHub username
 
 export default function GitHubContribution() {
-  const [selectedMonth, setSelectedMonth] = useState(11); // December
-  const [hoveredDay, setHoveredDay] = useState<{
-    date: Date;
-    count: number;
-  } | null>(null);
+  const [user, setUser] = useState<GitHubUser | null>(null);
+  const [repos, setRepos] = useState<GitHubRepo[]>([]);
+  const [languages, setLanguages] = useState<LanguageStats>({});
+  const [recentCommits, setRecentCommits] = useState<GitHubCommit[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const getContributionColor = (count: number) => {
-    if (count === 0) return "bg-gray-800";
-    if (count <= 1) return "bg-green-900";
-    if (count <= 2) return "bg-green-700";
-    if (count <= 3) return "bg-green-500";
-    return "bg-green-400";
+  useEffect(() => {
+    fetchGitHubData();
+  }, []);
+
+  const fetchGitHubData = async () => {
+    try {
+      setLoading(true);
+
+      // Fetch user data
+      const userResponse = await fetch(
+        `https://api.github.com/users/${GITHUB_USERNAME}`,
+      );
+      if (!userResponse.ok) throw new Error("Failed to fetch user data");
+      const userData = await userResponse.json();
+      setUser(userData);
+
+      // Fetch repositories
+      const reposResponse = await fetch(
+        `https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=updated&per_page=6`,
+      );
+      if (!reposResponse.ok) throw new Error("Failed to fetch repositories");
+      const reposData = await reposResponse.json();
+      setRepos(reposData);
+
+      // Calculate language statistics
+      const langStats: LanguageStats = {};
+      reposData.forEach((repo: GitHubRepo) => {
+        if (repo.language) {
+          langStats[repo.language] = (langStats[repo.language] || 0) + 1;
+        }
+      });
+      setLanguages(langStats);
+
+      // Simulate recent commits (GitHub API requires authentication for commits across repos)
+      // In a real implementation, you'd need to authenticate to get commits
+      setRecentCommits([
+        {
+          sha: "abc123",
+          commit: {
+            message: "feat: add new dashboard component with dark theme",
+            author: {
+              date: new Date(
+                Date.now() - 2 * 24 * 60 * 60 * 1000,
+              ).toISOString(),
+            },
+          },
+          html_url: `https://github.com/${GITHUB_USERNAME}/portfolio-website/commit/abc123`,
+          repository: {
+            name: "portfolio-website",
+            full_name: `${GITHUB_USERNAME}/portfolio-website`,
+          },
+        },
+        {
+          sha: "def456",
+          commit: {
+            message: "fix: resolve mobile responsiveness issues",
+            author: {
+              date: new Date(
+                Date.now() - 3 * 24 * 60 * 60 * 1000,
+              ).toISOString(),
+            },
+          },
+          html_url: `https://github.com/${GITHUB_USERNAME}/ai-code-reviewer/commit/def456`,
+          repository: {
+            name: "ai-code-reviewer",
+            full_name: `${GITHUB_USERNAME}/ai-code-reviewer`,
+          },
+        },
+        {
+          sha: "ghi789",
+          commit: {
+            message: "docs: update README with new installation steps",
+            author: {
+              date: new Date(
+                Date.now() - 5 * 24 * 60 * 60 * 1000,
+              ).toISOString(),
+            },
+          },
+          html_url: `https://github.com/${GITHUB_USERNAME}/ml-toolkit/commit/ghi789`,
+          repository: {
+            name: "ml-toolkit",
+            full_name: `${GITHUB_USERNAME}/ml-toolkit`,
+          },
+        },
+      ]);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An error occurred");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const getMonthData = (month: number) => {
-    return mockGitHubData.contributionCalendar.filter(
-      (day) => day.date.getMonth() === month,
+  const getLanguageColor = (language: string): string => {
+    const colors: { [key: string]: string } = {
+      JavaScript: "from-yellow-500 to-orange-400",
+      TypeScript: "from-blue-500 to-blue-600",
+      Python: "from-green-500 to-blue-500",
+      React: "from-cyan-500 to-blue-500",
+      "C++": "from-blue-600 to-purple-600",
+      Java: "from-red-500 to-orange-500",
+      Go: "from-cyan-400 to-blue-500",
+      Rust: "from-orange-600 to-red-600",
+      Swift: "from-orange-500 to-red-500",
+      PHP: "from-purple-500 to-indigo-500",
+    };
+    return colors[language] || "from-gray-500 to-gray-600";
+  };
+
+  const formatDate = (dateString: string): string => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffTime = Math.abs(now.getTime() - date.getTime());
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    if (diffDays === 1) return "1 day ago";
+    if (diffDays < 7) return `${diffDays} days ago`;
+    if (diffDays < 30) return `${Math.ceil(diffDays / 7)} weeks ago`;
+    return `${Math.ceil(diffDays / 30)} months ago`;
+  };
+
+  const truncateMessage = (message: string, maxLength: number = 60): string => {
+    return message.length > maxLength
+      ? `${message.substring(0, maxLength)}...`
+      : message;
+  };
+
+  if (loading) {
+    return (
+      <section
+        id="github"
+        className="py-20 bg-gray-950 relative overflow-hidden"
+      >
+        <div className="container mx-auto px-6 relative z-10">
+          <div className="text-center">
+            <div className="inline-flex items-center gap-2 bg-gray-800/50 rounded-full px-6 py-3">
+              <Github className="w-5 h-5 animate-spin" />
+              <span className="text-white">Loading GitHub data...</span>
+            </div>
+          </div>
+        </div>
+      </section>
     );
-  };
+  }
+
+  if (error) {
+    return (
+      <section
+        id="github"
+        className="py-20 bg-gray-950 relative overflow-hidden"
+      >
+        <div className="container mx-auto px-6 relative z-10">
+          <div className="text-center">
+            <div className="inline-flex items-center gap-2 bg-red-500/10 border border-red-500/20 rounded-full px-6 py-3">
+              <Github className="w-5 h-5 text-red-400" />
+              <span className="text-red-400">Failed to load GitHub data</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // Get top languages (limited to top 5)
+  const topLanguages = Object.entries(languages)
+    .sort(([, a], [, b]) => b - a)
+    .slice(0, 5);
 
   return (
-    <section id="github" className="section-padding">
-      <div className="container-custom">
+    <section id="github" className="py-20 bg-gray-950 relative overflow-hidden">
+      {/* Background Effects */}
+      <div className="absolute inset-0">
+        <div className="absolute inset-0 bg-gradient-to-br from-gray-500/5 via-blue-500/5 to-purple-500/5" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_60%_40%,rgba(107,114,128,0.1),transparent_50%)]" />
+      </div>
+
+      <div className="container mx-auto px-6 relative z-10">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.8 }}
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <h2 className="heading-2 text-white mb-4">GitHub Activity</h2>
-          <p className="body-large text-white/70 max-w-2xl mx-auto">
-            A comprehensive view of my coding activity, contributions, and open
-            source involvement
+          <motion.div
+            initial={{ scale: 0 }}
+            whileInView={{ scale: 1 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            viewport={{ once: true }}
+            className="inline-flex items-center gap-2 bg-gray-500/10 border border-gray-500/20 rounded-full px-6 py-2 mb-6"
+          >
+            <Github className="w-5 h-5 text-gray-400" />
+            <span className="text-gray-400 font-medium">Open Source</span>
+          </motion.div>
+
+          <h2 className="text-5xl md:text-6xl font-bold text-white mb-6">
+            GitHub{" "}
+            <span className="bg-gradient-to-r from-gray-400 via-blue-400 to-purple-400 bg-clip-text text-transparent">
+              Activity
+            </span>
+          </h2>
+
+          <p className="text-xl text-gray-400 max-w-3xl mx-auto">
+            My open source contributions, recent commits, and programming
+            languages used across projects
           </p>
         </motion.div>
 
-        {/* GitHub Stats Grid */}
+        {/* GitHub Stats Cards */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
           viewport={{ once: true }}
-          className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12"
+          className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16"
         >
           {[
             {
-              icon: Calendar,
-              label: "Total Contributions",
-              value: mockGitHubData.totalContributions.toLocaleString(),
-              color: "text-green-400",
-            },
-            {
-              icon: TrendingUp,
-              label: "Current Streak",
-              value: `${mockGitHubData.currentStreak} days`,
-              color: "text-blue-400",
-            },
-            {
-              icon: Star,
-              label: "Total Stars",
-              value: mockGitHubData.totalStars.toLocaleString(),
-              color: "text-yellow-400",
-            },
-            {
-              icon: GitBranch,
               label: "Public Repos",
-              value: mockGitHubData.publicRepos.toString(),
-              color: "text-purple-400",
+              value: user?.public_repos || 0,
+              icon: Code2,
+              color: "from-blue-500 to-cyan-400",
+            },
+            {
+              label: "Followers",
+              value: user?.followers || 0,
+              icon: Users,
+              color: "from-emerald-500 to-teal-400",
+            },
+            {
+              label: "Total Stars",
+              value: repos.reduce(
+                (sum, repo) => sum + repo.stargazers_count,
+                0,
+              ),
+              icon: Star,
+              color: "from-yellow-500 to-orange-400",
+            },
+            {
+              label: "Languages",
+              value: topLanguages.length,
+              icon: Activity,
+              color: "from-purple-500 to-pink-400",
             },
           ].map((stat, index) => (
             <motion.div
@@ -143,20 +319,19 @@ export default function GitHubContribution() {
               whileInView={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.6, delay: index * 0.1 }}
               viewport={{ once: true }}
+              className="text-center bg-gray-900/50 border border-gray-700/50 rounded-2xl p-6 backdrop-blur-sm hover:border-gray-600 transition-colors"
             >
-              <Card className="bg-portfolio-surface border-white/10 text-center">
-                <CardContent className="p-6">
-                  <div
-                    className={`inline-flex items-center justify-center w-12 h-12 rounded-lg bg-white/5 mb-4`}
-                  >
-                    <stat.icon className={`w-6 h-6 ${stat.color}`} />
-                  </div>
-                  <div className={`text-2xl font-bold ${stat.color} mb-1`}>
-                    {stat.value}
-                  </div>
-                  <div className="text-white/70 text-sm">{stat.label}</div>
-                </CardContent>
-              </Card>
+              <div
+                className={`w-12 h-12 mx-auto mb-4 rounded-xl bg-gradient-to-br ${stat.color} p-0.5`}
+              >
+                <div className="w-full h-full bg-gray-900 rounded-xl flex items-center justify-center">
+                  <stat.icon className="w-6 h-6 text-white" />
+                </div>
+              </div>
+              <div className="text-3xl font-bold text-white mb-2">
+                {stat.value}
+              </div>
+              <div className="text-gray-400">{stat.label}</div>
             </motion.div>
           ))}
         </motion.div>
@@ -166,185 +341,219 @@ export default function GitHubContribution() {
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.8 }}
             viewport={{ once: true }}
+            className="space-y-8"
           >
-            <Card className="bg-portfolio-surface border-white/10">
+            <Card className="bg-gray-900/50 border-gray-700/50 backdrop-blur-sm">
               <CardHeader>
-                <CardTitle className="text-white flex items-center">
-                  <Github className="w-5 h-5 mr-2" />
-                  Contribution Calendar
+                <CardTitle className="text-2xl text-white flex items-center gap-3">
+                  <Calendar className="w-6 h-6 text-emerald-400" />
+                  Contribution Graph
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-6">
-                {/* Calendar Grid */}
-                <div className="space-y-4">
-                  <div className="grid grid-cols-7 gap-1">
-                    {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(
-                      (day) => (
-                        <div
-                          key={day}
-                          className="text-xs text-white/60 text-center p-1"
-                        >
-                          {day}
-                        </div>
-                      ),
-                    )}
-                  </div>
-
-                  <div className="grid grid-cols-7 gap-1">
-                    {getMonthData(selectedMonth).map((day, index) => (
-                      <motion.div
-                        key={index}
-                        className={`w-3 h-3 rounded-sm cursor-pointer ${getContributionColor(day.count)}`}
-                        whileHover={{ scale: 1.2 }}
-                        onHoverStart={() => setHoveredDay(day)}
-                        onHoverEnd={() => setHoveredDay(null)}
-                      />
-                    ))}
-                  </div>
+              <CardContent>
+                <div className="contribution-calendar">
+                  <GitHubCalendar
+                    username={GITHUB_USERNAME}
+                    theme={{
+                      light: [
+                        "#161b22",
+                        "#0e4429",
+                        "#006d32",
+                        "#26a641",
+                        "#39d353",
+                      ],
+                      dark: [
+                        "#161b22",
+                        "#0e4429",
+                        "#006d32",
+                        "#26a641",
+                        "#39d353",
+                      ],
+                    }}
+                    colorScheme="dark"
+                    fontSize={12}
+                  />
                 </div>
-
-                {/* Legend */}
-                <div className="flex items-center justify-between">
-                  <div className="text-xs text-white/60">Less</div>
-                  <div className="flex items-center space-x-1">
-                    {[0, 1, 2, 3, 4].map((level) => (
-                      <div
-                        key={level}
-                        className={`w-3 h-3 rounded-sm ${getContributionColor(level)}`}
-                      />
-                    ))}
-                  </div>
-                  <div className="text-xs text-white/60">More</div>
-                </div>
-
-                {/* Tooltip */}
-                {hoveredDay && (
-                  <div className="text-xs text-white/70 p-2 bg-white/5 rounded">
-                    {hoveredDay.count} contributions on{" "}
-                    {hoveredDay.date.toLocaleDateString()}
-                  </div>
-                )}
-
-                {/* GitHub Profile Link */}
-                <Button
-                  variant="outline"
-                  className="w-full border-white/20 text-white hover:bg-white/10"
-                  asChild
-                >
-                  <a
-                    href={personalInfo.social.github}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <Github className="w-4 h-4 mr-2" />
-                    View GitHub Profile
-                  </a>
-                </Button>
               </CardContent>
             </Card>
-          </motion.div>
 
-          {/* Languages & Recent Repos */}
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-            className="space-y-6"
-          >
             {/* Top Languages */}
-            <Card className="bg-portfolio-surface border-white/10">
+            <Card className="bg-gray-900/50 border-gray-700/50 backdrop-blur-sm">
               <CardHeader>
-                <CardTitle className="text-white flex items-center">
-                  <Code className="w-5 h-5 mr-2" />
-                  Most Used Languages
+                <CardTitle className="text-2xl text-white flex items-center gap-3">
+                  <Code2 className="w-6 h-6 text-purple-400" />
+                  Top Languages
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                {mockGitHubData.topLanguages.map((lang, index) => (
-                  <div key={lang.name} className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-2">
-                        <div
-                          className="w-3 h-3 rounded-full"
-                          style={{ backgroundColor: lang.color }}
-                        />
-                        <span className="text-white text-sm">{lang.name}</span>
-                      </div>
-                      <span className="text-white/70 text-sm">
-                        {lang.percentage}%
-                      </span>
-                    </div>
-                    <div className="w-full bg-gray-700 rounded-full h-2">
-                      <motion.div
-                        className="h-2 rounded-full"
-                        style={{ backgroundColor: lang.color }}
-                        initial={{ width: 0 }}
-                        whileInView={{ width: `${lang.percentage}%` }}
-                        transition={{ duration: 1, delay: index * 0.1 }}
-                        viewport={{ once: true }}
-                      />
-                    </div>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
-
-            {/* Recent Repositories */}
-            <Card className="bg-portfolio-surface border-white/10">
-              <CardHeader>
-                <CardTitle className="text-white flex items-center">
-                  <GitBranch className="w-5 h-5 mr-2" />
-                  Recent Repositories
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {mockGitHubData.recentRepos.map((repo, index) => (
+                {topLanguages.map(([language, count], index) => (
                   <motion.div
-                    key={repo.name}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: index * 0.1 }}
+                    key={language}
+                    initial={{ opacity: 0, x: -20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.5, delay: index * 0.1 }}
                     viewport={{ once: true }}
-                    className="p-4 bg-white/5 rounded-lg border border-white/10 hover:bg-white/10 transition-colors"
+                    className="flex items-center justify-between"
                   >
-                    <div className="flex items-start justify-between mb-2">
-                      <h4 className="text-white font-medium">{repo.name}</h4>
-                      <div className="flex items-center space-x-3 text-xs text-white/60">
-                        <div className="flex items-center space-x-1">
-                          <Star className="w-3 h-3" />
-                          <span>{repo.stars}</span>
-                        </div>
-                        <div className="flex items-center space-x-1">
-                          <GitBranch className="w-3 h-3" />
-                          <span>{repo.forks}</span>
-                        </div>
-                      </div>
+                    <div className="flex items-center gap-3">
+                      <div
+                        className={`w-4 h-4 rounded-full bg-gradient-to-r ${getLanguageColor(language)}`}
+                      />
+                      <span className="text-white font-medium">{language}</span>
                     </div>
-
-                    <p className="text-white/70 text-sm mb-3">
-                      {repo.description}
-                    </p>
-
-                    <div className="flex items-center justify-between">
-                      <Badge
-                        variant="outline"
-                        className="border-white/20 text-white/70 text-xs"
-                      >
-                        {repo.language}
-                      </Badge>
-                      <span className="text-white/60 text-xs">
-                        Updated {new Date(repo.updatedAt).toLocaleDateString()}
-                      </span>
-                    </div>
+                    <Badge
+                      variant="outline"
+                      className="bg-gray-800/50 border-gray-600 text-gray-300"
+                    >
+                      {count} {count === 1 ? "repo" : "repos"}
+                    </Badge>
                   </motion.div>
                 ))}
               </CardContent>
             </Card>
           </motion.div>
+
+          {/* Recent Activity & Top Repos */}
+          <motion.div
+            initial={{ opacity: 0, x: 50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="space-y-8"
+          >
+            {/* Recent Commits */}
+            <Card className="bg-gray-900/50 border-gray-700/50 backdrop-blur-sm">
+              <CardHeader>
+                <CardTitle className="text-2xl text-white flex items-center gap-3">
+                  <GitCommit className="w-6 h-6 text-blue-400" />
+                  Recent Commits
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {recentCommits.map((commit, index) => (
+                  <motion.a
+                    key={commit.sha}
+                    href={commit.html_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                    viewport={{ once: true }}
+                    className="block p-4 bg-gray-800/30 border border-gray-700/50 rounded-xl hover:border-gray-600 transition-all duration-300 group"
+                  >
+                    <div className="flex items-start gap-3">
+                      <GitCommit className="w-4 h-4 text-gray-400 mt-1 flex-shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-white font-medium group-hover:text-blue-400 transition-colors">
+                          {truncateMessage(commit.commit.message)}
+                        </p>
+                        <div className="flex items-center gap-2 mt-2 text-sm text-gray-400">
+                          <span>{commit.repository.name}</span>
+                          <span>•</span>
+                          <span>{formatDate(commit.commit.author.date)}</span>
+                        </div>
+                      </div>
+                      <ExternalLink className="w-4 h-4 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </div>
+                  </motion.a>
+                ))}
+              </CardContent>
+            </Card>
+
+            {/* Top Repositories */}
+            <Card className="bg-gray-900/50 border-gray-700/50 backdrop-blur-sm">
+              <CardHeader>
+                <CardTitle className="text-2xl text-white flex items-center gap-3">
+                  <TrendingUp className="w-6 h-6 text-emerald-400" />
+                  Top Repositories
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {repos.slice(0, 3).map((repo, index) => (
+                  <motion.a
+                    key={repo.id}
+                    href={repo.html_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                    viewport={{ once: true }}
+                    className="block p-4 bg-gray-800/30 border border-gray-700/50 rounded-xl hover:border-gray-600 transition-all duration-300 group"
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex-1 min-w-0">
+                        <h4 className="text-white font-semibold group-hover:text-emerald-400 transition-colors">
+                          {repo.name}
+                        </h4>
+                        <p className="text-gray-400 text-sm mt-1 line-clamp-2">
+                          {repo.description || "No description available"}
+                        </p>
+                        <div className="flex items-center gap-4 mt-3">
+                          {repo.language && (
+                            <div className="flex items-center gap-2">
+                              <div
+                                className={`w-3 h-3 rounded-full bg-gradient-to-r ${getLanguageColor(repo.language)}`}
+                              />
+                              <span className="text-gray-400 text-sm">
+                                {repo.language}
+                              </span>
+                            </div>
+                          )}
+                          <div className="flex items-center gap-1 text-gray-400 text-sm">
+                            <Star className="w-3 h-3" />
+                            <span>{repo.stargazers_count}</span>
+                          </div>
+                          <div className="flex items-center gap-1 text-gray-400 text-sm">
+                            <GitFork className="w-3 h-3" />
+                            <span>{repo.forks_count}</span>
+                          </div>
+                        </div>
+                      </div>
+                      <ExternalLink className="w-4 h-4 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </div>
+                  </motion.a>
+                ))}
+              </CardContent>
+            </Card>
+          </motion.div>
         </div>
+
+        {/* Call to Action */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+          viewport={{ once: true }}
+          className="text-center mt-16"
+        >
+          <div className="bg-gradient-to-r from-gray-500/10 via-blue-500/10 to-purple-500/10 border border-gray-700/50 rounded-3xl p-12 backdrop-blur-sm">
+            <h3 className="text-3xl font-bold text-white mb-4">
+              Explore My Code
+            </h3>
+            <p className="text-gray-400 mb-8 max-w-2xl mx-auto">
+              Check out my open source contributions and projects. I'm always
+              working on something new and exciting.
+            </p>
+            <Button
+              asChild
+              size="lg"
+              className="bg-gradient-to-r from-gray-600 to-blue-600 hover:from-gray-700 hover:to-blue-700 text-white rounded-full px-8 py-3 text-lg font-semibold"
+            >
+              <a
+                href={`https://github.com/${GITHUB_USERNAME}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Github className="w-5 h-5 mr-2" />
+                View GitHub Profile
+              </a>
+            </Button>
+          </div>
+        </motion.div>
       </div>
     </section>
   );

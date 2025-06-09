@@ -5,6 +5,7 @@ import TechStack from "@/components/sections/TechStack";
 import Experience from "@/components/sections/Experience";
 import Projects from "@/components/sections/Projects";
 import Achievements from "@/components/sections/Achievements";
+import GitHubContribution from "@/components/sections/GitHubContribution";
 import Contact from "@/components/sections/Contact";
 import Footer from "@/components/layout/Footer";
 
@@ -35,6 +36,7 @@ export default function Index() {
         <Experience />
         <Projects />
         <Achievements />
+        <GitHubContribution />
         <Contact />
       </main>
 
