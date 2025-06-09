@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useState, useRef } from "react";
+import { motion, AnimatePresence, useAnimation } from "framer-motion";
 import {
   ArrowDown,
   Download,
@@ -9,7 +9,14 @@ import {
   MapPin,
   Clock,
   Coffee,
+  Sparkles,
+  Code,
+  Brain,
+  Zap,
 } from "lucide-react";
+import { Canvas, useFrame } from "@react-three/fiber";
+import { OrbitControls, Sphere, Float, Text3D } from "@react-three/drei";
+import * as THREE from "three";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { personalInfo } from "@/lib/data";
@@ -20,26 +27,179 @@ const typewriterTexts = [
   "Machine Learning Expert",
   "Digital Innovator",
   "Problem Solver",
+  "Creative Technologist",
 ];
 
-const FloatingCard = ({ children, delay = 0, direction = "up" }) => (
+// 3D Floating Orb Component
+function FloatingOrb({ position, color, scale = 1 }) {
+  const meshRef = useRef<THREE.Mesh>(null);
+
+  useFrame((state) => {
+    if (meshRef.current) {
+      meshRef.current.rotation.x = Math.sin(state.clock.getElapsedTime()) * 0.3;
+      meshRef.current.rotation.y =
+        Math.sin(state.clock.getElapsedTime() * 0.8) * 0.5;
+      meshRef.current.position.y =
+        position[1] + Math.sin(state.clock.getElapsedTime() * 2) * 0.2;
+    }
+  });
+
+  return (
+    <Float speed={2} rotationIntensity={1} floatIntensity={2}>
+      <mesh ref={meshRef} position={position} scale={scale}>
+        <sphereGeometry args={[0.5, 32, 32]} />
+        <meshStandardMaterial
+          color={color}
+          transparent
+          opacity={0.8}
+          roughness={0.2}
+          metalness={0.8}
+        />
+      </mesh>
+    </Float>
+  );
+}
+
+// 3D Tech Icons
+function TechIcon3D({ position, rotation, icon, color }) {
+  const meshRef = useRef<THREE.Group>(null);
+
+  useFrame((state) => {
+    if (meshRef.current) {
+      meshRef.current.rotation.y =
+        Math.sin(state.clock.getElapsedTime() * 0.5) * 0.3;
+      meshRef.current.position.y =
+        position[1] + Math.sin(state.clock.getElapsedTime() + rotation) * 0.1;
+    }
+  });
+
+  return (
+    <group ref={meshRef} position={position}>
+      <Float speed={1.5} rotationIntensity={0.5} floatIntensity={1}>
+        <Text3D
+          font="/fonts/helvetiker_regular.typeface.json"
+          size={0.3}
+          height={0.1}
+          curveSegments={12}
+        >
+          {icon}
+          <meshStandardMaterial color={color} roughness={0.1} metalness={0.9} />
+        </Text3D>
+      </Float>
+    </group>
+  );
+}
+
+// 3D Scene Component
+function Hero3DScene() {
+  return (
+    <Canvas
+      camera={{ position: [0, 0, 5], fov: 50 }}
+      style={{ background: "transparent" }}
+    >
+      <ambientLight intensity={0.5} />
+      <pointLight position={[10, 10, 10]} intensity={1} color="#ff6b6b" />
+      <pointLight position={[-10, -10, -10]} intensity={0.5} color="#4ecdc4" />
+      <spotLight
+        position={[0, 10, 0]}
+        angle={0.3}
+        penumbra={1}
+        intensity={1}
+        color="#a55eea"
+      />
+
+      {/* Floating orbs */}
+      <FloatingOrb position={[-2, 1, 0]} color="#ff6b6b" scale={0.8} />
+      <FloatingOrb position={[2, -1, -1]} color="#4ecdc4" scale={1.2} />
+      <FloatingOrb position={[0, 2, -2]} color="#a55eea" scale={0.6} />
+      <FloatingOrb position={[-1, -2, 1]} color="#feca57" scale={0.9} />
+
+      {/* Tech icons */}
+      <TechIcon3D
+        position={[-1.5, 0.5, 0.5]}
+        rotation={0}
+        icon="⚛"
+        color="#ff6b6b"
+      />
+      <TechIcon3D
+        position={[1.5, -0.5, 0.3]}
+        rotation={1}
+        icon="🚀"
+        color="#4ecdc4"
+      />
+      <TechIcon3D
+        position={[0, 1.5, -0.5]}
+        rotation={2}
+        icon="🧠"
+        color="#a55eea"
+      />
+      <TechIcon3D
+        position={[0, -1.5, 0.8]}
+        rotation={3}
+        icon="⚡"
+        color="#feca57"
+      />
+
+      <OrbitControls
+        enablePan={false}
+        enableZoom={false}
+        autoRotate
+        autoRotateSpeed={0.5}
+      />
+    </Canvas>
+  );
+}
+
+// Animated Background Particles
+const AnimatedParticles = () => {
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      {[...Array(20)].map((_, i) => (
+        <motion.div
+          key={i}
+          className={`absolute w-2 h-2 rounded-full ${
+            i % 4 === 0
+              ? "particle-coral"
+              : i % 4 === 1
+                ? "particle-emerald"
+                : i % 4 === 2
+                  ? "particle-lavender"
+                  : "bg-amber"
+          }`}
+          style={{
+            left: `${Math.random() * 100}%`,
+            top: `${Math.random() * 100}%`,
+          }}
+          animate={{
+            y: [0, -50, 0],
+            x: [0, Math.random() * 30 - 15, 0],
+            opacity: [0.3, 1, 0.3],
+            scale: [0.5, 1.5, 0.5],
+          }}
+          transition={{
+            duration: 4 + Math.random() * 4,
+            delay: Math.random() * 4,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
+      ))}
+    </div>
+  );
+};
+
+// Floating Action Card
+const FloatingCard = ({ children, delay = 0, className = "" }) => (
   <motion.div
-    initial={{
-      opacity: 0,
-      y: direction === "up" ? 20 : -20,
-      scale: 0.9,
-    }}
-    animate={{
-      opacity: 1,
-      y: 0,
-      scale: 1,
-    }}
+    initial={{ opacity: 0, y: 50, rotateX: -15 }}
+    animate={{ opacity: 1, y: 0, rotateX: 0 }}
     transition={{
       duration: 0.8,
       delay,
-      ease: "easeOut",
+      type: "spring",
+      stiffness: 100,
     }}
-    className="floating-element"
+    className={`card-3d ${className}`}
   >
     {children}
   </motion.div>
@@ -50,6 +210,8 @@ export default function Hero() {
   const [displayText, setDisplayText] = useState("");
   const [isTyping, setIsTyping] = useState(true);
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const heroRef = useRef<HTMLElement>(null);
 
   // Update time every minute
   useEffect(() => {
@@ -57,6 +219,22 @@ export default function Hero() {
       setCurrentTime(new Date());
     }, 60000);
     return () => clearInterval(timer);
+  }, []);
+
+  // Mouse tracking for 3D effects
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (heroRef.current) {
+        const rect = heroRef.current.getBoundingClientRect();
+        setMousePosition({
+          x: (e.clientX - rect.left) / rect.width,
+          y: (e.clientY - rect.top) / rect.height,
+        });
+      }
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
   // Typewriter effect
@@ -91,132 +269,195 @@ export default function Hero() {
   };
 
   const stats = [
-    { label: "Projects", value: "25+" },
-    { label: "Experience", value: "5+" },
-    { label: "Technologies", value: "20+" },
+    { label: "Projects", value: "25+", icon: Code, color: "coral" },
+    { label: "Experience", value: "5+", icon: Brain, color: "emerald" },
+    { label: "Technologies", value: "20+", icon: Zap, color: "lavender" },
   ];
 
   return (
     <section
+      ref={heroRef}
       id="home"
       className="min-h-screen flex items-center justify-center relative overflow-hidden"
     >
-      {/* Background Elements */}
-      <div className="absolute inset-0">
-        {/* Gradient orbs */}
-        <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-electric-blue/20 rounded-full blur-3xl animate-float" />
-        <div
-          className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-electric-violet/20 rounded-full blur-3xl animate-float"
-          style={{ animationDelay: "2s" }}
-        />
-        <div
-          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-gradient-teal/20 rounded-full blur-3xl animate-float"
-          style={{ animationDelay: "4s" }}
-        />
+      {/* Animated Background */}
+      <AnimatedParticles />
+
+      {/* 3D Background Scene */}
+      <div className="absolute inset-0 opacity-60">
+        <Hero3DScene />
       </div>
+
+      {/* Interactive mouse follower */}
+      <motion.div
+        className="absolute w-64 h-64 rounded-full bg-gradient-to-r from-coral/20 to-emerald/20 blur-3xl pointer-events-none"
+        style={{
+          left: `${mousePosition.x * 100}%`,
+          top: `${mousePosition.y * 100}%`,
+          transform: "translate(-50%, -50%)",
+        }}
+        animate={{
+          scale: [1, 1.2, 1],
+          opacity: [0.3, 0.6, 0.3],
+        }}
+        transition={{ duration: 3, repeat: Infinity }}
+      />
 
       <div className="container-custom relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center min-h-screen py-20">
           {/* Main Content */}
           <div className="lg:col-span-8 space-y-8">
-            {/* Status Badge */}
+            {/* Status Badge with Animation */}
             <FloatingCard delay={0.2}>
               <motion.div
-                className="inline-flex items-center space-x-2 glass-card px-4 py-2 mb-6"
-                whileHover={{ scale: 1.05 }}
+                className="inline-flex items-center space-x-3 glass-card px-6 py-3 mb-6 hover-glow"
+                whileHover={{ scale: 1.05, y: -2 }}
                 transition={{ duration: 0.2 }}
               >
                 <div className="status-online" />
+                <Sparkles className="w-4 h-4 text-emerald animate-pulse" />
                 <span className="text-sm font-medium text-white">
-                  Available for opportunities
+                  Available for exciting opportunities
                 </span>
               </motion.div>
             </FloatingCard>
 
-            {/* Greeting */}
+            {/* Greeting with 3D Effect */}
             <FloatingCard delay={0.4}>
-              <div className="space-y-4">
+              <div className="space-y-6">
                 <motion.p
-                  className="text-light-slate text-lg font-medium"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.6, delay: 0.6 }}
+                  className="text-slate-400 text-xl font-medium"
+                  style={{
+                    transform: `perspective(1000px) rotateX(${mousePosition.y * 10 - 5}deg) rotateY(${mousePosition.x * 10 - 5}deg)`,
+                  }}
                 >
                   Hello, I'm
                 </motion.p>
 
-                <h1 className="heading-1 text-white leading-tight">
+                <motion.h1
+                  className="heading-1 text-white leading-tight"
+                  style={{
+                    transform: `perspective(1000px) rotateX(${mousePosition.y * 5 - 2.5}deg) rotateY(${mousePosition.x * 5 - 2.5}deg)`,
+                  }}
+                >
                   <motion.span
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.8 }}
+                    className="block"
                   >
                     {personalInfo.name.split(" ")[0]}
                   </motion.span>
-                  <br />
                   <motion.span
-                    className="accent-gradient-text"
+                    className="gradient-text-coral block"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 1 }}
                   >
                     {personalInfo.name.split(" ")[1]}
                   </motion.span>
-                </h1>
+                </motion.h1>
               </div>
             </FloatingCard>
 
-            {/* Typewriter Effect */}
+            {/* Enhanced Typewriter Effect */}
             <FloatingCard delay={0.6}>
-              <div className="h-16 flex items-center">
-                <h2 className="text-2xl md:text-3xl lg:text-4xl font-semibold text-white/90">
+              <div className="h-20 flex items-center">
+                <h2 className="text-3xl md:text-4xl lg:text-5xl font-semibold text-white/90">
                   I'm a{" "}
-                  <span className="accent-gradient-text font-display">
+                  <span className="gradient-text-emerald font-display">
                     {displayText}
                   </span>
                   <motion.span
-                    className="inline-block w-1 h-8 bg-electric-blue ml-1"
+                    className="inline-block w-1 h-12 bg-coral ml-2"
                     animate={{ opacity: [1, 0, 1] }}
                     transition={{ duration: 1, repeat: Infinity }}
                   />
                 </h2>
+
+                {/* Floating tech icons around typewriter */}
+                <div className="relative">
+                  {[Code, Brain, Zap, Sparkles].map((Icon, i) => (
+                    <motion.div
+                      key={i}
+                      className="absolute"
+                      style={{
+                        left: `${100 + i * 40}px`,
+                        top: `${-20 + i * 10}px`,
+                      }}
+                      animate={{
+                        y: [0, -20, 0],
+                        rotate: [0, 360],
+                        opacity: [0.4, 1, 0.4],
+                      }}
+                      transition={{
+                        duration: 4,
+                        delay: i * 0.5,
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                      }}
+                    >
+                      <Icon
+                        className={`w-6 h-6 ${
+                          i % 3 === 0
+                            ? "text-coral"
+                            : i % 3 === 1
+                              ? "text-emerald"
+                              : "text-lavender"
+                        }`}
+                      />
+                    </motion.div>
+                  ))}
+                </div>
               </div>
             </FloatingCard>
 
-            {/* Description */}
+            {/* Enhanced Description */}
             <FloatingCard delay={0.8}>
-              <p className="body-large text-light-slate max-w-2xl leading-relaxed">
+              <motion.p
+                className="body-large text-slate-300 max-w-2xl leading-relaxed"
+                whileHover={{ scale: 1.02 }}
+                transition={{ duration: 0.2 }}
+              >
                 {personalInfo.bio}
-              </p>
+              </motion.p>
             </FloatingCard>
 
-            {/* Action Buttons */}
+            {/* Enhanced Action Buttons */}
             <FloatingCard delay={1}>
-              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                <Button
-                  onClick={scrollToProjects}
-                  className="btn-primary text-lg px-8 py-4 shimmer-effect"
-                  size="lg"
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
+                <motion.div
+                  whileHover={{ scale: 1.05, rotateX: 5 }}
+                  whileTap={{ scale: 0.95 }}
                 >
-                  View My Work
-                  <ArrowDown className="ml-2 w-5 h-5" />
-                </Button>
+                  <Button
+                    onClick={scrollToProjects}
+                    className="btn-coral text-lg px-10 py-5 relative overflow-hidden group"
+                    size="lg"
+                  >
+                    <span className="relative z-10 flex items-center">
+                      View My Work
+                      <ArrowDown className="ml-3 w-5 h-5 group-hover:animate-bounce-gentle" />
+                    </span>
+                  </Button>
+                </motion.div>
 
-                <Button
-                  variant="outline"
-                  className="btn-secondary text-lg px-8 py-4"
-                  size="lg"
+                <motion.div
+                  whileHover={{ scale: 1.05, rotateX: -5 }}
+                  whileTap={{ scale: 0.95 }}
                 >
-                  <Download className="mr-2 w-5 h-5" />
-                  Download Resume
-                </Button>
+                  <Button className="btn-emerald text-lg px-10 py-5" size="lg">
+                    <Download className="mr-3 w-5 h-5" />
+                    Download Resume
+                  </Button>
+                </motion.div>
               </div>
             </FloatingCard>
 
-            {/* Social Links */}
+            {/* Enhanced Social Links */}
             <FloatingCard delay={1.2}>
-              <div className="flex items-center space-x-4 pt-4">
-                <span className="text-light-slate text-sm font-medium">
+              <div className="flex items-center space-x-6 pt-4">
+                <span className="text-slate-400 text-sm font-medium">
                   Connect with me:
                 </span>
                 {[
@@ -224,80 +465,108 @@ export default function Hero() {
                     icon: Github,
                     href: personalInfo.social.github,
                     label: "GitHub",
+                    color: "coral",
                   },
                   {
                     icon: Linkedin,
                     href: personalInfo.social.linkedin,
                     label: "LinkedIn",
+                    color: "emerald",
                   },
                   {
                     icon: Mail,
                     href: `mailto:${personalInfo.email}`,
                     label: "Email",
+                    color: "lavender",
                   },
-                ].map(({ icon: Icon, href, label }) => (
+                ].map(({ icon: Icon, href, label, color }) => (
                   <motion.a
                     key={label}
                     href={href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-12 h-12 glass-card flex items-center justify-center text-white/70 hover:text-electric-blue transition-all duration-300 micro-scale"
-                    whileHover={{ scale: 1.1, y: -2 }}
+                    className={`w-14 h-14 glass-card flex items-center justify-center text-white/70 hover:text-${color} transition-all duration-300 hover-lift`}
+                    whileHover={{
+                      scale: 1.15,
+                      rotateY: 15,
+                      rotateX: 15,
+                    }}
                     whileTap={{ scale: 0.95 }}
                   >
-                    <Icon className="w-5 h-5" />
+                    <Icon className="w-6 h-6" />
                   </motion.a>
                 ))}
               </div>
             </FloatingCard>
 
-            {/* Stats */}
+            {/* Enhanced Stats */}
             <FloatingCard delay={1.4}>
-              <div className="flex items-center space-x-8 pt-8">
-                {stats.map((stat, index) => (
-                  <motion.div
-                    key={stat.label}
-                    className="text-center"
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.6, delay: 1.6 + index * 0.1 }}
-                  >
-                    <div className="text-2xl md:text-3xl font-bold accent-gradient-text">
-                      {stat.value}
-                    </div>
-                    <div className="text-light-slate text-sm font-medium">
-                      {stat.label}
-                    </div>
-                  </motion.div>
-                ))}
+              <div className="flex items-center space-x-12 pt-8">
+                {stats.map((stat, index) => {
+                  const Icon = stat.icon;
+                  return (
+                    <motion.div
+                      key={stat.label}
+                      className="text-center group"
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.6, delay: 1.6 + index * 0.1 }}
+                      whileHover={{ scale: 1.1, y: -5 }}
+                    >
+                      <div className="flex flex-col items-center space-y-2">
+                        <Icon
+                          className={`w-8 h-8 text-${stat.color} group-hover:animate-bounce-gentle`}
+                        />
+                        <div
+                          className={`text-3xl md:text-4xl font-bold gradient-text-${stat.color}`}
+                        >
+                          {stat.value}
+                        </div>
+                        <div className="text-slate-400 text-sm font-medium">
+                          {stat.label}
+                        </div>
+                      </div>
+                    </motion.div>
+                  );
+                })}
               </div>
             </FloatingCard>
           </div>
 
-          {/* Sidebar Cards */}
+          {/* Enhanced Sidebar Cards */}
           <div className="lg:col-span-4 space-y-6">
-            {/* Profile Card */}
-            <FloatingCard delay={0.8} direction="down">
-              <div className="glass-card p-6 space-y-4">
-                <div className="flex items-center space-x-3">
-                  <div className="w-12 h-12 glass-card flex items-center justify-center">
-                    <span className="text-electric-blue font-bold text-xl font-display">
+            {/* Profile Card with 3D Effect */}
+            <FloatingCard delay={0.8} className="floating-3d">
+              <div className="glass-card p-6 space-y-4 hover-glow">
+                <div className="flex items-center space-x-4">
+                  <motion.div
+                    className="w-16 h-16 glass-card flex items-center justify-center relative overflow-hidden"
+                    whileHover={{ rotateY: 180 }}
+                    transition={{ duration: 0.6 }}
+                  >
+                    <span className="text-coral font-bold text-2xl font-display">
                       AJ
                     </span>
-                  </div>
+                    {/* Animated gradient border */}
+                    <div className="absolute inset-0 animated-border opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <div className="animated-border-inner" />
+                    </div>
+                  </motion.div>
                   <div>
-                    <h3 className="text-white font-semibold">Alex Johnson</h3>
-                    <p className="text-light-slate text-sm">Senior Developer</p>
+                    <h3 className="text-white font-semibold text-lg">
+                      Alex Johnson
+                    </h3>
+                    <p className="text-slate-400">Senior Developer</p>
                   </div>
                 </div>
 
                 <div className="space-y-3 pt-4 border-t border-white/10">
-                  <div className="flex items-center space-x-2 text-sm text-light-slate">
-                    <MapPin className="w-4 h-4" />
+                  <div className="flex items-center space-x-3 text-sm text-slate-400">
+                    <MapPin className="w-4 h-4 text-emerald" />
                     <span>{personalInfo.location}</span>
                   </div>
-                  <div className="flex items-center space-x-2 text-sm text-light-slate">
-                    <Clock className="w-4 h-4" />
+                  <div className="flex items-center space-x-3 text-sm text-slate-400">
+                    <Clock className="w-4 h-4 text-coral" />
                     <span>
                       {currentTime.toLocaleTimeString([], {
                         hour: "2-digit",
@@ -306,64 +575,70 @@ export default function Hero() {
                       PST
                     </span>
                   </div>
-                  <div className="flex items-center space-x-2 text-sm text-light-slate">
-                    <Coffee className="w-4 h-4" />
-                    <span>Fueled by coffee</span>
+                  <div className="flex items-center space-x-3 text-sm text-slate-400">
+                    <Coffee className="w-4 h-4 text-amber animate-wave" />
+                    <span>Fueled by coffee & curiosity</span>
                   </div>
                 </div>
               </div>
             </FloatingCard>
 
-            {/* Quote Card */}
-            <FloatingCard delay={1} direction="down">
-              <div className="glass-card p-6">
-                <blockquote className="text-white/90 italic leading-relaxed">
+            {/* Quote Card with Morphing Background */}
+            <FloatingCard delay={1} className="floating-3d">
+              <div className="glass-card p-6 relative overflow-hidden hover-glow">
+                <div className="absolute inset-0 morph-shape opacity-10" />
+                <blockquote className="text-white/90 italic leading-relaxed relative z-10">
                   "{personalInfo.quote}"
                 </blockquote>
-                <div className="mt-4 pt-4 border-t border-white/10">
-                  <div className="text-light-slate text-sm">Personal Motto</div>
+                <div className="mt-4 pt-4 border-t border-white/10 relative z-10">
+                  <div className="text-slate-400 text-sm">Personal Motto</div>
                 </div>
               </div>
             </FloatingCard>
 
-            {/* Current Status */}
-            <FloatingCard delay={1.2} direction="down">
-              <div className="glass-card p-6 space-y-4">
-                <h3 className="text-white font-semibold">Current Focus</h3>
+            {/* Status Card with Animated Indicators */}
+            <FloatingCard delay={1.2} className="floating-3d">
+              <div className="glass-card p-6 space-y-4 hover-glow">
+                <h3 className="text-white font-semibold flex items-center">
+                  <Zap className="w-5 h-5 text-amber mr-2" />
+                  Current Focus
+                </h3>
                 <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-light-slate text-sm">
-                      Learning AI/ML
-                    </span>
-                    <Badge
-                      variant="outline"
-                      className="text-xs border-green-500/30 text-green-400"
+                  {[
+                    {
+                      label: "Learning AI/ML",
+                      status: "Active",
+                      color: "emerald",
+                    },
+                    {
+                      label: "Building Projects",
+                      status: "In Progress",
+                      color: "coral",
+                    },
+                    {
+                      label: "Open to Work",
+                      status: "Available",
+                      color: "emerald",
+                    },
+                  ].map((item, index) => (
+                    <motion.div
+                      key={item.label}
+                      className="flex items-center justify-between group"
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 1.4 + index * 0.1 }}
+                      whileHover={{ x: 5 }}
                     >
-                      Active
-                    </Badge>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-light-slate text-sm">
-                      Building Projects
-                    </span>
-                    <Badge
-                      variant="outline"
-                      className="text-xs border-blue-500/30 text-blue-400"
-                    >
-                      In Progress
-                    </Badge>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-light-slate text-sm">
-                      Open to Work
-                    </span>
-                    <Badge
-                      variant="outline"
-                      className="text-xs border-green-500/30 text-green-400"
-                    >
-                      Available
-                    </Badge>
-                  </div>
+                      <span className="text-slate-400 text-sm group-hover:text-white transition-colors">
+                        {item.label}
+                      </span>
+                      <Badge
+                        className={`glass-card border-${item.color}/30 text-${item.color} text-xs hover-glow`}
+                      >
+                        {item.status}
+                      </Badge>
+                    </motion.div>
+                  ))}
                 </div>
               </div>
             </FloatingCard>
@@ -371,7 +646,7 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* Scroll Indicator */}
+      {/* Enhanced Scroll Indicator */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -379,15 +654,19 @@ export default function Hero() {
         className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
       >
         <motion.div
-          className="flex flex-col items-center space-y-2 text-light-slate"
-          animate={{ y: [0, 5, 0] }}
+          className="flex flex-col items-center space-y-3 text-slate-400 group cursor-pointer"
+          animate={{ y: [0, 10, 0] }}
           transition={{ duration: 2, repeat: Infinity }}
+          onClick={scrollToProjects}
+          whileHover={{ scale: 1.1 }}
         >
-          <span className="text-xs font-medium">Scroll to explore</span>
-          <div className="w-6 h-10 glass-card rounded-full flex justify-center pt-2">
+          <span className="text-xs font-medium group-hover:text-coral transition-colors">
+            Scroll to explore
+          </span>
+          <div className="w-6 h-12 glass-card rounded-full flex justify-center pt-2 group-hover:glow-coral">
             <motion.div
-              className="w-1 h-3 bg-electric-blue rounded-full"
-              animate={{ y: [0, 12, 0], opacity: [1, 0, 1] }}
+              className="w-1 h-4 bg-coral rounded-full"
+              animate={{ y: [0, 16, 0], opacity: [1, 0, 1] }}
               transition={{ duration: 2, repeat: Infinity }}
             />
           </div>
