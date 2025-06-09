@@ -4,6 +4,12 @@ import Footer from "@/components/layout/Footer";
 import Hero from "@/components/sections/Hero";
 import Projects from "@/components/sections/Projects";
 import TechStack from "@/components/sections/TechStack";
+import Experience from "@/components/sections/Experience";
+import Achievements from "@/components/sections/Achievements";
+import Testimonials from "@/components/sections/Testimonials";
+import Blog from "@/components/sections/Blog";
+import GitHubContribution from "@/components/sections/GitHubContribution";
+import Contact from "@/components/sections/Contact";
 
 export default function Index() {
   useEffect(() => {
@@ -18,6 +24,12 @@ export default function Index() {
         <Hero />
         <Projects />
         <TechStack />
+        <Experience />
+        <Achievements />
+        <Testimonials />
+        <Blog />
+        <GitHubContribution />
+        <Contact />
       </main>
       <Footer />
     </div>
