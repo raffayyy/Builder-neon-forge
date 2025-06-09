@@ -302,12 +302,13 @@ export default function GitHubContribution() {
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          {/* Contribution Calendar */}
+          {/* Contribution Calendar & Explore My Code */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
+            className="space-y-8"
           >
             <Card className="bg-gray-900/50 border-gray-700/50 backdrop-blur-sm">
               <CardHeader>
@@ -344,6 +345,57 @@ export default function GitHubContribution() {
                     showWeekdayLabels={true}
                   />
                 </div>
+              </CardContent>
+            </Card>
+
+            {/* Explore My Code Section */}
+            <Card className="bg-gray-900/50 border-gray-700/50 backdrop-blur-sm">
+              <CardHeader>
+                <CardTitle className="text-2xl text-white flex items-center gap-3">
+                  <Github className="w-6 h-6 text-gray-400" />
+                  Explore My Code
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <p className="text-gray-400 leading-relaxed">
+                  Check out my open source contributions and projects. I'm
+                  always working on something new and exciting in the world of
+                  technology.
+                </p>
+
+                <div className="grid grid-cols-1 gap-4">
+                  <div className="flex items-center justify-between p-4 bg-gray-800/30 border border-gray-700/50 rounded-xl">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-gradient-to-br from-gray-600 to-blue-600 rounded-xl flex items-center justify-center">
+                        <Github className="w-5 h-5 text-white" />
+                      </div>
+                      <div>
+                        <div className="text-white font-semibold">
+                          GitHub Profile
+                        </div>
+                        <div className="text-gray-400 text-sm">
+                          View all repositories
+                        </div>
+                      </div>
+                    </div>
+                    <ExternalLink className="w-5 h-5 text-gray-400" />
+                  </div>
+                </div>
+
+                <Button
+                  asChild
+                  size="lg"
+                  className="w-full bg-gradient-to-r from-gray-600 to-blue-600 hover:from-gray-700 hover:to-blue-700 text-white rounded-xl font-semibold"
+                >
+                  <a
+                    href="https://github.com/alexjohnson"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Github className="w-5 h-5 mr-2" />
+                    View GitHub Profile
+                  </a>
+                </Button>
               </CardContent>
             </Card>
           </motion.div>
@@ -457,39 +509,6 @@ export default function GitHubContribution() {
             </Card>
           </motion.div>
         </div>
-
-        {/* Call to Action */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-          viewport={{ once: true }}
-          className="text-center mt-16"
-        >
-          <div className="bg-gradient-to-r from-gray-500/10 via-blue-500/10 to-purple-500/10 border border-gray-700/50 rounded-3xl p-12 backdrop-blur-sm">
-            <h3 className="text-3xl font-bold text-white mb-4">
-              Explore My Code
-            </h3>
-            <p className="text-gray-400 mb-8 max-w-2xl mx-auto">
-              Check out my open source contributions and projects. I'm always
-              working on something new and exciting in the world of technology.
-            </p>
-            <Button
-              asChild
-              size="lg"
-              className="bg-gradient-to-r from-gray-600 to-blue-600 hover:from-gray-700 hover:to-blue-700 text-white rounded-full px-8 py-3 text-lg font-semibold"
-            >
-              <a
-                href="https://github.com/alexjohnson"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Github className="w-5 h-5 mr-2" />
-                View GitHub Profile
-              </a>
-            </Button>
-          </div>
-        </motion.div>
       </div>
     </section>
   );
