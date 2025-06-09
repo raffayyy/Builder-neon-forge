@@ -15,7 +15,7 @@ import {
   Zap,
 } from "lucide-react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { OrbitControls, Sphere, Float, Text3D } from "@react-three/drei";
+import { OrbitControls, Sphere, Float, Box } from "@react-three/drei";
 import * as THREE from "three";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -60,8 +60,8 @@ function FloatingOrb({ position, color, scale = 1 }) {
   );
 }
 
-// 3D Tech Icons
-function TechIcon3D({ position, rotation, icon, color }) {
+// 3D Tech Icons (simplified without font dependencies)
+function TechIcon3D({ position, rotation, color }) {
   const meshRef = useRef<THREE.Group>(null);
 
   useFrame((state) => {
@@ -76,15 +76,9 @@ function TechIcon3D({ position, rotation, icon, color }) {
   return (
     <group ref={meshRef} position={position}>
       <Float speed={1.5} rotationIntensity={0.5} floatIntensity={1}>
-        <Text3D
-          font="/fonts/helvetiker_regular.typeface.json"
-          size={0.3}
-          height={0.1}
-          curveSegments={12}
-        >
-          {icon}
+        <Box args={[0.4, 0.4, 0.4]}>
           <meshStandardMaterial color={color} roughness={0.1} metalness={0.9} />
-        </Text3D>
+        </Box>
       </Float>
     </group>
   );
@@ -115,30 +109,10 @@ function Hero3DScene() {
       <FloatingOrb position={[-1, -2, 1]} color="#feca57" scale={0.9} />
 
       {/* Tech icons */}
-      <TechIcon3D
-        position={[-1.5, 0.5, 0.5]}
-        rotation={0}
-        icon="⚛"
-        color="#ff6b6b"
-      />
-      <TechIcon3D
-        position={[1.5, -0.5, 0.3]}
-        rotation={1}
-        icon="🚀"
-        color="#4ecdc4"
-      />
-      <TechIcon3D
-        position={[0, 1.5, -0.5]}
-        rotation={2}
-        icon="🧠"
-        color="#a55eea"
-      />
-      <TechIcon3D
-        position={[0, -1.5, 0.8]}
-        rotation={3}
-        icon="⚡"
-        color="#feca57"
-      />
+      <TechIcon3D position={[-1.5, 0.5, 0.5]} rotation={0} color="#ff6b6b" />
+      <TechIcon3D position={[1.5, -0.5, 0.3]} rotation={1} color="#4ecdc4" />
+      <TechIcon3D position={[0, 1.5, -0.5]} rotation={2} color="#a55eea" />
+      <TechIcon3D position={[0, -1.5, 0.8]} rotation={3} color="#feca57" />
 
       <OrbitControls
         enablePan={false}
