@@ -20,6 +20,7 @@ import * as THREE from "three";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { personalInfo } from "@/lib/data";
+import ErrorBoundary from "@/components/ErrorBoundary";
 
 const typewriterTexts = [
   "AI Engineer",
@@ -259,7 +260,9 @@ export default function Hero() {
 
       {/* 3D Background Scene */}
       <div className="absolute inset-0 opacity-60">
-        <Hero3DScene />
+        <ErrorBoundary>
+          <Hero3DScene />
+        </ErrorBoundary>
       </div>
 
       {/* Interactive mouse follower */}
