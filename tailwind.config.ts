@@ -167,11 +167,9 @@ export default {
           "0%, 100%": { transform: "translateY(0px) scale(1)" },
           "50%": { transform: "translateY(-10px) scale(1.05)" },
         },
-        orbit: {
-          "0%": { transform: "rotate(0deg) translateX(100px) rotate(0deg)" },
-          "100%": {
-            transform: "rotate(360deg) translateX(100px) rotate(-360deg)",
-          },
+        "spin-slow": {
+          "0%": { transform: "rotate(0deg)" },
+          "100%": { transform: "rotate(360deg)" },
         },
         wave: {
           "0%, 100%": { transform: "rotate(0deg)" },
@@ -201,7 +199,7 @@ export default {
         shimmer: "shimmer 2.5s ease-in-out infinite",
         morph: "morph 8s ease-in-out infinite",
         "float-simple": "float-simple 4s ease-in-out infinite",
-        orbit: "orbit 15s linear infinite",
+        "spin-slow": "spin-slow 15s linear infinite",
         wave: "wave 2s ease-in-out infinite",
         "text-glow": "text-glow 3s ease-in-out infinite",
       },
