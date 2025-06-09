@@ -163,14 +163,9 @@ export default {
           "0%, 100%": { borderRadius: "60% 40% 30% 70% / 60% 30% 70% 40%" },
           "50%": { borderRadius: "30% 60% 70% 40% / 50% 60% 30% 60%" },
         },
-        "float-3d": {
-          "0%, 100%": {
-            transform: "rotateY(0deg) rotateX(0deg) translateZ(0px)",
-          },
-          "33%": { transform: "rotateY(5deg) rotateX(5deg) translateZ(20px)" },
-          "66%": {
-            transform: "rotateY(-5deg) rotateX(-5deg) translateZ(10px)",
-          },
+        "float-simple": {
+          "0%, 100%": { transform: "translateY(0px) scale(1)" },
+          "50%": { transform: "translateY(-10px) scale(1.05)" },
         },
         orbit: {
           "0%": { transform: "rotate(0deg) translateX(100px) rotate(0deg)" },
@@ -205,7 +200,7 @@ export default {
         "pulse-glow": "pulse-glow 2s ease-in-out infinite",
         shimmer: "shimmer 2.5s ease-in-out infinite",
         morph: "morph 8s ease-in-out infinite",
-        "float-3d": "float-3d 6s ease-in-out infinite",
+        "float-simple": "float-simple 4s ease-in-out infinite",
         orbit: "orbit 15s linear infinite",
         wave: "wave 2s ease-in-out infinite",
         "text-glow": "text-glow 3s ease-in-out infinite",
