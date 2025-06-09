@@ -3,6 +3,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* GitHub Calendar Styles */
+@import "./components/styles/github-calendar.css";
+
 @layer base {
   :root {
     --background: 222 84% 4%;

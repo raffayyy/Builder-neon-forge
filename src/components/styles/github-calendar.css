@@ -1,0 +1,62 @@
+/* Custom styles for react-github-calendar */
+.contribution-calendar {
+  overflow-x: auto;
+  padding: 1rem 0;
+}
+
+.contribution-calendar .react-calendar-heatmap {
+  font-family: inherit;
+}
+
+.contribution-calendar .react-calendar-heatmap text {
+  font-size: 10px;
+  fill: #6b7280;
+}
+
+.contribution-calendar
+  .react-calendar-heatmap
+  .react-calendar-heatmap-small-text {
+  font-size: 8px;
+  fill: #6b7280;
+}
+
+.contribution-calendar .react-calendar-heatmap rect:hover {
+  stroke: #3b82f6;
+  stroke-width: 1px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .contribution-calendar {
+    font-size: 12px;
+  }
+
+  .contribution-calendar .react-calendar-heatmap text {
+    font-size: 9px;
+  }
+
+  .contribution-calendar
+    .react-calendar-heatmap
+    .react-calendar-heatmap-small-text {
+    font-size: 7px;
+  }
+}
+
+/* Scrollbar styling for contribution calendar */
+.contribution-calendar::-webkit-scrollbar {
+  height: 6px;
+}
+
+.contribution-calendar::-webkit-scrollbar-track {
+  background: rgba(75, 85, 99, 0.3);
+  border-radius: 3px;
+}
+
+.contribution-calendar::-webkit-scrollbar-thumb {
+  background: rgba(59, 130, 246, 0.5);
+  border-radius: 3px;
+}
+
+.contribution-calendar::-webkit-scrollbar-thumb:hover {
+  background: rgba(59, 130, 246, 0.7);
+}
