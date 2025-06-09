@@ -15,7 +15,7 @@ import {
   Eye,
 } from "lucide-react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { OrbitControls, Float, Text3D, Box, Sphere } from "@react-three/drei";
+import { OrbitControls, Float, Box, Sphere } from "@react-three/drei";
 import * as THREE from "three";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
