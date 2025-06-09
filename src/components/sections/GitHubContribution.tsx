@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import {
   Github,
-  GitCommit,
   Star,
   GitFork,
   Calendar,
@@ -42,21 +41,6 @@ interface LanguageStats {
   [key: string]: number;
 }
 
-interface GitHubCommit {
-  sha: string;
-  commit: {
-    message: string;
-    author: {
-      date: string;
-    };
-  };
-  html_url: string;
-  repository: {
-    name: string;
-    full_name: string;
-  };
-}
-
 // GitHub username - replace with actual username
 const GITHUB_USERNAME = "alexjohnson"; // Replace with actual GitHub username
 
@@ -64,7 +48,6 @@ export default function GitHubContribution() {
   const [user, setUser] = useState<GitHubUser | null>(null);
   const [repos, setRepos] = useState<GitHubRepo[]>([]);
   const [languages, setLanguages] = useState<LanguageStats>({});
-  const [recentCommits, setRecentCommits] = useState<GitHubCommit[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -100,59 +83,6 @@ export default function GitHubContribution() {
         }
       });
       setLanguages(langStats);
-
-      // Simulate recent commits (GitHub API requires authentication for commits across repos)
-      // In a real implementation, you'd need to authenticate to get commits
-      setRecentCommits([
-        {
-          sha: "abc123",
-          commit: {
-            message: "feat: add new dashboard component with dark theme",
-            author: {
-              date: new Date(
-                Date.now() - 2 * 24 * 60 * 60 * 1000,
-              ).toISOString(),
-            },
-          },
-          html_url: `https://github.com/${GITHUB_USERNAME}/portfolio-website/commit/abc123`,
-          repository: {
-            name: "portfolio-website",
-            full_name: `${GITHUB_USERNAME}/portfolio-website`,
-          },
-        },
-        {
-          sha: "def456",
-          commit: {
-            message: "fix: resolve mobile responsiveness issues",
-            author: {
-              date: new Date(
-                Date.now() - 3 * 24 * 60 * 60 * 1000,
-              ).toISOString(),
-            },
-          },
-          html_url: `https://github.com/${GITHUB_USERNAME}/ai-code-reviewer/commit/def456`,
-          repository: {
-            name: "ai-code-reviewer",
-            full_name: `${GITHUB_USERNAME}/ai-code-reviewer`,
-          },
-        },
-        {
-          sha: "ghi789",
-          commit: {
-            message: "docs: update README with new installation steps",
-            author: {
-              date: new Date(
-                Date.now() - 5 * 24 * 60 * 60 * 1000,
-              ).toISOString(),
-            },
-          },
-          html_url: `https://github.com/${GITHUB_USERNAME}/ml-toolkit/commit/ghi789`,
-          repository: {
-            name: "ml-toolkit",
-            full_name: `${GITHUB_USERNAME}/ml-toolkit`,
-          },
-        },
-      ]);
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
@@ -174,24 +104,6 @@ export default function GitHubContribution() {
       PHP: "from-purple-500 to-indigo-500",
     };
     return colors[language] || "from-gray-500 to-gray-600";
-  };
-
-  const formatDate = (dateString: string): string => {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffTime = Math.abs(now.getTime() - date.getTime());
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-    if (diffDays === 1) return "1 day ago";
-    if (diffDays < 7) return `${diffDays} days ago`;
-    if (diffDays < 30) return `${Math.ceil(diffDays / 7)} weeks ago`;
-    return `${Math.ceil(diffDays / 30)} months ago`;
-  };
-
-  const truncateMessage = (message: string, maxLength: number = 60): string => {
-    return message.length > maxLength
-      ? `${message.substring(0, maxLength)}...`
-      : message;
   };
 
   if (loading) {
@@ -423,43 +335,112 @@ export default function GitHubContribution() {
             viewport={{ once: true }}
             className="space-y-8"
           >
-            {/* Recent Commits */}
+            {/* Languages Breakdown */}
             <Card className="bg-gray-900/50 border-gray-700/50 backdrop-blur-sm">
               <CardHeader>
                 <CardTitle className="text-2xl text-white flex items-center gap-3">
-                  <GitCommit className="w-6 h-6 text-blue-400" />
-                  Recent Commits
+                  <Code2 className="w-6 h-6 text-purple-400" />
+                  Languages Breakdown
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                {recentCommits.map((commit, index) => (
-                  <motion.a
-                    key={commit.sha}
-                    href={commit.html_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: index * 0.1 }}
-                    viewport={{ once: true }}
-                    className="block p-4 bg-gray-800/30 border border-gray-700/50 rounded-xl hover:border-gray-600 transition-all duration-300 group"
-                  >
-                    <div className="flex items-start gap-3">
-                      <GitCommit className="w-4 h-4 text-gray-400 mt-1 flex-shrink-0" />
-                      <div className="flex-1 min-w-0">
-                        <p className="text-white font-medium group-hover:text-blue-400 transition-colors">
-                          {truncateMessage(commit.commit.message)}
-                        </p>
-                        <div className="flex items-center gap-2 mt-2 text-sm text-gray-400">
-                          <span>{commit.repository.name}</span>
-                          <span>•</span>
-                          <span>{formatDate(commit.commit.author.date)}</span>
+              <CardContent className="space-y-6">
+                {/* Total repositories count */}
+                <div className="text-center p-4 bg-gray-800/30 border border-gray-700/50 rounded-xl">
+                  <div className="text-3xl font-bold text-white mb-2">
+                    {repos.length}
+                  </div>
+                  <div className="text-gray-400">Total Repositories</div>
+                </div>
+
+                {/* Language statistics with progress bars */}
+                <div className="space-y-4">
+                  {topLanguages.map(([language, count], index) => {
+                    const percentage = Math.round((count / repos.length) * 100);
+                    return (
+                      <motion.div
+                        key={language}
+                        initial={{ opacity: 0, x: -20 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.5, delay: index * 0.1 }}
+                        viewport={{ once: true }}
+                        className="space-y-2"
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <div
+                              className={`w-4 h-4 rounded-full bg-gradient-to-r ${getLanguageColor(language)}`}
+                            />
+                            <span className="text-white font-medium">
+                              {language}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Badge
+                              variant="outline"
+                              className="bg-gray-800/50 border-gray-600 text-gray-300"
+                            >
+                              {count} {count === 1 ? "repo" : "repos"}
+                            </Badge>
+                            <span className="text-sm text-gray-400 font-mono">
+                              {percentage}%
+                            </span>
+                          </div>
                         </div>
+
+                        {/* Progress bar */}
+                        <div className="relative h-2 bg-gray-800 rounded-full overflow-hidden">
+                          <motion.div
+                            className={`h-full bg-gradient-to-r ${getLanguageColor(language)} rounded-full`}
+                            initial={{ width: 0 }}
+                            whileInView={{ width: `${percentage}%` }}
+                            transition={{ duration: 1, delay: index * 0.1 }}
+                            viewport={{ once: true }}
+                          />
+                        </div>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+
+                {/* Language insights */}
+                <div className="pt-4 border-t border-gray-700/50 space-y-3">
+                  <h4 className="text-white font-semibold flex items-center gap-2">
+                    <Activity className="w-4 h-4 text-blue-400" />
+                    Language Insights
+                  </h4>
+                  <div className="grid grid-cols-1 gap-3">
+                    <div className="flex items-center justify-between p-3 bg-gray-800/30 rounded-lg">
+                      <span className="text-gray-400">Most Used</span>
+                      <div className="flex items-center gap-2">
+                        <div
+                          className={`w-3 h-3 rounded-full bg-gradient-to-r ${getLanguageColor(topLanguages[0]?.[0] || "")}`}
+                        />
+                        <span className="text-white font-medium">
+                          {topLanguages[0]?.[0] || "N/A"}
+                        </span>
                       </div>
-                      <ExternalLink className="w-4 h-4 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
                     </div>
-                  </motion.a>
-                ))}
+                    <div className="flex items-center justify-between p-3 bg-gray-800/30 rounded-lg">
+                      <span className="text-gray-400">Total Languages</span>
+                      <span className="text-white font-medium">
+                        {Object.keys(languages).length}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between p-3 bg-gray-800/30 rounded-lg">
+                      <span className="text-gray-400">Active Projects</span>
+                      <span className="text-white font-medium">
+                        {
+                          repos.filter((repo) => {
+                            const updatedDate = new Date(repo.updated_at);
+                            const sixMonthsAgo = new Date();
+                            sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+                            return updatedDate > sixMonthsAgo;
+                          }).length
+                        }
+                      </span>
+                    </div>
+                  </div>
+                </div>
               </CardContent>
             </Card>
 
