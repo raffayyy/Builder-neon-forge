@@ -274,11 +274,12 @@ export default function Hero() {
           className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
         >
           <motion.button
-            onClick={() =>
-              document
-                .getElementById("skills")
-                ?.scrollIntoView({ behavior: "smooth" })
-            }
+            onClick={() => {
+              const element = document.getElementById("skills");
+              if (element) {
+                element.scrollIntoView({ behavior: "smooth" });
+              }
+            }}
             className="flex flex-col items-center gap-2 text-white/60 hover:text-white transition-colors duration-300"
             animate={{ y: [0, 10, 0] }}
             transition={{ duration: 2, repeat: Infinity }}
