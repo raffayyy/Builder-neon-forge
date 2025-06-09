@@ -104,7 +104,7 @@ export default function Hero() {
               <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white leading-tight">
                 <span className="block">Hello, I'm</span>
                 <span className="block bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-                  {personalInfo.name}
+                  {personalInfo?.name || "Alex Johnson"}
                 </span>
               </h1>
 
@@ -122,7 +122,8 @@ export default function Hero() {
               </div>
 
               <p className="text-lg text-white/70 max-w-xl mx-auto lg:mx-0 leading-relaxed">
-                {personalInfo.bio}
+                {personalInfo?.bio ||
+                  "Passionate developer specializing in AI and modern web development."}
               </p>
             </motion.div>
 
