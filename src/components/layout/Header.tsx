@@ -66,13 +66,13 @@ export default function Header() {
     <motion.header
       className={`fixed top-0 w-full z-50 transition-all duration-300 ${
         isScrolled
-          ? "bg-gray-900/95 backdrop-blur-md shadow-lg border-b border-white/10"
+          ? "bg-gray-950/95 backdrop-blur-md shadow-xl border-b border-gray-800/50"
           : "bg-transparent"
       }`}
       initial={{ y: 0, opacity: 1 }}
       animate={{ y: 0, opacity: 1 }}
     >
-      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <nav className="max-w-7xl mx-auto px-6">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <motion.button
@@ -81,7 +81,7 @@ export default function Header() {
             whileHover={{ scale: 1.05 }}
             transition={{ duration: 0.2 }}
           >
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
               <span className="text-white font-bold text-lg">AJ</span>
             </div>
             <span className="text-white font-semibold text-xl hidden sm:block group-hover:text-blue-400 transition-colors">
@@ -90,7 +90,7 @@ export default function Header() {
           </motion.button>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center space-x-8">
+          <div className="hidden lg:flex items-center space-x-2">
             {navigation.map((item) => {
               const Icon = item.icon;
               const isActive = activeSection === item.href.substring(1);
@@ -98,10 +98,10 @@ export default function Header() {
                 <motion.button
                   key={item.name}
                   onClick={() => scrollToSection(item.href)}
-                  className={`relative flex items-center space-x-2 px-3 py-2 rounded-lg transition-all duration-200 ${
+                  className={`relative flex items-center space-x-2 px-4 py-2 rounded-xl transition-all duration-200 ${
                     isActive
                       ? "bg-blue-500/20 text-blue-400"
-                      : "text-white/70 hover:text-white hover:bg-white/10"
+                      : "text-gray-300 hover:text-white hover:bg-gray-800/50"
                   }`}
                   whileHover={{ y: -2 }}
                   transition={{ duration: 0.2 }}
@@ -117,7 +117,7 @@ export default function Header() {
           </div>
 
           {/* Desktop CTA Buttons */}
-          <div className="hidden lg:flex items-center space-x-4">
+          <div className="hidden lg:flex items-center space-x-3">
             <Button
               variant="outline"
               size="sm"
@@ -127,7 +127,7 @@ export default function Header() {
                   "_blank",
                 )
               }
-              className="border-white/20 text-white hover:bg-white/10"
+              className="border-gray-600 text-gray-300 hover:bg-gray-800 rounded-full"
             >
               <Download className="w-4 h-4 mr-2" />
               Resume
@@ -136,7 +136,7 @@ export default function Header() {
             <Button
               size="sm"
               onClick={() => scrollToSection("#contact")}
-              className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
+              className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 rounded-full"
             >
               <Mail className="w-4 h-4 mr-2" />
               Hire Me
@@ -146,7 +146,7 @@ export default function Header() {
           {/* Mobile Menu Button */}
           <motion.button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="lg:hidden text-white/70 hover:text-white transition-colors"
+            className="lg:hidden text-gray-300 hover:text-white transition-colors"
             whileTap={{ scale: 0.95 }}
           >
             {isMobileMenuOpen ? (
@@ -165,9 +165,9 @@ export default function Header() {
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3 }}
-              className="lg:hidden bg-gray-900/95 backdrop-blur-md border-t border-white/10 mt-4 rounded-lg"
+              className="lg:hidden bg-gray-950/95 backdrop-blur-md border-t border-gray-800/50 mt-4 rounded-2xl"
             >
-              <div className="px-4 py-6 space-y-4">
+              <div className="px-6 py-6 space-y-4">
                 {navigation.map((item) => {
                   const Icon = item.icon;
                   const isActive = activeSection === item.href.substring(1);
@@ -175,10 +175,10 @@ export default function Header() {
                     <motion.button
                       key={item.name}
                       onClick={() => scrollToSection(item.href)}
-                      className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 ${
+                      className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 ${
                         isActive
                           ? "bg-blue-500/20 text-blue-400"
-                          : "text-white/70 hover:text-white hover:bg-white/10"
+                          : "text-gray-300 hover:text-white hover:bg-gray-800/50"
                       }`}
                       whileHover={{ x: 5 }}
                       transition={{ duration: 0.2 }}
@@ -189,12 +189,17 @@ export default function Header() {
                   );
                 })}
 
-                <div className="pt-4 border-t border-white/10 space-y-3">
+                <div className="pt-4 border-t border-gray-800/50 space-y-3">
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => window.open(personalInfo.resume, "_blank")}
-                    className="w-full border-white/20 text-white hover:bg-white/10"
+                    onClick={() =>
+                      window.open(
+                        personalInfo?.resume?.url || "/resume.pdf",
+                        "_blank",
+                      )
+                    }
+                    className="w-full border-gray-600 text-gray-300 hover:bg-gray-800 rounded-xl"
                   >
                     <Download className="w-4 h-4 mr-2" />
                     Download Resume
@@ -203,7 +208,7 @@ export default function Header() {
                   <Button
                     size="sm"
                     onClick={() => scrollToSection("#contact")}
-                    className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
+                    className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 rounded-xl"
                   >
                     <Mail className="w-4 h-4 mr-2" />
                     Get In Touch
@@ -215,7 +220,7 @@ export default function Header() {
                     href={personalInfo?.social?.github || "#"}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-white/60 hover:text-white transition-colors"
+                    className="text-gray-400 hover:text-white transition-colors"
                   >
                     <Github className="w-5 h-5" />
                   </a>
@@ -223,13 +228,13 @@ export default function Header() {
                     href={personalInfo?.social?.linkedin || "#"}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-white/60 hover:text-white transition-colors"
+                    className="text-gray-400 hover:text-white transition-colors"
                   >
                     <Linkedin className="w-5 h-5" />
                   </a>
                   <a
                     href={`mailto:${personalInfo?.email || "contact@example.com"}`}
-                    className="text-white/60 hover:text-white transition-colors"
+                    className="text-gray-400 hover:text-white transition-colors"
                   >
                     <Mail className="w-5 h-5" />
                   </a>

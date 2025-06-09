@@ -18,17 +18,13 @@ export default function Index() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-gray-900">
-      {/* Simple background pattern */}
+    <div className="min-h-screen bg-gray-950">
+      {/* Sophisticated background effects */}
       <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.1),transparent)]" />
-        <div
-          className="absolute inset-0 opacity-20"
-          style={{
-            backgroundImage: `radial-gradient(circle at 2px 2px, rgba(255,255,255,0.1) 1px, transparent 0)`,
-            backgroundSize: "40px 40px",
-          }}
-        />
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-purple-500/5 to-emerald-500/5" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.1),transparent_70%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(168,85,247,0.08),transparent_50%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_80%,rgba(16,185,129,0.08),transparent_50%)]" />
       </div>
 
       <Header />
