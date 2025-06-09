@@ -12,15 +12,16 @@ import {
   Code,
   Award,
   MessageCircle,
+  Home,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { personalInfo } from "@/lib/data";
 
 const navigation = [
-  { name: "About", href: "#about", icon: User },
-  { name: "Projects", href: "#projects", icon: Code },
-  { name: "Experience", href: "#experience", icon: Briefcase },
+  { name: "Home", href: "#home", icon: Home },
   { name: "Skills", href: "#skills", icon: Award },
+  { name: "Experience", href: "#experience", icon: Briefcase },
+  { name: "Projects", href: "#projects", icon: Code },
   { name: "Contact", href: "#contact", icon: MessageCircle },
 ];
 
@@ -63,165 +64,94 @@ export default function Header() {
 
   return (
     <motion.header
-      className={`fixed top-0 w-full z-50 transition-all duration-500 ${
-        isScrolled ? "glass-nav shadow-glass" : "bg-transparent"
+      className={`fixed top-0 w-full z-50 transition-all duration-300 ${
+        isScrolled
+          ? "bg-gray-900/95 backdrop-blur-md shadow-lg border-b border-white/10"
+          : "bg-transparent"
       }`}
-      initial={{ y: -100, opacity: 0 }}
+      initial={{ y: 0, opacity: 1 }}
       animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.8, ease: "easeOut" }}
     >
-      <nav className="container-custom">
-        <div className="flex items-center justify-between h-16 lg:h-20">
+      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <motion.button
             onClick={() => scrollToSection("#home")}
             className="flex items-center space-x-3 group"
             whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
             transition={{ duration: 0.2 }}
           >
-            <div className="relative">
-              <div className="w-10 h-10 glass-card flex items-center justify-center group-hover:shadow-glow-blue transition-all duration-300">
-                <span className="text-electric-blue font-bold text-lg font-display">
-                  AJ
-                </span>
-              </div>
-              {/* Online status indicator */}
-              <div className="absolute -bottom-1 -right-1 status-online" />
+            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+              <span className="text-white font-bold text-lg">AJ</span>
             </div>
-            <div className="hidden sm:block">
-              <h1 className="text-white font-display font-semibold text-xl group-hover:text-electric-blue transition-colors duration-300">
-                Alex Johnson
-              </h1>
-              <p className="text-light-slate text-sm">AI & Web Developer</p>
-            </div>
+            <span className="text-white font-semibold text-xl hidden sm:block group-hover:text-blue-400 transition-colors">
+              Alex Johnson
+            </span>
           </motion.button>
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center space-x-8">
-            {navigation.map((item, index) => {
+            {navigation.map((item) => {
               const Icon = item.icon;
               const isActive = activeSection === item.href.substring(1);
-
               return (
                 <motion.button
                   key={item.name}
                   onClick={() => scrollToSection(item.href)}
-                  className={`relative px-4 py-2 rounded-xl font-medium text-sm transition-all duration-300 ${
+                  className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-all duration-200 ${
                     isActive
-                      ? "text-electric-blue"
-                      : "text-white/80 hover:text-white"
+                      ? "bg-blue-500/20 text-blue-400"
+                      : "text-white/70 hover:text-white hover:bg-white/10"
                   }`}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  initial={{ opacity: 0, y: -20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  whileHover={{ y: -2 }}
+                  transition={{ duration: 0.2 }}
                 >
-                  <div className="flex items-center space-x-2">
-                    <Icon className="w-4 h-4" />
-                    <span>{item.name}</span>
-                  </div>
-
-                  {/* Active indicator */}
+                  <Icon className="w-4 h-4" />
+                  <span className="font-medium">{item.name}</span>
                   {isActive && (
                     <motion.div
-                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-electric-blue rounded-full"
+                      className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-400"
                       layoutId="activeTab"
-                      transition={{ duration: 0.3 }}
                     />
                   )}
-
-                  {/* Hover background */}
-                  <motion.div
-                    className="absolute inset-0 bg-white/5 rounded-xl -z-10"
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    whileHover={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.2 }}
-                  />
                 </motion.button>
               );
             })}
           </div>
 
-          {/* Desktop Actions */}
+          {/* Desktop CTA Buttons */}
           <div className="hidden lg:flex items-center space-x-4">
-            {/* Social Links */}
-            <div className="flex items-center space-x-2">
-              {[
-                {
-                  icon: Github,
-                  href: personalInfo.social.github,
-                  label: "GitHub",
-                },
-                {
-                  icon: Linkedin,
-                  href: personalInfo.social.linkedin,
-                  label: "LinkedIn",
-                },
-                {
-                  icon: Mail,
-                  href: `mailto:${personalInfo.email}`,
-                  label: "Email",
-                },
-              ].map(({ icon: Icon, href, label }) => (
-                <motion.a
-                  key={label}
-                  href={href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-10 h-10 glass-card flex items-center justify-center text-white/70 hover:text-electric-blue transition-all duration-300 micro-scale"
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                >
-                  <Icon className="w-4 h-4" />
-                </motion.a>
-              ))}
-            </div>
-
-            {/* Resume Button */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5, delay: 0.6 }}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => window.open(personalInfo.resume, "_blank")}
+              className="border-white/20 text-white hover:bg-white/10"
             >
-              <Button className="btn-primary shimmer-effect">
-                <Download className="w-4 h-4 mr-2" />
-                Resume
-              </Button>
-            </motion.div>
+              <Download className="w-4 h-4 mr-2" />
+              Resume
+            </Button>
+
+            <Button
+              size="sm"
+              onClick={() => scrollToSection("#contact")}
+              className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
+            >
+              <Mail className="w-4 h-4 mr-2" />
+              Hire Me
+            </Button>
           </div>
 
           {/* Mobile Menu Button */}
           <motion.button
-            className="lg:hidden glass-button p-2"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            whileHover={{ scale: 1.05 }}
+            className="lg:hidden text-white/70 hover:text-white transition-colors"
             whileTap={{ scale: 0.95 }}
           >
-            <AnimatePresence mode="wait">
-              {isMobileMenuOpen ? (
-                <motion.div
-                  key="close"
-                  initial={{ rotate: -90, opacity: 0 }}
-                  animate={{ rotate: 0, opacity: 1 }}
-                  exit={{ rotate: 90, opacity: 0 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <X className="w-5 h-5 text-white" />
-                </motion.div>
-              ) : (
-                <motion.div
-                  key="menu"
-                  initial={{ rotate: 90, opacity: 0 }}
-                  animate={{ rotate: 0, opacity: 1 }}
-                  exit={{ rotate: -90, opacity: 0 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <Menu className="w-5 h-5 text-white" />
-                </motion.div>
-              )}
-            </AnimatePresence>
+            {isMobileMenuOpen ? (
+              <X className="w-6 h-6" />
+            ) : (
+              <Menu className="w-6 h-6" />
+            )}
           </motion.button>
         </div>
 
@@ -232,79 +162,76 @@ export default function Header() {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.3, ease: "easeInOut" }}
-              className="lg:hidden border-t border-white/10 mt-4 overflow-hidden"
+              transition={{ duration: 0.3 }}
+              className="lg:hidden bg-gray-900/95 backdrop-blur-md border-t border-white/10 mt-4 rounded-lg"
             >
-              <div className="glass-card my-4 p-6 space-y-4">
-                {/* Mobile Navigation Links */}
-                {navigation.map((item, index) => {
+              <div className="px-4 py-6 space-y-4">
+                {navigation.map((item) => {
                   const Icon = item.icon;
                   const isActive = activeSection === item.href.substring(1);
-
                   return (
                     <motion.button
                       key={item.name}
                       onClick={() => scrollToSection(item.href)}
-                      className={`w-full flex items-center space-x-3 p-3 rounded-xl text-left transition-all duration-300 ${
+                      className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 ${
                         isActive
-                          ? "bg-electric-blue/10 text-electric-blue"
-                          : "text-white/80 hover:text-white hover:bg-white/5"
+                          ? "bg-blue-500/20 text-blue-400"
+                          : "text-white/70 hover:text-white hover:bg-white/10"
                       }`}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.3, delay: index * 0.05 }}
                       whileHover={{ x: 5 }}
-                      whileTap={{ scale: 0.98 }}
+                      transition={{ duration: 0.2 }}
                     >
                       <Icon className="w-5 h-5" />
                       <span className="font-medium">{item.name}</span>
-                      {isActive && (
-                        <motion.div
-                          className="ml-auto w-2 h-2 bg-electric-blue rounded-full"
-                          initial={{ scale: 0 }}
-                          animate={{ scale: 1 }}
-                          transition={{ duration: 0.2 }}
-                        />
-                      )}
                     </motion.button>
                   );
                 })}
 
-                {/* Mobile Social Links */}
-                <div className="flex items-center justify-center space-x-4 pt-4 border-t border-white/10">
-                  {[
-                    { icon: Github, href: personalInfo.social.github },
-                    { icon: Linkedin, href: personalInfo.social.linkedin },
-                    { icon: Mail, href: `mailto:${personalInfo.email}` },
-                  ].map(({ icon: Icon, href }, index) => (
-                    <motion.a
-                      key={href}
-                      href={href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="w-10 h-10 glass-card flex items-center justify-center text-white/70 hover:text-electric-blue transition-colors duration-300"
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ duration: 0.3, delay: 0.3 + index * 0.1 }}
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.9 }}
-                    >
-                      <Icon className="w-4 h-4" />
-                    </motion.a>
-                  ))}
-                </div>
-
-                {/* Mobile Resume Button */}
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3, delay: 0.6 }}
-                >
-                  <Button className="w-full btn-primary">
+                <div className="pt-4 border-t border-white/10 space-y-3">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => window.open(personalInfo.resume, "_blank")}
+                    className="w-full border-white/20 text-white hover:bg-white/10"
+                  >
                     <Download className="w-4 h-4 mr-2" />
                     Download Resume
                   </Button>
-                </motion.div>
+
+                  <Button
+                    size="sm"
+                    onClick={() => scrollToSection("#contact")}
+                    className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
+                  >
+                    <Mail className="w-4 h-4 mr-2" />
+                    Get In Touch
+                  </Button>
+                </div>
+
+                <div className="flex items-center justify-center space-x-6 pt-4">
+                  <a
+                    href={personalInfo.social.github}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-white/60 hover:text-white transition-colors"
+                  >
+                    <Github className="w-5 h-5" />
+                  </a>
+                  <a
+                    href={personalInfo.social.linkedin}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-white/60 hover:text-white transition-colors"
+                  >
+                    <Linkedin className="w-5 h-5" />
+                  </a>
+                  <a
+                    href={`mailto:${personalInfo.email}`}
+                    className="text-white/60 hover:text-white transition-colors"
+                  >
+                    <Mail className="w-5 h-5" />
+                  </a>
+                </div>
               </div>
             </motion.div>
           )}
