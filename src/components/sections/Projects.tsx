@@ -27,6 +27,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { projects } from "@/lib/data";
+import ErrorBoundary from "@/components/ErrorBoundary";
 
 // 3D Project Showcase Component
 function Project3DModel({ title, technologies, color, isActive }) {
@@ -171,7 +172,9 @@ const ProjectCard = ({ project, index, isHovered, onHover }) => {
         {/* 3D Project Preview */}
         <div className="relative aspect-video bg-gradient-to-br from-slate-800 to-slate-900 overflow-hidden">
           <div className="absolute inset-0">
-            <ProjectCanvas project={project} isActive={is3DActive} />
+            <ErrorBoundary>
+              <ProjectCanvas project={project} isActive={is3DActive} />
+            </ErrorBoundary>
           </div>
 
           {/* Overlay gradient */}
