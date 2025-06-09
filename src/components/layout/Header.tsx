@@ -121,7 +121,12 @@ export default function Header() {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => window.open(personalInfo.resume, "_blank")}
+              onClick={() =>
+                window.open(
+                  personalInfo?.resume?.url || "/resume.pdf",
+                  "_blank",
+                )
+              }
               className="border-white/20 text-white hover:bg-white/10"
             >
               <Download className="w-4 h-4 mr-2" />
@@ -207,7 +212,7 @@ export default function Header() {
 
                 <div className="flex items-center justify-center space-x-6 pt-4">
                   <a
-                    href={personalInfo.social.github}
+                    href={personalInfo?.social?.github || "#"}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-white/60 hover:text-white transition-colors"
@@ -215,7 +220,7 @@ export default function Header() {
                     <Github className="w-5 h-5" />
                   </a>
                   <a
-                    href={personalInfo.social.linkedin}
+                    href={personalInfo?.social?.linkedin || "#"}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-white/60 hover:text-white transition-colors"
@@ -223,7 +228,7 @@ export default function Header() {
                     <Linkedin className="w-5 h-5" />
                   </a>
                   <a
-                    href={`mailto:${personalInfo.email}`}
+                    href={`mailto:${personalInfo?.email || "contact@example.com"}`}
                     className="text-white/60 hover:text-white transition-colors"
                   >
                     <Mail className="w-5 h-5" />
