@@ -2,13 +2,13 @@ import { motion } from "framer-motion";
 import {
   Award,
   Trophy,
-  Certificate,
   Star,
   Calendar,
   ExternalLink,
   Medal,
   Target,
   TrendingUp,
+  FileCheck,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -91,7 +91,7 @@ const achievements = [
 const getAchievementIcon = (type: string) => {
   switch (type) {
     case "certification":
-      return Certificate;
+      return FileCheck;
     case "award":
       return Trophy;
     case "publication":
@@ -222,7 +222,7 @@ export default function Achievements() {
     {
       label: "Certifications",
       value: achievements.filter((a) => a.type === "certification").length,
-      icon: Certificate,
+      icon: FileCheck,
       color: "from-blue-500 to-cyan-400",
     },
     {
