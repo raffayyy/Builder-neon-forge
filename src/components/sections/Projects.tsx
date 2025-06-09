@@ -21,41 +21,92 @@ const ProjectCard = ({ project, index, isSelected, onSelect }) => {
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay: index * 0.1 }}
-      whileHover={{ y: -8 }}
+      whileHover={{ y: -8, scale: 1.02 }}
       className="group h-full"
     >
-      <Card className="bg-gray-900/50 border-gray-700/50 hover:border-gray-600 transition-all duration-300 backdrop-blur-sm h-full flex flex-col">
-        <CardHeader className="space-y-4">
+      <Card className="relative bg-gray-900/50 border-gray-700/50 hover:border-gray-600 transition-all duration-300 backdrop-blur-sm h-full flex flex-col overflow-hidden">
+        {/* Hover effect overlay */}
+        <motion.div
+          className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-purple-500/5 to-emerald-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+          initial={false}
+        />
+        
+        {/* Glow effect */}
+        <motion.div
+          className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 blur-xl transition-opacity duration-500"
+          initial={false}
+        />
+
+        <CardHeader className="space-y-4 relative z-10">
           <div className="flex items-start justify-between">
             <div className="space-y-2 flex-1">
               <div className="flex items-center gap-3">
-                <div className="w-3 h-3 bg-emerald-400 rounded-full animate-pulse" />
-                <Badge
-                  variant="outline"
-                  className={`${
-                    project.status === "Completed"
-                      ? "border-emerald-500/50 text-emerald-400"
-                      : "border-yellow-500/50 text-yellow-400"
-                  } bg-transparent`}
+                <motion.div 
+                  className="w-3 h-3 bg-emerald-400 rounded-full"
+                  animate={{ 
+                    scale: [1, 1.3, 1],
+                    opacity: [0.5, 1, 0.5] 
+                  }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                />
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                 >
-                  {project.status}
-                </Badge>
+                  <Badge
+                    variant="outline"
+                    className={`${
+                      project.status === "Completed"
+                        ? "border-emerald-500/50 text-emerald-400"
+                        : "border-yellow-500/50 text-yellow-400"
+                    } bg-transparent`}
+                  >
+                    {project.status}
+                  </Badge>
+                </motion.div>
               </div>
-              <CardTitle className="text-xl text-white group-hover:text-blue-400 transition-colors">
-                {project.title}
-              </CardTitle>
+              <motion.div
+                whileHover={{ x: 5 }}
+                transition={{ duration: 0.2 }}
+              >
+                <CardTitle className="text-xl text-white group-hover:text-blue-400 transition-colors">
+                  {project.title}
+                </CardTitle>
+              </motion.div>
             </div>
             {project.featured && (
-              <div className="flex items-center gap-1 bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border border-yellow-500/30 rounded-full px-3 py-1">
-                <Star className="w-3 h-3 text-yellow-400 fill-current" />
+              <motion.div 
+                className="flex items-center gap-1 bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border border-yellow-500/30 rounded-full px-3 py-1"
+                whileHover={{ scale: 1.1, rotate: 5 }}
+                animate={{ 
+                  boxShadow: [
+                    "0 0 0px rgba(245, 158, 11, 0)",
+                    "0 0 20px rgba(245, 158, 11, 0.3)",
+                    "0 0 0px rgba(245, 158, 11, 0)"
+                  ]
+                }}
+                transition={{ duration: 3, repeat: Infinity }}
+              >
+                <motion.div
+                  animate={{ rotate: [0, 360] }}
+                  transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+                >
+                  <Star className="w-3 h-3 text-yellow-400 fill-current" />
+                </motion.div>
                 <span className="text-yellow-400 text-xs font-medium">
                   Featured
                 </span>
-              </div>
+              </motion.div>
             )}
           </div>
 
-          <p className="text-gray-400 leading-relaxed">{project.description}</p>
+          <motion.p 
+            className="text-gray-400 leading-relaxed"
+            whileHover={{ color: "#d1d5db" }}
+            transition={{ duration: 0.2 }}
+          >
+            {project.description}
+          </motion.p>
         </CardHeader>
 
         <CardContent className="space-y-6 flex-1 flex flex-col">
@@ -126,39 +177,75 @@ const ProjectCard = ({ project, index, isSelected, onSelect }) => {
           )}
 
           {/* Action buttons */}
-          <div className="flex gap-3 mt-auto pt-4">
+          <div className="flex gap-3 mt-auto pt-4 relative z-10">
             {project.demo && (
-              <Button
-                asChild
-                size="sm"
-                className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white rounded-full flex-1"
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="flex-1"
               >
-                <a
-                  href={project.demo}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <Button
+                  asChild
+                  size="sm"
+                  className="relative bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white rounded-full w-full overflow-hidden group"
+                  onClick={() => (window as any).portfolioTracker?.trackProjectView()}
                 >
-                  <Eye className="w-4 h-4 mr-2" />
-                  Live Demo
-                </a>
-              </Button>
+                  <a
+                    href={project.demo}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <motion.div
+                      className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent"
+                      initial={{ x: "-100%" }}
+                      whileHover={{ x: "100%" }}
+                      transition={{ duration: 0.6 }}
+                    />
+                    <motion.div
+                      whileHover={{ rotate: 360 }}
+                      transition={{ duration: 0.5 }}
+                    >
+                      <Eye className="w-4 h-4 mr-2 relative z-10" />
+                    </motion.div>
+                    <span className="relative z-10">Live Demo</span>
+                  </a>
+                </Button>
+              </motion.div>
             )}
             {project.github && (
-              <Button
-                asChild
-                variant="outline"
-                size="sm"
-                className="border-gray-600 text-gray-300 hover:bg-gray-800 rounded-full flex-1"
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="flex-1"
               >
-                <a
-                  href={project.github}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <Button
+                  asChild
+                  variant="outline"
+                  size="sm"
+                  className="relative border-gray-600 text-gray-300 hover:bg-gray-800 rounded-full w-full group overflow-hidden"
+                  onClick={() => (window as any).portfolioTracker?.trackSocialClick()}
                 >
-                  <Github className="w-4 h-4 mr-2" />
-                  Code
-                </a>
-              </Button>
+                  <a
+                    href={project.github}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <motion.div
+                      className="absolute inset-0 bg-gradient-to-r from-gray-700/20 to-transparent"
+                      initial={{ x: "-100%" }}
+                      whileHover={{ x: "100%" }}
+                      transition={{ duration: 0.6 }}
+                    />
+                    <motion.div
+                      whileHover={{ scale: 1.2, rotate: 360 }}
+                      transition={{ duration: 0.5 }}
+                    >
+                      <Github className="w-4 h-4 mr-2 relative z-10" />
+                    </motion.div>
+                    <span className="relative z-10">Code</span>
+                  </a>
+                </Button>
+              </motion.div>
             )}
           </div>
         </CardContent>
@@ -221,8 +308,8 @@ export default function Projects() {
           </h2>
 
           <p className="text-xl text-gray-400 max-w-3xl mx-auto mb-12">
-            A curated selection of my best work, showcasing innovative solutions across
-            web development, AI/ML, and full-stack applications
+            A curated selection of my best work, showcasing innovative solutions
+            across web development, AI/ML, and full-stack applications
           </p>
         </motion.div>
 
@@ -273,7 +360,7 @@ export default function Projects() {
                 label: "Client Satisfaction",
                 value: "100%",
                 icon: TrendingUp,
-                color: "from-emerald-500 to-teal-400",
+                color: "from-emerald-500 to-green-400",
               },
               {
                 label: "Years Experience",
@@ -318,7 +405,7 @@ export default function Projects() {
             size="lg"
             variant="outline"
             className="border-gray-600 text-gray-300 hover:bg-gray-800 hover:border-purple-500/50 hover:text-purple-400 rounded-full px-8 py-3 text-lg font-semibold transition-all duration-300"
-            onClick={() => window.location.href = '/projects'}
+            onClick={() => (window.location.href = "/projects")}
           >
             <Eye className="w-5 h-5 mr-2" />
             View All Projects

@@ -3,15 +3,17 @@ import { motion } from "framer-motion";
 import { useNavigate, useLocation } from "react-router-dom";
 
 const navigation = [
-  { name: "Home", href: "#home", type: "hash" },
-  { name: "Projects", href: "#projects", type: "hash" },
-  { name: "Blog", href: "/blog", type: "route" },
-  { name: "Resume", href: "/resume", type: "route" },
+  { name: "Home", href: "#home", type: "hash" as const },
+  { name: "Projects", href: "/projects", type: "route" as const },
+  { name: "Blog", href: "/blog", type: "route" as const },
+  { name: "Resume", href: "/resume", type: "route" as const },
+  { name: "Admin", href: "/admin", type: "route" as const, admin: true },
 ];
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
+  const [altKeyPressed, setAltKeyPressed] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -23,7 +25,7 @@ export default function Header() {
       // Only update active section for hash navigation when on home page
       if (location.pathname === "/") {
         const sections = navigation
-          .filter(item => item.type === "hash")
+          .filter((item) => item.type === "hash")
           .map((item) => item.href.substring(1));
         const currentSection = sections.find((section) => {
           const element = document.getElementById(section);
@@ -40,11 +42,26 @@ export default function Header() {
       }
     };
 
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.altKey) setAltKeyPressed(true);
+    };
+
+    const handleKeyUp = (e: KeyboardEvent) => {
+      if (!e.altKey) setAltKeyPressed(false);
+    };
+
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
+    
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
+    };
   }, [location.pathname]);
 
-  const handleNavigation = (item: typeof navigation[0]) => {
+  const handleNavigation = (item: (typeof navigation)[0]) => {
     if (item.type === "hash") {
       // If we're not on the home page, navigate to home first
       if (location.pathname !== "/") {
@@ -106,10 +123,20 @@ export default function Header() {
             <div
               className={`flex items-center gap-1 ${isScrolled ? "gap-1" : "gap-8"}`}
             >
-              {navigation.map((item) => {
-                const isActive = item.type === "hash" 
-                  ? activeSection === item.href.substring(1) && location.pathname === "/"
-                  : location.pathname === item.href;
+              {navigation
+                .filter((item) => {
+                  // Hide admin link in production unless user is holding Alt key
+                  if (item.admin) {
+                    return process.env.NODE_ENV === 'development' || altKeyPressed;
+                  }
+                  return true;
+                })
+                .map((item) => {
+                const isActive =
+                  item.type === "hash"
+                    ? activeSection === item.href.substring(1) &&
+                      location.pathname === "/"
+                    : location.pathname === item.href;
 
                 return (
                   <motion.button

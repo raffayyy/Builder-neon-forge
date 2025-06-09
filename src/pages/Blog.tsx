@@ -19,11 +19,11 @@ export default function BlogPage() {
       </div>
 
       <Header />
-      
+
       <main className="pt-20 lg:pt-24 relative z-10">
         <Blog />
       </main>
-      
+
       <Footer />
     </div>
   );

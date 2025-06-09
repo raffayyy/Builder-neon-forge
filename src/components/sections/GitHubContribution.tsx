@@ -269,7 +269,7 @@ export default function GitHubContribution() {
               label: "Followers",
               value: user.followers,
               icon: Users,
-              color: "from-emerald-500 to-teal-400",
+              color: "from-emerald-500 to-green-400",
             },
             {
               label: "Languages",

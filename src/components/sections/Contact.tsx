@@ -99,7 +99,7 @@ export default function Contact() {
       label: "Phone",
       value: personalInfo?.phone || "+1 (555) 123-4567",
       href: `tel:${personalInfo?.phone || "+15551234567"}`,
-      color: "from-emerald-500 to-teal-400",
+      color: "from-emerald-500 to-green-400",
     },
     {
       icon: MapPin,
@@ -272,21 +272,55 @@ export default function Contact() {
                     />
                   </div>
 
-                  <Button
-                    type="submit"
-                    size="lg"
-                    disabled={formStatus === "sending"}
-                    className={`w-full rounded-full font-semibold transition-all duration-300 ${
-                      formStatus === "delivered" || formStatus === "read"
-                        ? "bg-emerald-500 hover:bg-emerald-600"
-                        : "bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
-                    }`}
+                  <motion.div
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
                   >
-                    <span className="flex items-center gap-2">
-                      {getStatusIcon()}
-                      {getStatusText()}
-                    </span>
-                  </Button>
+                    <Button
+                      type="submit"
+                      size="lg"
+                      disabled={formStatus === "sending"}
+                      className={`relative w-full rounded-full font-semibold transition-all duration-300 overflow-hidden group ${
+                        formStatus === "delivered" || formStatus === "read"
+                          ? "bg-emerald-500 hover:bg-emerald-600"
+                          : "bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
+                      }`}
+                      onClick={() => (window as any).portfolioTracker?.trackContact()}
+                    >
+                      {/* Animated background effect */}
+                      <motion.div
+                        className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent"
+                        initial={{ x: "-100%" }}
+                        whileHover={{ x: "100%" }}
+                        transition={{ duration: 0.6 }}
+                      />
+                      
+                      {/* Ripple effect on click */}
+                      <motion.div
+                        className="absolute inset-0 bg-white/20 rounded-full"
+                        initial={{ scale: 0, opacity: 0 }}
+                        whileTap={{ scale: 2, opacity: [0, 0.5, 0] }}
+                        transition={{ duration: 0.4 }}
+                      />
+                      
+                      <span className="flex items-center gap-2 relative z-10">
+                        <motion.div
+                          animate={formStatus === "sending" ? { rotate: 360 } : {}}
+                          transition={{ duration: 1, repeat: formStatus === "sending" ? Infinity : 0 }}
+                        >
+                          {getStatusIcon()}
+                        </motion.div>
+                        <motion.span
+                          key={formStatus}
+                          initial={{ y: 20, opacity: 0 }}
+                          animate={{ y: 0, opacity: 1 }}
+                          transition={{ duration: 0.3 }}
+                        >
+                          {getStatusText()}
+                        </motion.span>
+                      </span>
+                    </Button>
+                  </motion.div>
 
                   {/* Status message */}
                   {formStatus !== "idle" && (

@@ -744,7 +744,7 @@ export const ThemeProvider = ({ children }) => {
     readTime: 10,
     tags: ["WebSockets", "React", "Real-time", "JavaScript"],
     featured: false,
-  }
+  },
 ];
 
 export const experience = [

@@ -36,14 +36,18 @@ export default function About() {
                 className="space-y-8"
               >
                 <div>
-                  <h1 className="heading-2 gradient-text-coral mb-6">About Me</h1>
+                  <h1 className="heading-2 gradient-text-coral mb-6">
+                    About Me
+                  </h1>
                   <p className="body-regular text-white/70 leading-relaxed">
                     {personalInfo.bio}
                   </p>
                 </div>
 
                 <div className="space-y-6">
-                  <h2 className="heading-3 gradient-text-emerald">My Journey</h2>
+                  <h2 className="heading-3 gradient-text-emerald">
+                    My Journey
+                  </h2>
                   <div className="space-y-4 text-white/70">
                     <p>
                       I graduated with a First Class Honours degree in Computer
@@ -126,7 +130,9 @@ export default function About() {
               viewport={{ once: true }}
               className="text-center mb-16"
             >
-              <h2 className="heading-2 gradient-text-coral mb-4">Core Competencies</h2>
+              <h2 className="heading-2 gradient-text-coral mb-4">
+                Core Competencies
+              </h2>
               <p className="body-regular text-white/70 max-w-2xl mx-auto">
                 A breakdown of my key skills and areas of expertise
               </p>

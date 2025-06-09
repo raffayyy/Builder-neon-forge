@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio Performance Test</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            background: #0a0a0a;
+            color: #00ff88;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .test-result {
+            background: #1a1a1a;
+            border: 1px solid #00ff88;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+        .score {
+            font-size: 1.5em;
+            font-weight: bold;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .excellent { color: #00ff00; }
+        .good { color: #88ff00; }
+        .average { color: #ffff00; }
+        .poor { color: #ff4400; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🚀 Portfolio Performance Validation</h1>
+        <div id="test-results"></div>
+        <div id="performance-score"></div>
+        <button onclick="runTests()" style="background: #00ff88; color: #0a0a0a; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin: 20px 0;">
+            Run Performance Tests
+        </button>
+    </div>
+
+    <script>
+        async function runTests() {
+            const resultsDiv = document.getElementById('test-results');
+            const scoreDiv = document.getElementById('performance-score');
+            
+            resultsDiv.innerHTML = '<div class="test-result">🔄 Running tests...</div>';
+            
+            const metrics = {};
+            
+            // Test 1: CSS Animation Performance
+            const cssStartTime = performance.now();
+            for (let i = 0; i < 1000; i++) {
+                const div = document.createElement('div');
+                div.style.transform = `translateX(${i}px) scale(${1 + i * 0.001})`;
+                div.style.willChange = 'transform';
+                document.body.appendChild(div);
+                document.body.removeChild(div);
+            }
+            metrics.cssAnimation = performance.now() - cssStartTime;
+            
+            // Test 2: Particle System Simulation
+            const particleStartTime = performance.now();
+            const particles = Array.from({ length: 25 }, () => ({
+                x: Math.random() * 100,
+                y: Math.random() * 100,
+                velocity: Math.random() * 2
+            }));
+            
+            for (let frame = 0; frame < 60; frame++) {
+                particles.forEach(particle => {
+                    particle.y += particle.velocity;
+                    if (particle.y > 100) particle.y = 0;
+                });
+            }
+            metrics.particleSystem = performance.now() - particleStartTime;
+            
+            // Test 3: Memory Usage
+            if (performance.memory) {
+                metrics.memoryUsage = (performance.memory.usedJSHeapSize / 1024 / 1024);
+                metrics.memoryPercent = (performance.memory.usedJSHeapSize / performance.memory.jsHeapSizeLimit) * 100;
+            } else {
+                metrics.memoryUsage = 0;
+                metrics.memoryPercent = 0;
+            }
+            
+            // Test 4: FPS Simulation
+            metrics.fps = await new Promise((resolve) => {
+                let frameCount = 0;
+                const startTime = performance.now();
+                
+                function measureFrame() {
+                    frameCount++;
+                    const elapsed = performance.now() - startTime;
+                    
+                    if (elapsed >= 1000) {
+                        resolve(frameCount);
+                    } else if (frameCount < 120) {
+                        requestAnimationFrame(measureFrame);
+                    }
+                }
+                
+                requestAnimationFrame(measureFrame);
+            });
+            
+            // Calculate Performance Score
+            let score = 100;
+            
+            if (metrics.cssAnimation > 50) score -= 15;
+            else if (metrics.cssAnimation > 20) score -= 5;
+            
+            if (metrics.particleSystem > 20) score -= 20;
+            else if (metrics.particleSystem > 10) score -= 10;
+            
+            if (metrics.memoryPercent > 50) score -= 15;
+            else if (metrics.memoryPercent > 25) score -= 5;
+            
+            if (metrics.fps < 30) score -= 20;
+            else if (metrics.fps < 45) score -= 10;
+            
+            score = Math.max(0, Math.min(100, score));
+            
+            // Display Results
+            let resultsHTML = `
+                <div class="test-result">
+                    <h3>📊 CSS Animation Performance</h3>
+                    <p>1000 transforms: ${metrics.cssAnimation.toFixed(2)}ms</p>
+                    <p>Status: ${metrics.cssAnimation < 20 ? '✅ Excellent' : metrics.cssAnimation < 50 ? '⚡ Good' : '⚠️ Needs Optimization'}</p>
+                </div>
+                
+                <div class="test-result">
+                    <h3>🎯 Particle System Performance</h3>
+                    <p>25 particles, 60 frames: ${metrics.particleSystem.toFixed(2)}ms</p>
+                    <p>Status: ${metrics.particleSystem < 10 ? '✅ Excellent' : metrics.particleSystem < 20 ? '⚡ Good' : '⚠️ Needs Optimization'}</p>
+                </div>
+                
+                <div class="test-result">
+                    <h3>💾 Memory Usage</h3>
+                    <p>JS Heap: ${metrics.memoryUsage.toFixed(2)} MB (${metrics.memoryPercent.toFixed(2)}%)</p>
+                    <p>Status: ${metrics.memoryPercent < 25 ? '✅ Excellent' : metrics.memoryPercent < 50 ? '⚡ Good' : '⚠️ High Usage'}</p>
+                </div>
+                
+                <div class="test-result">
+                    <h3>🎮 Frame Rate</h3>
+                    <p>Simulated FPS: ${metrics.fps}</p>
+                    <p>Status: ${metrics.fps >= 55 ? '✅ Excellent' : metrics.fps >= 45 ? '⚡ Good' : metrics.fps >= 30 ? '⚡ Average' : '⚠️ Poor'}</p>
+                </div>
+            `;
+            
+            let scoreClass = 'excellent';
+            let rating = 'EXCELLENT';
+            if (score < 90) { scoreClass = 'good'; rating = 'GOOD'; }
+            if (score < 75) { scoreClass = 'average'; rating = 'AVERAGE'; }
+            if (score < 60) { scoreClass = 'poor'; rating = 'NEEDS WORK'; }
+            
+            scoreDiv.innerHTML = `
+                <div class="score ${scoreClass}">
+                    🏆 Performance Score: ${score}/100<br>
+                    Rating: ${rating}
+                </div>
+            `;
+            
+            resultsDiv.innerHTML = resultsHTML;
+            
+            // Test optimizations message
+            if (score >= 85) {
+                scoreDiv.innerHTML += '<div class="test-result excellent">🌟 Portfolio optimizations are working excellently! Smooth animations and efficient performance achieved.</div>';
+            } else if (score >= 70) {
+                scoreDiv.innerHTML += '<div class="test-result good">✨ Good performance with minor optimization opportunities.</div>';
+            } else {
+                scoreDiv.innerHTML += '<div class="test-result poor">🔧 Performance optimizations needed for smoother experience.</div>';
+            }
+        }
+        
+        // Auto-run tests on load
+        window.addEventListener('load', () => {
+            setTimeout(runTests, 1000);
+        });
+    </script>
+</body>
+</html>

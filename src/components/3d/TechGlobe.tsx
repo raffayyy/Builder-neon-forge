@@ -4,6 +4,7 @@ import { Text, OrbitControls, Sphere, Line, Points } from "@react-three/drei";
 import * as THREE from "three";
 import { motion } from "framer-motion";
 import { skills } from "@/lib/data";
+import WebGLErrorBoundary from "@/components/WebGLErrorBoundary";
 
 interface TechIconProps {
   position: [number, number, number];
@@ -385,14 +386,53 @@ export default function TechGlobe({ className = "" }: TechGlobeProps) {
         </motion.div>
       )}
 
-      <Canvas
-        camera={{ position: [0, 0, 10], fov: 50 }}
-        gl={{ antialias: true, alpha: true }}
-        onCreated={({ gl }) => {
-          gl.toneMapping = THREE.ACESFilmicToneMapping;
-          gl.toneMappingExposure = 1.2;
-        }}
+      <WebGLErrorBoundary
+        fallback={
+          <div className="w-full h-full flex items-center justify-center bg-gray-900/50 rounded-lg border border-gray-700/50">
+            <div className="text-center p-8">
+              <div className="w-16 h-16 mx-auto mb-4 bg-blue-500/20 rounded-full flex items-center justify-center">
+                <span className="text-2xl">🌐</span>
+              </div>
+              <h3 className="text-white font-semibold mb-2">3D Globe Unavailable</h3>
+              <p className="text-gray-400 text-sm">
+                Technical skills visualization is temporarily unavailable.
+              </p>
+            </div>
+          </div>
+        }
       >
+        <Canvas
+          camera={{ position: [0, 0, 10], fov: 50 }}
+          gl={{ antialias: true, alpha: true }}
+          onCreated={({ gl }) => {
+            gl.toneMapping = THREE.ACESFilmicToneMapping;
+            gl.toneMappingExposure = 1.2;
+            
+            // Add WebGL context lost/restored handlers
+            const canvas = gl.domElement;
+            
+            const handleContextLost = (event) => {
+              event.preventDefault();
+              console.warn('WebGL context lost. Attempting to recover...');
+            };
+            
+            const handleContextRestored = () => {
+              console.log('WebGL context restored.');
+              // Reset tone mapping and exposure after context restoration
+              gl.toneMapping = THREE.ACESFilmicToneMapping;
+              gl.toneMappingExposure = 1.2;
+            };
+            
+            canvas.addEventListener('webglcontextlost', handleContextLost, false);
+            canvas.addEventListener('webglcontextrestored', handleContextRestored, false);
+            
+            // Cleanup function
+            return () => {
+              canvas.removeEventListener('webglcontextlost', handleContextLost);
+              canvas.removeEventListener('webglcontextrestored', handleContextRestored);
+            };
+          }}
+        >
         {/* Enhanced lighting */}
         <ambientLight intensity={0.4} color="#00ffff" />
         <pointLight position={[10, 10, 10]} intensity={1} color="#00ffff" />
@@ -422,6 +462,7 @@ export default function TechGlobe({ className = "" }: TechGlobeProps) {
           minDistance={8}
         />
       </Canvas>
+      </WebGLErrorBoundary>
 
       {/* Background effects */}
       <div className="absolute inset-0 pointer-events-none">

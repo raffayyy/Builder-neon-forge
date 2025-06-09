@@ -9,6 +9,8 @@ import Testimonials from "@/components/sections/Testimonials";
 import GitHubContribution from "@/components/sections/GitHubContribution";
 import Contact from "@/components/sections/Contact";
 import Footer from "@/components/layout/Footer";
+import PortfolioScore from "@/components/gamification/PortfolioScore";
+import ScrollProgress from "@/components/ui/ScrollProgress";
 
 export default function Index() {
   useEffect(() => {
@@ -30,15 +32,16 @@ export default function Index() {
       </div>
 
       <Header />
+      <PortfolioScore />
 
       <main className="relative z-10">
         <Hero />
-        <TechStack />
         <Experience />
+        <TechStack />
         <Projects />
+        <GitHubContribution />
         <Achievements />
         <Testimonials />
-        <GitHubContribution />
         <Contact />
       </main>
 

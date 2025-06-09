@@ -1,203 +1,258 @@
 import { motion } from "framer-motion";
 import {
-  Award,
   Trophy,
+  Award,
   Star,
+  Medal,
+  Crown,
+  Zap,
   Calendar,
   ExternalLink,
-  Medal,
+  Sparkles,
   Target,
-  TrendingUp,
-  FileCheck,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-
-// Sample achievements data
-const achievements = [
-  {
-    id: 1,
-    title: "AWS Certified Solutions Architect",
-    issuer: "Amazon Web Services",
-    date: "2024",
-    type: "certification",
-    description:
-      "Professional level certification in cloud architecture and solutions design",
-    credentialId: "AWS-CSA-2024-001",
-    verifyUrl: "#",
-    skills: ["AWS", "Cloud Architecture", "DevOps"],
-    color: "from-orange-500 to-red-400",
-  },
-  {
-    id: 2,
-    title: "Best Innovation Award",
-    issuer: "Tech Innovators Conference 2023",
-    date: "2023",
-    type: "award",
-    description:
-      "Recognized for developing an AI-powered code review assistant that improved development efficiency by 40%",
-    skills: ["AI/ML", "Innovation", "Full Stack"],
-    color: "from-yellow-500 to-orange-400",
-  },
-  {
-    id: 3,
-    title: "Google Cloud Professional Developer",
-    issuer: "Google Cloud",
-    date: "2023",
-    type: "certification",
-    description:
-      "Expert-level certification in Google Cloud Platform development and deployment",
-    credentialId: "GCP-PD-2023-089",
-    verifyUrl: "#",
-    skills: ["GCP", "Cloud Development", "Kubernetes"],
-    color: "from-blue-500 to-cyan-400",
-  },
-  {
-    id: 4,
-    title: "Published Research Paper",
-    issuer: "Journal of AI Applications",
-    date: "2023",
-    type: "publication",
-    description:
-      "Co-authored research on improving machine learning model interpretability in production systems",
-    skills: ["Machine Learning", "Research", "AI Ethics"],
-    color: "from-purple-500 to-pink-400",
-  },
-  {
-    id: 5,
-    title: "Open Source Contributor",
-    issuer: "GitHub",
-    date: "2022-2024",
-    type: "recognition",
-    description:
-      "Top 1% contributor with 200+ pull requests merged across major open source projects",
-    skills: ["Open Source", "Community", "Collaboration"],
-    color: "from-emerald-500 to-teal-400",
-  },
-  {
-    id: 6,
-    title: "Hackathon Winner",
-    issuer: "Global AI Hackathon 2022",
-    date: "2022",
-    type: "competition",
-    description:
-      "First place winner for developing a real-time sentiment analysis tool for customer feedback",
-    skills: ["AI/ML", "Real-time Systems", "MVP Development"],
-    color: "from-indigo-500 to-purple-400",
-  },
-];
-
-const getAchievementIcon = (type: string) => {
-  switch (type) {
-    case "certification":
-      return FileCheck;
-    case "award":
-      return Trophy;
-    case "publication":
-      return Star;
-    case "competition":
-      return Medal;
-    case "recognition":
-      return Award;
-    default:
-      return Target;
-  }
-};
+import { achievements } from "@/lib/data";
+import soundManager from "@/lib/soundManager";
 
 const AchievementCard = ({ achievement, index }) => {
-  const Icon = getAchievementIcon(achievement.type);
+  const getIcon = (category) => {
+    const icons = {
+      certification: Medal,
+      award: Trophy,
+      recognition: Crown,
+      achievement: Star,
+    };
+    return icons[category] || Award;
+  };
+
+  const Icon = getIcon(achievement.category);
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, delay: index * 0.1 }}
+      initial={{ opacity: 0, y: 30, scale: 0.9 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      whileHover={{
+        y: -10,
+        scale: 1.03,
+        rotateY: 5,
+        boxShadow: "0 20px 40px rgba(0, 0, 0, 0.3)",
+      }}
+      transition={{
+        duration: 0.6,
+        delay: index * 0.1,
+        hover: { duration: 0.3 },
+      }}
       viewport={{ once: true }}
-      whileHover={{ y: -8 }}
       className="group h-full"
+      onMouseEnter={() => soundManager.playHover()}
     >
-      <Card className="bg-gray-900/50 border-gray-700/50 hover:border-gray-600 transition-all duration-300 backdrop-blur-sm h-full flex flex-col">
-        <CardHeader className="space-y-4">
+      <Card className="relative bg-gray-900/50 border-gray-700/50 hover:border-yellow-500/50 transition-all duration-300 backdrop-blur-sm h-full overflow-hidden">
+        {/* Animated background glow */}
+        <motion.div
+          className="absolute inset-0 bg-gradient-to-br from-yellow-500/10 via-orange-500/5 to-red-500/10 opacity-0 group-hover:opacity-100"
+          transition={{ duration: 0.5 }}
+        />
+
+        {/* Sparkle effects */}
+        {Array.from({ length: 5 }).map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute w-1 h-1 bg-yellow-400 rounded-full opacity-0 group-hover:opacity-100"
+            style={{
+              left: `${20 + i * 15}%`,
+              top: `${10 + Math.random() * 80}%`,
+            }}
+            animate={{
+              scale: [0, 1, 0],
+              rotate: [0, 360],
+              opacity: [0, 1, 0],
+            }}
+            transition={{
+              duration: 1.5,
+              repeat: Infinity,
+              delay: i * 0.2,
+            }}
+          />
+        ))}
+
+        <CardHeader className="space-y-4 relative z-10">
           <div className="flex items-start justify-between">
-            <div
-              className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${achievement.color} p-0.5`}
+            <motion.div
+              className="w-16 h-16 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-2xl p-3 shadow-lg group-hover:shadow-xl"
+              whileHover={{
+                scale: 1.1,
+                rotate: 360,
+                boxShadow: "0 0 30px rgba(245, 158, 11, 0.5)",
+              }}
+              transition={{ duration: 0.6 }}
             >
-              <div className="w-full h-full bg-gray-900 rounded-2xl flex items-center justify-center">
-                <Icon className="w-7 h-7 text-white" />
-              </div>
-            </div>
-            <Badge
-              variant="outline"
-              className="bg-gray-800/50 border-gray-600 text-gray-300 capitalize"
+              <motion.div
+                whileHover={{ scale: 1.2 }}
+                transition={{ duration: 0.2 }}
+              >
+                <Icon className="w-full h-full text-white" />
+              </motion.div>
+            </motion.div>
+
+            <motion.div
+              whileHover={{ scale: 1.1, rotate: 5 }}
+              transition={{ duration: 0.2 }}
             >
-              {achievement.type}
-            </Badge>
+              <Badge
+                variant="outline"
+                className={`${
+                  achievement.category === "certification"
+                    ? "border-blue-500/50 text-blue-400"
+                    : achievement.category === "award"
+                    ? "border-yellow-500/50 text-yellow-400"
+                    : achievement.category === "recognition"
+                    ? "border-purple-500/50 text-purple-400"
+                    : "border-emerald-500/50 text-emerald-400"
+                } bg-transparent group-hover:scale-110 transition-transform`}
+              >
+                {achievement.category}
+              </Badge>
+            </motion.div>
           </div>
 
-          <div className="space-y-2">
-            <CardTitle className="text-xl text-white group-hover:text-blue-400 transition-colors">
+          <motion.div
+            whileHover={{ x: 5 }}
+            transition={{ duration: 0.2 }}
+          >
+            <CardTitle className="text-xl text-white group-hover:text-yellow-400 transition-colors">
               {achievement.title}
             </CardTitle>
-            <div className="flex items-center gap-2 text-gray-400">
-              <span className="font-medium">{achievement.issuer}</span>
-              <span>•</span>
-              <div className="flex items-center gap-1">
-                <Calendar className="w-4 h-4" />
-                <span>{achievement.date}</span>
-              </div>
-            </div>
-          </div>
+          </motion.div>
+
+          <motion.div
+            className="flex items-center gap-2 text-gray-400"
+            whileHover={{ scale: 1.05, color: "#ffffff" }}
+          >
+            <motion.div
+              whileHover={{ rotate: 360 }}
+              transition={{ duration: 0.5 }}
+            >
+              <Calendar className="w-4 h-4" />
+            </motion.div>
+            <span className="text-sm">{achievement.date}</span>
+          </motion.div>
         </CardHeader>
 
-        <CardContent className="space-y-6 flex-1 flex flex-col">
-          <p className="text-gray-300 leading-relaxed flex-1">
+        <CardContent className="space-y-4 relative z-10">
+          <motion.p
+            className="text-gray-300 leading-relaxed"
+            whileHover={{ color: "#ffffff" }}
+            transition={{ duration: 0.2 }}
+          >
             {achievement.description}
-          </p>
+          </motion.p>
 
-          {/* Skills */}
-          <div className="space-y-3">
-            <h4 className="text-white font-semibold text-sm">Related Skills</h4>
-            <div className="flex flex-wrap gap-2">
-              {achievement.skills.map((skill) => (
-                <Badge
-                  key={skill}
-                  variant="outline"
-                  className="bg-gray-800/50 border-gray-600 text-gray-300 hover:bg-gray-700/50 transition-colors"
-                >
-                  {skill}
-                </Badge>
-              ))}
-            </div>
-          </div>
+          <motion.div
+            className="flex items-center gap-2 text-yellow-400 font-semibold"
+            whileHover={{ scale: 1.05 }}
+          >
+            <motion.div
+              animate={{ rotate: [0, 360] }}
+              transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+            >
+              <Trophy className="w-4 h-4" />
+            </motion.div>
+            <span className="text-sm">{achievement.issuer}</span>
+            {achievement.credentialUrl && (
+              <motion.a
+                href={achievement.credentialUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-400 hover:text-white transition-colors ml-auto"
+                whileHover={{ scale: 1.2, rotate: 45 }}
+                onClick={() => soundManager.playClick()}
+              >
+                <ExternalLink className="w-4 h-4" />
+              </motion.a>
+            )}
+          </motion.div>
 
-          {/* Credential Info */}
-          {achievement.credentialId && (
-            <div className="space-y-2 pt-4 border-t border-gray-700/50">
-              <div className="text-sm">
-                <span className="text-gray-400">Credential ID: </span>
-                <span className="text-gray-300 font-mono">
-                  {achievement.credentialId}
-                </span>
-              </div>
-              {achievement.verifyUrl && (
-                <Button
-                  asChild
-                  variant="outline"
-                  size="sm"
-                  className="border-gray-600 text-gray-300 hover:bg-gray-800 rounded-full w-full"
+          {achievement.skills && (
+            <div className="space-y-2">
+              <h5 className="text-white font-medium text-sm flex items-center gap-2">
+                <motion.div
+                  whileHover={{ scale: 1.2 }}
+                  transition={{ duration: 0.2 }}
                 >
-                  <a
-                    href={achievement.verifyUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <Target className="w-3 h-3 text-emerald-400" />
+                </motion.div>
+                Related Skills
+              </h5>
+              <motion.div
+                className="flex flex-wrap gap-2"
+                variants={{
+                  visible: {
+                    transition: {
+                      staggerChildren: 0.05,
+                    },
+                  },
+                }}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+              >
+                {achievement.skills.map((skill, i) => (
+                  <motion.div
+                    key={skill}
+                    variants={{
+                      hidden: { opacity: 0, scale: 0.8 },
+                      visible: { opacity: 1, scale: 1 },
+                    }}
+                    whileHover={{
+                      scale: 1.1,
+                      y: -2,
+                      boxShadow: "0 5px 15px rgba(16, 185, 129, 0.3)",
+                    }}
+                    whileTap={{ scale: 0.95 }}
                   >
-                    <ExternalLink className="w-4 h-4 mr-2" />
-                    Verify Credential
-                  </a>
-                </Button>
-              )}
+                    <Badge
+                      variant="secondary"
+                      className="bg-gray-800/50 text-gray-300 hover:bg-emerald-500/20 hover:text-emerald-300 transition-all duration-200 cursor-pointer"
+                      onClick={() => soundManager.playClick()}
+                    >
+                      {skill}
+                    </Badge>
+                  </motion.div>
+                ))}
+              </motion.div>
             </div>
+          )}
+
+          {/* Verification status with animation */}
+          {achievement.verified && (
+            <motion.div
+              className="flex items-center gap-2 text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 rounded-lg px-3 py-2"
+              whileHover={{
+                scale: 1.02,
+                backgroundColor: "rgba(16, 185, 129, 0.15)",
+              }}
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.3 }}
+            >
+              <motion.div
+                animate={{
+                  scale: [1, 1.2, 1],
+                  rotate: [0, 360],
+                }}
+                transition={{
+                  scale: { duration: 2, repeat: Infinity },
+                  rotate: { duration: 4, repeat: Infinity, ease: "linear" },
+                }}
+              >
+                <Sparkles className="w-4 h-4" />
+              </motion.div>
+              <span className="text-sm font-medium">Verified Achievement</span>
+            </motion.div>
           )}
         </CardContent>
       </Card>
@@ -212,36 +267,34 @@ export default function Achievements() {
       opacity: 1,
       transition: {
         staggerChildren: 0.1,
-        delayChildren: 0.2,
       },
     },
   };
 
-  // Group achievements by type for stats
   const achievementStats = [
     {
       label: "Certifications",
-      value: achievements.filter((a) => a.type === "certification").length,
-      icon: FileCheck,
+      value: "12+",
+      icon: Medal,
       color: "from-blue-500 to-cyan-400",
     },
     {
       label: "Awards Won",
-      value: achievements.filter((a) => a.type === "award").length,
+      value: "8",
       icon: Trophy,
       color: "from-yellow-500 to-orange-400",
     },
     {
-      label: "Publications",
-      value: achievements.filter((a) => a.type === "publication").length,
-      icon: Star,
+      label: "Recognition",
+      value: "15+",
+      icon: Crown,
       color: "from-purple-500 to-pink-400",
     },
     {
-      label: "Competitions",
-      value: achievements.filter((a) => a.type === "competition").length,
-      icon: Medal,
-      color: "from-emerald-500 to-teal-400",
+      label: "Years Active",
+      value: "5+",
+      icon: Calendar,
+      color: "from-emerald-500 to-green-400",
     },
   ];
 
@@ -250,14 +303,38 @@ export default function Achievements() {
       id="achievements"
       className="py-20 bg-gray-950 relative overflow-hidden"
     >
-      {/* Background Effects */}
+      {/* Enhanced Background Effects */}
       <div className="absolute inset-0">
         <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/5 via-orange-500/5 to-red-500/5" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_50%,rgba(245,158,11,0.1),transparent_50%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(245,158,11,0.1),transparent_70%)]" />
+
+        {/* Floating trophy icons */}
+        {Array.from({ length: 10 }).map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute text-yellow-500/10 text-2xl"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+            }}
+            animate={{
+              y: [-20, 20],
+              rotate: [-10, 10],
+              opacity: [0.1, 0.3, 0.1],
+            }}
+            transition={{
+              duration: 4 + Math.random() * 2,
+              repeat: Infinity,
+              delay: i * 0.5,
+            }}
+          >
+            🏆
+          </motion.div>
+        ))}
       </div>
 
       <div className="container mx-auto px-6 relative z-10">
-        {/* Section Header */}
+        {/* Enhanced Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -271,19 +348,34 @@ export default function Achievements() {
             transition={{ duration: 0.6, delay: 0.3 }}
             viewport={{ once: true }}
             className="inline-flex items-center gap-2 bg-yellow-500/10 border border-yellow-500/20 rounded-full px-6 py-2 mb-6"
+            whileHover={{ scale: 1.05, y: -2 }}
           >
-            <Trophy className="w-5 h-5 text-yellow-400" />
+            <motion.div
+              animate={{
+                rotate: [0, 360],
+                scale: [1, 1.2, 1],
+              }}
+              transition={{
+                rotate: { duration: 4, repeat: Infinity, ease: "linear" },
+                scale: { duration: 2, repeat: Infinity },
+              }}
+            >
+              <Trophy className="w-5 h-5 text-yellow-400" />
+            </motion.div>
             <span className="text-yellow-400 font-medium">
               Achievements & Recognition
             </span>
           </motion.div>
 
-          <h2 className="text-5xl md:text-6xl font-bold text-white mb-6">
+          <motion.h2
+            className="text-5xl md:text-6xl font-bold text-white mb-6"
+            whileHover={{ scale: 1.02 }}
+          >
             Awards &{" "}
             <span className="bg-gradient-to-r from-yellow-400 via-orange-400 to-red-400 bg-clip-text text-transparent">
               Certifications
             </span>
-          </h2>
+          </motion.h2>
 
           <p className="text-xl text-gray-400 max-w-3xl mx-auto">
             Recognition for excellence in technology, innovation, and
@@ -291,7 +383,7 @@ export default function Achievements() {
           </p>
         </motion.div>
 
-        {/* Stats */}
+        {/* Enhanced Stats */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -304,26 +396,43 @@ export default function Achievements() {
               key={stat.label}
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
+              whileHover={{
+                scale: 1.05,
+                y: -5,
+                boxShadow: "0 10px 30px rgba(0, 0, 0, 0.2)",
+              }}
               transition={{ duration: 0.6, delay: index * 0.1 }}
               viewport={{ once: true }}
-              className="text-center bg-gray-900/50 border border-gray-700/50 rounded-2xl p-6 backdrop-blur-sm hover:border-gray-600 transition-colors"
+              className="text-center bg-gray-900/50 border border-gray-700/50 rounded-2xl p-6 backdrop-blur-sm hover:border-yellow-500/30 transition-all duration-300 group"
+              onMouseEnter={() => soundManager.playHover()}
             >
-              <div
+              <motion.div
                 className={`w-12 h-12 mx-auto mb-4 rounded-xl bg-gradient-to-br ${stat.color} p-0.5`}
+                whileHover={{
+                  scale: 1.2,
+                  rotate: 360,
+                  boxShadow: "0 0 20px rgba(245, 158, 11, 0.5)",
+                }}
+                transition={{ duration: 0.6 }}
               >
                 <div className="w-full h-full bg-gray-900 rounded-xl flex items-center justify-center">
-                  <stat.icon className="w-6 h-6 text-white" />
+                  <stat.icon className="w-6 h-6 text-white group-hover:scale-110 transition-transform" />
                 </div>
-              </div>
-              <div className="text-3xl font-bold text-white mb-2">
+              </motion.div>
+              <motion.div
+                className="text-3xl font-bold text-white mb-2"
+                whileHover={{ scale: 1.1 }}
+              >
                 {stat.value}
+              </motion.div>
+              <div className="text-gray-400 group-hover:text-white transition-colors">
+                {stat.label}
               </div>
-              <div className="text-gray-400">{stat.label}</div>
             </motion.div>
           ))}
         </motion.div>
 
-        {/* Achievements Grid */}
+        {/* Enhanced Achievements Grid */}
         <motion.div
           variants={containerVariants}
           initial="hidden"
@@ -340,7 +449,7 @@ export default function Achievements() {
           ))}
         </motion.div>
 
-        {/* Call to Action */}
+        {/* Enhanced Call to Action */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -348,39 +457,61 @@ export default function Achievements() {
           viewport={{ once: true }}
           className="text-center mt-16"
         >
-          <div className="bg-gradient-to-r from-yellow-500/10 via-orange-500/10 to-red-500/10 border border-gray-700/50 rounded-3xl p-12 backdrop-blur-sm">
-            <h3 className="text-3xl font-bold text-white mb-4">
+          <motion.div
+            className="bg-gradient-to-r from-yellow-500/10 via-orange-500/10 to-red-500/10 border border-gray-700/50 rounded-3xl p-12 backdrop-blur-sm relative overflow-hidden"
+            whileHover={{ scale: 1.02 }}
+          >
+            {/* Animated background effect */}
+            <motion.div
+              className="absolute inset-0 bg-gradient-to-r from-yellow-500/5 to-red-500/5"
+              animate={{
+                background: [
+                  "linear-gradient(45deg, rgba(245, 158, 11, 0.05), rgba(239, 68, 68, 0.05))",
+                  "linear-gradient(135deg, rgba(239, 68, 68, 0.05), rgba(245, 158, 11, 0.05))",
+                  "linear-gradient(225deg, rgba(245, 158, 11, 0.05), rgba(239, 68, 68, 0.05))",
+                  "linear-gradient(315deg, rgba(239, 68, 68, 0.05), rgba(245, 158, 11, 0.05))",
+                ],
+              }}
+              transition={{ duration: 6, repeat: Infinity }}
+            />
+
+            <motion.h3
+              className="text-3xl font-bold text-white mb-4"
+              whileHover={{ scale: 1.05 }}
+            >
               Continuous Learning & Growth
-            </h3>
+            </motion.h3>
             <p className="text-gray-400 mb-8 max-w-2xl mx-auto">
-              I believe in continuous learning and professional development.
-              These achievements represent my commitment to excellence and
-              staying current with industry best practices.
+              I'm always seeking new challenges and opportunities to expand my
+              expertise. Let's discuss how we can create something amazing
+              together.
             </p>
-            <div className="flex flex-wrap gap-4 justify-center">
+            <motion.div
+              whileHover={{ scale: 1.05, y: -2 }}
+              whileTap={{ scale: 0.95 }}
+            >
               <Button
                 size="lg"
-                className="bg-gradient-to-r from-yellow-500 to-orange-600 hover:from-yellow-600 hover:to-orange-700 text-white rounded-full px-8 py-3 font-semibold"
-                onClick={() => window.open("/resume.pdf", "_blank")}
-              >
-                <Award className="w-5 h-5 mr-2" />
-                View Full Resume
-              </Button>
-              <Button
-                variant="outline"
-                size="lg"
-                className="border-gray-600 text-gray-300 hover:bg-gray-800 rounded-full px-8 py-3 font-semibold"
-                onClick={() =>
+                className="relative bg-gradient-to-r from-yellow-500 to-orange-600 hover:from-yellow-600 hover:to-orange-700 text-white rounded-full px-8 py-3 text-lg font-semibold overflow-hidden group"
+                onClick={() => {
+                  soundManager.playClick();
                   document
                     .getElementById("contact")
-                    ?.scrollIntoView({ behavior: "smooth" })
-                }
+                    ?.scrollIntoView({ behavior: "smooth" });
+                }}
               >
-                <TrendingUp className="w-5 h-5 mr-2" />
-                Let's Connect
+                {/* Shimmer effect */}
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
+                  initial={{ x: "-100%" }}
+                  whileHover={{ x: "100%" }}
+                  transition={{ duration: 0.6 }}
+                />
+                <Zap className="w-5 h-5 mr-2 relative z-10" />
+                <span className="relative z-10">Let's Collaborate</span>
               </Button>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         </motion.div>
       </div>
     </section>

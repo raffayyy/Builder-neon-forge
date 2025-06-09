@@ -3,6 +3,7 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { Box, Text, OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
 import { motion } from "framer-motion";
+import WebGLErrorBoundary from "@/components/WebGLErrorBoundary";
 
 interface ProjectModelProps {
   title: string;
@@ -133,9 +134,46 @@ export default function ProjectModel({
       whileHover={{ scale: 1.02 }}
       transition={{ duration: 0.3 }}
     >
-      <Canvas
+      <WebGLErrorBoundary
+        fallback={
+          <div className="w-full h-full flex items-center justify-center bg-gray-900/50 rounded-lg border border-gray-700/50">
+            <div className="text-center p-8">
+              <div className="w-16 h-16 mx-auto mb-4 bg-purple-500/20 rounded-full flex items-center justify-center">
+                <span className="text-2xl">📦</span>
+              </div>
+              <h3 className="text-white font-semibold mb-2">3D Model Unavailable</h3>
+              <p className="text-gray-400 text-sm">
+                Project visualization is temporarily unavailable.
+              </p>
+            </div>
+          </div>
+        }
+      >
+        <Canvas
         camera={{ position: [0, 2, 8], fov: 45 }}
         gl={{ antialias: true, alpha: true }}
+        onCreated={({ gl }) => {
+          // Add WebGL context lost/restored handlers
+          const canvas = gl.domElement;
+          
+          const handleContextLost = (event) => {
+            event.preventDefault();
+            console.warn('WebGL context lost in ProjectModel. Attempting to recover...');
+          };
+          
+          const handleContextRestored = () => {
+            console.log('WebGL context restored in ProjectModel.');
+          };
+          
+          canvas.addEventListener('webglcontextlost', handleContextLost, false);
+          canvas.addEventListener('webglcontextrestored', handleContextRestored, false);
+          
+          // Cleanup function
+          return () => {
+            canvas.removeEventListener('webglcontextlost', handleContextLost);
+            canvas.removeEventListener('webglcontextrestored', handleContextRestored);
+          };
+        }}
       >
         <ambientLight intensity={0.4} />
         <pointLight position={[10, 10, 10]} intensity={1} />
@@ -159,6 +197,7 @@ export default function ProjectModel({
           minPolarAngle={Math.PI / 4}
         />
       </Canvas>
+      </WebGLErrorBoundary>
 
       {/* Project title overlay */}
       <div className="absolute bottom-4 left-4 right-4">

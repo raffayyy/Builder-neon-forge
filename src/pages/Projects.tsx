@@ -76,7 +76,9 @@ export default function Projects() {
               transition={{ duration: 0.6 }}
               className="text-center mb-16"
             >
-              <h1 className="heading-2 gradient-text-coral mb-6">My Projects</h1>
+              <h1 className="heading-2 gradient-text-coral mb-6">
+                My Projects
+              </h1>
               <p className="body-regular text-white/70 max-w-3xl mx-auto">
                 A comprehensive showcase of my work in AI, web development, and
                 creative technology. Each project represents a unique challenge
@@ -102,7 +104,10 @@ export default function Projects() {
                   />
                 </div>
 
-                <Select value={selectedStatus} onValueChange={setSelectedStatus}>
+                <Select
+                  value={selectedStatus}
+                  onValueChange={setSelectedStatus}
+                >
                   <SelectTrigger className="w-full md:w-48 bg-white/5 border-white/20 text-white hover:border-emerald/50">
                     <SelectValue placeholder="Filter by status" />
                   </SelectTrigger>
@@ -137,8 +142,15 @@ export default function Projects() {
               className="mb-8"
             >
               <p className="text-white/70">
-                Showing <span className="text-coral font-semibold">{filteredProjects.length}</span> of{" "}
-                <span className="text-emerald font-semibold">{projects.length}</span> projects
+                Showing{" "}
+                <span className="text-coral font-semibold">
+                  {filteredProjects.length}
+                </span>{" "}
+                of{" "}
+                <span className="text-emerald font-semibold">
+                  {projects.length}
+                </span>{" "}
+                projects
               </p>
             </motion.div>
           </div>
@@ -284,10 +296,7 @@ export default function Projects() {
                         </Button>
 
                         {project.demo && (
-                          <Button
-                            className="btn-coral flex-1"
-                            asChild
-                          >
+                          <Button className="btn-coral flex-1" asChild>
                             <a
                               href={project.demo}
                               target="_blank"

@@ -1,10 +1,9 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500;600&display=swap");
+/* GitHub Calendar Styles */
+@import "./components/styles/github-calendar.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-/* GitHub Calendar Styles */
-@import "./components/styles/github-calendar.css";
 
 @layer base {
   :root {
@@ -470,6 +469,69 @@
     .container-custom {
       @apply px-16;
     }
+  }
+}
+
+/* Performance optimizations for smooth animations */
+@layer base {
+  * {
+    /* Base performance optimizations */
+    box-sizing: border-box;
+  }
+
+  /* GPU acceleration for animated elements */
+  .gpu-accelerated {
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+  }
+
+  /* Optimized button animations */
+  .btn-optimized {
+    transition: all 0.2s ease-out;
+    transform: translateZ(0);
+  }
+
+  .btn-optimized:hover {
+    transform: translateZ(0) scale(1.02);
+  }
+
+  .btn-optimized:active {
+    transform: translateZ(0) scale(0.98);
+  }
+
+  /* Reduced motion for accessibility and performance */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  /* Particle system optimizations */
+  .particle-container {
+    will-change: transform;
+    contain: layout style paint;
+  }
+
+  .particle {
+    will-change: transform;
+    transform: translateZ(0);
+    pointer-events: none;
+  }
+
+  /* Canvas optimizations */
+  canvas {
+    will-change: auto;
+    image-rendering: optimizeSpeed;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: optimize-contrast;
   }
 }
 

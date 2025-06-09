@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { 
-  ArrowLeft, 
-  Clock, 
-  Calendar, 
-  Tag, 
-  Share2, 
-  BookOpen, 
+import {
+  ArrowLeft,
+  Clock,
+  Calendar,
+  Tag,
+  Share2,
+  BookOpen,
   Eye,
   Heart,
   MessageCircle,
@@ -15,7 +15,7 @@ import {
   ChevronUp,
   User,
   TrendingUp,
-  ArrowRight
+  ArrowRight,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -30,41 +30,51 @@ interface ArticleReaderProps {
   onBack: () => void;
 }
 
-export default function ArticleReader({ articleId, article, onBack }: ArticleReaderProps) {
+export default function ArticleReader({
+  articleId,
+  article,
+  onBack,
+}: ArticleReaderProps) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [readingProgress, setReadingProgress] = useState(0);
   const [showBackToTop, setShowBackToTop] = useState(false);
   const [copiedToClipboard, setCopiedToClipboard] = useState(false);
 
   // Find the blog post if articleId is provided
-  const blogPost = articleId ? blogPosts.find(post => post.id === articleId) : null;
+  const blogPost = articleId
+    ? blogPosts.find((post) => post.id === articleId)
+    : null;
   const currentArticle = blogPost || article;
 
   // Related articles
-  const relatedArticles = blogPost 
-    ? blogPosts.filter(post => 
-        post.id !== blogPost.id && 
-        post.tags.some(tag => blogPost.tags.includes(tag))
-      ).slice(0, 3)
+  const relatedArticles = blogPost
+    ? blogPosts
+        .filter(
+          (post) =>
+            post.id !== blogPost.id &&
+            post.tags.some((tag) => blogPost.tags.includes(tag)),
+        )
+        .slice(0, 3)
     : [];
 
   useEffect(() => {
     const handleScroll = () => {
       const scrollTop = window.scrollY;
-      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const docHeight =
+        document.documentElement.scrollHeight - window.innerHeight;
       const scrollPercent = (scrollTop / docHeight) * 100;
-      
+
       setIsScrolled(scrollTop > 100);
       setReadingProgress(Math.min(scrollPercent, 100));
       setShowBackToTop(scrollTop > 500);
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const shareArticle = async () => {
@@ -90,10 +100,10 @@ export default function ArticleReader({ articleId, article, onBack }: ArticleRea
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     });
   };
 
@@ -101,7 +111,9 @@ export default function ArticleReader({ articleId, article, onBack }: ArticleRea
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-white mb-4">Article Not Found</h2>
+          <h2 className="text-2xl font-bold text-white mb-4">
+            Article Not Found
+          </h2>
           <Button onClick={onBack} variant="outline" className="glass-button">
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Blog
@@ -196,12 +208,16 @@ export default function ArticleReader({ articleId, article, onBack }: ArticleRea
                 >
                   {blogPost?.platform || (article as NewsArticle)?.source?.name}
                 </Badge>
-                
+
                 <div className="flex items-center text-white/60 text-sm">
                   <Calendar className="w-4 h-4 mr-2 text-lavender" />
-                  <span>{formatDate(blogPost?.date || (article as NewsArticle)?.publishedAt)}</span>
+                  <span>
+                    {formatDate(
+                      blogPost?.date || (article as NewsArticle)?.publishedAt,
+                    )}
+                  </span>
                 </div>
-                
+
                 {blogPost?.readTime && (
                   <div className="flex items-center text-white/60 text-sm">
                     <Clock className="w-4 h-4 mr-2 text-emerald" />
@@ -262,7 +278,7 @@ export default function ArticleReader({ articleId, article, onBack }: ArticleRea
                     </>
                   )}
                 </Button>
-                
+
                 {(blogPost?.url || (article as NewsArticle)?.url) && (
                   <Button
                     asChild
@@ -313,12 +329,10 @@ export default function ArticleReader({ articleId, article, onBack }: ArticleRea
                     </p>
                     <div className="text-center py-8">
                       <p className="text-white/60 mb-4">
-                        This is a preview. Read the full article on the original platform.
+                        This is a preview. Read the full article on the original
+                        platform.
                       </p>
-                      <Button
-                        asChild
-                        className="btn-coral"
-                      >
+                      <Button asChild className="btn-coral">
                         <a
                           href={(article as NewsArticle)?.url}
                           target="_blank"
@@ -369,7 +383,7 @@ export default function ArticleReader({ articleId, article, onBack }: ArticleRea
                           >
                             {relatedPost.platform}
                           </Badge>
-                          
+
                           <CardTitle className="text-white text-lg leading-snug group-hover:text-emerald transition-colors duration-300 line-clamp-2">
                             {relatedPost.title}
                           </CardTitle>
@@ -384,7 +398,7 @@ export default function ArticleReader({ articleId, article, onBack }: ArticleRea
                           <p className="text-white/70 text-sm leading-relaxed line-clamp-3 mb-4">
                             {relatedPost.summary}
                           </p>
-                          
+
                           <Button
                             variant="ghost"
                             size="sm"

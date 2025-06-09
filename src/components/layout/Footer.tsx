@@ -46,7 +46,7 @@ const quickLinks = [
   { name: "Home", href: "#home", type: "hash" },
   { name: "Skills", href: "#skills", type: "hash" },
   { name: "Experience", href: "#experience", type: "hash" },
-  { name: "Projects", href: "#projects", type: "hash" },
+  { name: "Projects", href: "/projects", type: "route" },
   { name: "Achievements", href: "#achievements", type: "hash" },
   { name: "Blog", href: "/blog", type: "route" },
   { name: "Resume", href: "/resume", type: "route" },
@@ -60,7 +60,7 @@ export default function Footer() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const handleNavigation = (item: typeof quickLinks[0]) => {
+  const handleNavigation = (item: (typeof quickLinks)[0]) => {
     if (item.type === "hash") {
       // If we're not on the home page, navigate to home first
       if (location.pathname !== "/") {

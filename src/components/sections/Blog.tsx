@@ -1,16 +1,16 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { 
-  ExternalLink, 
-  Clock, 
-  Tag, 
-  TrendingUp, 
-  Newspaper, 
-  Edit3, 
-  Search, 
+import {
+  ExternalLink,
+  Clock,
+  Tag,
+  TrendingUp,
+  Newspaper,
+  Edit3,
+  Search,
   Filter,
   Calendar,
-  User
+  User,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -28,8 +28,12 @@ export default function Blog() {
   const [isLoadingNews, setIsLoadingNews] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredNews, setFilteredNews] = useState<NewsArticle[]>([]);
-  const [selectedArticle, setSelectedArticle] = useState<{ type: 'blog' | 'news', id?: number, article?: NewsArticle } | null>(null);
-  
+  const [selectedArticle, setSelectedArticle] = useState<{
+    type: "blog" | "news";
+    id?: number;
+    article?: NewsArticle;
+  } | null>(null);
+
   const featuredPosts = blogPosts.filter((post) => post.featured);
   const allPosts = blogPosts.slice(0, visiblePosts);
 
@@ -46,10 +50,12 @@ export default function Blog() {
       setFilteredNews(techNews);
     } else {
       const filtered = techNews.filter(
-        article =>
+        (article) =>
           article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          article.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          article.source.name.toLowerCase().includes(searchQuery.toLowerCase())
+          article.description
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase()) ||
+          article.source.name.toLowerCase().includes(searchQuery.toLowerCase()),
       );
       setFilteredNews(filtered);
     }
@@ -94,18 +100,22 @@ export default function Blog() {
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
     });
   };
 
-  const handleReadArticle = (type: 'blog' | 'news', blogId?: number, newsArticle?: NewsArticle) => {
-    if (type === 'blog' && blogId) {
-      setSelectedArticle({ type: 'blog', id: blogId });
-    } else if (type === 'news' && newsArticle) {
-      setSelectedArticle({ type: 'news', article: newsArticle });
+  const handleReadArticle = (
+    type: "blog" | "news",
+    blogId?: number,
+    newsArticle?: NewsArticle,
+  ) => {
+    if (type === "blog" && blogId) {
+      setSelectedArticle({ type: "blog", id: blogId });
+    } else if (type === "news" && newsArticle) {
+      setSelectedArticle({ type: "news", article: newsArticle });
     }
   };
 
@@ -117,8 +127,12 @@ export default function Blog() {
   if (selectedArticle) {
     return (
       <ArticleReader
-        articleId={selectedArticle.type === 'blog' ? selectedArticle.id : undefined}
-        article={selectedArticle.type === 'news' ? selectedArticle.article : undefined}
+        articleId={
+          selectedArticle.type === "blog" ? selectedArticle.id : undefined
+        }
+        article={
+          selectedArticle.type === "news" ? selectedArticle.article : undefined
+        }
         onBack={handleBackToBlog}
       />
     );
@@ -133,7 +147,7 @@ export default function Blog() {
         <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-emerald/10 rounded-full blur-3xl animate-pulse delay-1000" />
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-lavender/10 rounded-full blur-3xl animate-pulse delay-2000" />
       </div>
-      
+
       <div className="container-custom relative z-10">
         {/* Section Header */}
         <motion.div
@@ -152,7 +166,7 @@ export default function Blog() {
             <Edit3 className="w-4 h-4 text-emerald" />
             <span className="text-emerald font-medium">Knowledge Sharing</span>
           </motion.div>
-          
+
           <h2 className="heading-2 gradient-text-coral mb-6">
             Latest Articles & Insights
           </h2>
@@ -170,17 +184,21 @@ export default function Blog() {
           viewport={{ once: true }}
           className="mb-12"
         >
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <Tabs
+            value={activeTab}
+            onValueChange={setActiveTab}
+            className="w-full"
+          >
             <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 glass-card">
-              <TabsTrigger 
-                value="my-articles" 
+              <TabsTrigger
+                value="my-articles"
                 className="flex items-center space-x-2 text-white/70 data-[state=active]:text-white data-[state=active]:bg-coral/20 data-[state=active]:shadow-glow-coral rounded-xl transition-all duration-300"
               >
                 <Edit3 className="w-4 h-4" />
                 <span>My Articles</span>
               </TabsTrigger>
-              <TabsTrigger 
-                value="tech-news" 
+              <TabsTrigger
+                value="tech-news"
                 className="flex items-center space-x-2 text-white/70 data-[state=active]:text-white data-[state=active]:bg-emerald/20 data-[state=active]:shadow-glow-emerald rounded-xl transition-all duration-300"
               >
                 <Newspaper className="w-4 h-4" />
@@ -262,7 +280,7 @@ export default function Blog() {
                           <Button
                             variant="outline"
                             className="w-full glass-button hover:bg-coral/20 hover:border-coral/50 hover:text-coral transition-all duration-300 mt-4"
-                            onClick={() => handleReadArticle('blog', post.id)}
+                            onClick={() => handleReadArticle("blog", post.id)}
                           >
                             <ExternalLink className="w-4 h-4 mr-2" />
                             Read Full Article
@@ -359,7 +377,7 @@ export default function Blog() {
                             variant="outline"
                             size="sm"
                             className="w-full glass-button hover:bg-emerald/20 hover:border-emerald/50 hover:text-emerald transition-all duration-300"
-                            onClick={() => handleReadArticle('blog', post.id)}
+                            onClick={() => handleReadArticle("blog", post.id)}
                           >
                             <ExternalLink className="w-4 h-4 mr-2" />
                             Read Article
@@ -385,7 +403,8 @@ export default function Blog() {
                       className="glass-button hover:bg-lavender/20 hover:border-lavender/50 hover:text-lavender transition-all duration-300 px-8 py-3"
                     >
                       <TrendingUp className="w-4 h-4 mr-2" />
-                      Load More Articles ({blogPosts.length - visiblePosts} remaining)
+                      Load More Articles ({blogPosts.length - visiblePosts}{" "}
+                      remaining)
                     </Button>
                   </motion.div>
                 )}
@@ -418,8 +437,9 @@ export default function Blog() {
                     },
                     {
                       label: "Platforms",
-                      value: [...new Set(blogPosts.map((post) => post.platform))]
-                        .length,
+                      value: [
+                        ...new Set(blogPosts.map((post) => post.platform)),
+                      ].length,
                       color: "text-lavender",
                     },
                   ].map((stat, index) => (
@@ -473,7 +493,9 @@ export default function Blog() {
               >
                 {isLoadingNews ? (
                   <div className="flex items-center justify-center py-16">
-                    <div className="text-white/70 text-lg">Loading tech news...</div>
+                    <div className="text-white/70 text-lg">
+                      Loading tech news...
+                    </div>
                   </div>
                 ) : (
                   <>
@@ -501,7 +523,9 @@ export default function Blog() {
                     {filteredNews.length === 0 ? (
                       <div className="text-center py-16">
                         <div className="text-white/50 text-lg mb-2">
-                          {searchQuery ? 'No articles found matching your search.' : 'No tech news available.'}
+                          {searchQuery
+                            ? "No articles found matching your search."
+                            : "No tech news available."}
                         </div>
                         {searchQuery && (
                           <Button
@@ -534,8 +558,9 @@ export default function Blog() {
                                       alt={article.title}
                                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                                       onError={(e) => {
-                                        const target = e.target as HTMLImageElement;
-                                        target.style.display = 'none';
+                                        const target =
+                                          e.target as HTMLImageElement;
+                                        target.style.display = "none";
                                       }}
                                     />
                                   </div>
@@ -550,7 +575,9 @@ export default function Blog() {
                                     </Badge>
                                     <div className="flex items-center text-xs text-white/60">
                                       <Calendar className="w-3 h-3 mr-1 text-lavender" />
-                                      <span>{formatDate(article.publishedAt)}</span>
+                                      <span>
+                                        {formatDate(article.publishedAt)}
+                                      </span>
                                     </div>
                                   </div>
 
@@ -576,7 +603,13 @@ export default function Blog() {
                                       variant="outline"
                                       size="sm"
                                       className="flex-1 glass-button hover:bg-emerald/20 hover:border-emerald/50 hover:text-emerald transition-all duration-300"
-                                      onClick={() => handleReadArticle('news', undefined, article)}
+                                      onClick={() =>
+                                        handleReadArticle(
+                                          "news",
+                                          undefined,
+                                          article,
+                                        )
+                                      }
                                     >
                                       Read Preview
                                     </Button>

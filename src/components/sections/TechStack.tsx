@@ -36,7 +36,7 @@ const techStackData = [
   {
     category: "Backend Development",
     icon: Server,
-    color: "from-emerald-500 to-teal-400",
+    color: "from-green-500 to-emerald-400",
     skills: [
       { name: "Node.js", level: 90, experience: "4 years", icon: "🟢" },
       { name: "Python", level: 85, experience: "5 years", icon: "🐍" },
@@ -84,20 +84,51 @@ const SkillCard = ({ skill, index, categoryColor }) => {
       transition={{ duration: 0.5, delay: index * 0.1 }}
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
+      whileHover={{ y: -5, scale: 1.02 }}
       className="group"
     >
-      <Card className="bg-gray-900/50 border-gray-700/50 hover:border-gray-600 transition-all duration-300 backdrop-blur-sm">
-        <CardContent className="p-6">
+      <Card className="relative bg-gray-900/50 border-gray-700/50 hover:border-gray-600 transition-all duration-300 backdrop-blur-sm overflow-hidden">
+        {/* Animated background glow */}
+        <motion.div
+          className={`absolute inset-0 bg-gradient-to-br ${categoryColor} opacity-0 group-hover:opacity-10 transition-opacity duration-300`}
+          initial={false}
+        />
+        
+        {/* Floating particles */}
+        <motion.div
+          className="absolute top-2 right-2 w-2 h-2 bg-blue-400 rounded-full opacity-0 group-hover:opacity-100"
+          animate={isHovered ? {
+            y: [0, -10, 0],
+            opacity: [0.5, 1, 0.5]
+          } : {}}
+          transition={{ duration: 2, repeat: Infinity }}
+        />
+        
+        <CardContent className="p-6 relative z-10">
           <div className="flex items-start justify-between mb-4">
             <div className="flex items-center gap-3">
               <motion.div
-                className={`w-12 h-12 rounded-xl bg-gradient-to-br ${categoryColor} p-0.5`}
+                className={`relative w-12 h-12 rounded-xl bg-gradient-to-br ${categoryColor} p-0.5`}
                 whileHover={{ scale: 1.1, rotate: 5 }}
                 transition={{ duration: 0.3 }}
               >
-                <div className="w-full h-full bg-gray-900 rounded-xl flex items-center justify-center text-xl">
+                {/* Pulsing ring animation */}
+                <motion.div
+                  className={`absolute inset-0 rounded-xl bg-gradient-to-br ${categoryColor} opacity-30`}
+                  animate={isHovered ? {
+                    scale: [1, 1.2, 1],
+                    opacity: [0.3, 0.6, 0.3]
+                  } : {}}
+                  transition={{ duration: 1.5, repeat: Infinity }}
+                />
+                
+                <motion.div 
+                  className="w-full h-full bg-gray-900 rounded-xl flex items-center justify-center text-xl relative z-10"
+                  whileHover={{ rotate: 360 }}
+                  transition={{ duration: 0.6 }}
+                >
                   {skill.icon}
-                </div>
+                </motion.div>
               </motion.div>
               <div>
                 <h4 className="text-white font-semibold text-lg">
@@ -159,6 +190,108 @@ const SkillCard = ({ skill, index, categoryColor }) => {
                   : skill.level >= 70
                     ? "Intermediate"
                     : "Beginner"}
+            </span>
+          </div>
+        </CardContent>
+      </Card>
+    </motion.div>
+  );
+};
+
+const CategoryOverviewCard = ({ category, index }) => {
+  const Icon = category.icon;
+  const averageLevel = Math.round(
+    category.skills.reduce((acc, skill) => acc + skill.level, 0) /
+      category.skills.length,
+  );
+  const totalExperience = Math.max(
+    ...category.skills.map(
+      (skill) => parseInt(skill.experience.split(" ")[0]) || 0,
+    ),
+  );
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, delay: index * 0.1 }}
+      className="group"
+    >
+      <Card className="bg-gray-900/50 border-gray-700/50 hover:border-gray-600 transition-all duration-300 backdrop-blur-sm h-full">
+        <CardContent className="p-6">
+          <div className="flex items-start justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <motion.div
+                className={`w-12 h-12 rounded-xl bg-gradient-to-br ${category.color} p-0.5`}
+                whileHover={{ scale: 1.1, rotate: 5 }}
+                transition={{ duration: 0.3 }}
+              >
+                <div className="w-full h-full bg-gray-900 rounded-xl flex items-center justify-center">
+                  <Icon className="w-6 h-6 text-white" />
+                </div>
+              </motion.div>
+              <div>
+                <h4 className="text-white font-semibold text-lg">
+                  {category.category}
+                </h4>
+                <p className="text-gray-400 text-sm">
+                  {totalExperience}+ years experience
+                </p>
+              </div>
+            </div>
+            <Badge
+              variant="secondary"
+              className="bg-gray-800 text-gray-300 border-gray-700"
+            >
+              {averageLevel}%
+            </Badge>
+          </div>
+
+          {/* Progress Bar */}
+          <div className="space-y-2">
+            <div className="flex justify-between text-sm">
+              <span className="text-gray-400">Overall Proficiency</span>
+              <span className="text-white font-medium">{averageLevel}%</span>
+            </div>
+            <div className="relative h-2 bg-gray-800 rounded-full overflow-hidden">
+              <motion.div
+                className={`h-full bg-gradient-to-r ${category.color} rounded-full`}
+                initial={{ width: 0 }}
+                animate={{ width: `${averageLevel}%` }}
+                transition={{ duration: 1, delay: index * 0.1 }}
+              />
+            </div>
+          </div>
+
+          {/* Technologies Count */}
+          <div className="mt-4 flex items-center justify-between">
+            <div className="flex gap-1">
+              {[...Array(5)].map((_, i) => (
+                <Star
+                  key={i}
+                  className={`w-4 h-4 ${
+                    i < Math.floor(averageLevel / 20)
+                      ? "text-yellow-400 fill-current"
+                      : "text-gray-600"
+                  }`}
+                />
+              ))}
+            </div>
+            <span className="text-gray-500 text-xs">
+              {category.skills.length} technologies
+            </span>
+          </div>
+
+          {/* Skill Level Indicator */}
+          <div className="mt-2">
+            <span className="text-gray-500 text-xs">
+              {averageLevel >= 90
+                ? "Expert Level"
+                : averageLevel >= 80
+                  ? "Advanced Level"
+                  : averageLevel >= 70
+                    ? "Intermediate Level"
+                    : "Beginner Level"}
             </span>
           </div>
         </CardContent>
@@ -307,7 +440,7 @@ export default function TechStack() {
                 label: "Years Experience",
                 value: "5+",
                 icon: Award,
-                color: "from-emerald-500 to-teal-400",
+                color: "from-amber-500 to-orange-400",
               },
             ].map((stat, index) => (
               <motion.div
@@ -371,13 +504,42 @@ export default function TechStack() {
           animate="visible"
           className="space-y-20"
         >
-          {filteredData.map((category, index) => (
-            <CategorySection
-              key={category.category}
-              category={category}
-              index={index}
-            />
-          ))}
+          {selectedCategory === "all" ? (
+            // Show category overviews when "all" is selected
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="space-y-8"
+            >
+              <div className="text-center mb-12">
+                <h3 className="text-3xl font-bold text-white mb-4">
+                  Development Expertise Overview
+                </h3>
+                <p className="text-gray-400 max-w-2xl mx-auto">
+                  Overall proficiency across different development domains
+                </p>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {techStackData.map((category, index) => (
+                  <CategoryOverviewCard
+                    key={category.category}
+                    category={category}
+                    index={index}
+                  />
+                ))}
+              </div>
+            </motion.div>
+          ) : (
+            // Show detailed skills for selected category
+            filteredData.map((category, index) => (
+              <CategorySection
+                key={category.category}
+                category={category}
+                index={index}
+              />
+            ))
+          )}
         </motion.div>
 
         {/* Call to Action */}

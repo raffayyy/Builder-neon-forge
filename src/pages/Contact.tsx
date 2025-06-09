@@ -19,11 +19,11 @@ export default function ContactPage() {
       </div>
 
       <Header />
-      
+
       <main className="pt-20 lg:pt-24 relative z-10">
         <Contact />
       </main>
-      
+
       <Footer />
     </div>
   );
