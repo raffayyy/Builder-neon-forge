@@ -170,7 +170,12 @@ export default function Hero() {
                 variant="outline"
                 size="lg"
                 className="border-white/20 text-white hover:bg-white/10 transition-all duration-300"
-                onClick={() => window.open(personalInfo.resume, "_blank")}
+                onClick={() =>
+                  window.open(
+                    personalInfo?.resume?.url || "/resume.pdf",
+                    "_blank",
+                  )
+                }
               >
                 <Download className="w-5 h-5 mr-2" />
                 Download CV
@@ -182,7 +187,7 @@ export default function Hero() {
               className="flex items-center justify-center lg:justify-start gap-6"
             >
               <a
-                href={personalInfo.social.github}
+                href={personalInfo?.social?.github || "#"}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-white/60 hover:text-white transition-colors duration-300"
@@ -190,7 +195,7 @@ export default function Hero() {
                 <Github className="w-6 h-6" />
               </a>
               <a
-                href={personalInfo.social.linkedin}
+                href={personalInfo?.social?.linkedin || "#"}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-white/60 hover:text-white transition-colors duration-300"
@@ -198,7 +203,7 @@ export default function Hero() {
                 <Linkedin className="w-6 h-6" />
               </a>
               <a
-                href={`mailto:${personalInfo.email}`}
+                href={`mailto:${personalInfo?.email || "contact@example.com"}`}
                 className="text-white/60 hover:text-white transition-colors duration-300"
               >
                 <Mail className="w-6 h-6" />
@@ -228,15 +233,19 @@ export default function Hero() {
 
                   <div className="space-y-2">
                     <h3 className="text-xl font-semibold text-white">
-                      {personalInfo.name}
+                      {personalInfo?.name || "Alex Johnson"}
                     </h3>
-                    <p className="text-white/70">{personalInfo.title}</p>
+                    <p className="text-white/70">
+                      {personalInfo?.title || "AI & Web Developer"}
+                    </p>
                   </div>
 
                   <div className="grid grid-cols-2 gap-4 text-sm">
                     <div className="flex items-center gap-2 text-white/60">
                       <MapPin className="w-4 h-4" />
-                      <span>{personalInfo.location}</span>
+                      <span>
+                        {personalInfo?.location || "San Francisco, CA"}
+                      </span>
                     </div>
                     <div className="flex items-center gap-2 text-white/60">
                       <Clock className="w-4 h-4" />
