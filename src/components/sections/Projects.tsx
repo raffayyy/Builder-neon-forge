@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ExternalLink,
@@ -169,19 +168,8 @@ const ProjectCard = ({ project, index, isSelected, onSelect }) => {
 };
 
 export default function Projects() {
-  const [selectedCategory, setSelectedCategory] = useState("all");
-
-  const categories = [
-    "all",
-    ...Array.from(
-      new Set(projects?.map((p) => p.category).filter(Boolean) || []),
-    ),
-  ];
-
-  const filteredProjects =
-    selectedCategory === "all"
-      ? projects
-      : projects?.filter((p) => p.category === selectedCategory) || [];
+  // For the landing page, we simply show the first 3 projects (no category filtering needed)
+  const filteredProjects = projects?.slice(0, 3) || [];
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -233,27 +221,9 @@ export default function Projects() {
           </h2>
 
           <p className="text-xl text-gray-400 max-w-3xl mx-auto mb-12">
-            A showcase of my recent work, featuring innovative solutions across
+            A curated selection of my best work, showcasing innovative solutions across
             web development, AI/ML, and full-stack applications
           </p>
-
-          {/* Category Filter */}
-          <div className="flex flex-wrap justify-center gap-3">
-            {categories.map((category) => (
-              <Button
-                key={category}
-                onClick={() => setSelectedCategory(category)}
-                variant={selectedCategory === category ? "default" : "outline"}
-                className={`rounded-full capitalize ${
-                  selectedCategory === category
-                    ? "bg-purple-500 hover:bg-purple-600 text-white"
-                    : "border-gray-600 text-gray-300 hover:bg-gray-800"
-                }`}
-              >
-                {category === "all" ? "All Projects" : category}
-              </Button>
-            ))}
-          </div>
         </motion.div>
 
         {/* Projects Grid */}
@@ -288,8 +258,8 @@ export default function Projects() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             {[
               {
-                label: "Projects Completed",
-                value: projects?.length || "15+",
+                label: "Featured Projects",
+                value: "3",
                 icon: Code,
                 color: "from-blue-500 to-cyan-400",
               },
@@ -334,6 +304,25 @@ export default function Projects() {
               </motion.div>
             ))}
           </div>
+        </motion.div>
+
+        {/* View All Projects Button */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.5 }}
+          viewport={{ once: true }}
+          className="text-center mt-12"
+        >
+          <Button
+            size="lg"
+            variant="outline"
+            className="border-gray-600 text-gray-300 hover:bg-gray-800 hover:border-purple-500/50 hover:text-purple-400 rounded-full px-8 py-3 text-lg font-semibold transition-all duration-300"
+            onClick={() => window.location.href = '/projects'}
+          >
+            <Eye className="w-5 h-5 mr-2" />
+            View All Projects
+          </Button>
         </motion.div>
 
         {/* Call to Action */}

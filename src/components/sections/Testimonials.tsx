@@ -35,8 +35,8 @@ export default function Testimonials() {
   };
 
   return (
-    <section id="testimonials" className="section-padding bg-portfolio-surface">
-      <div className="container-custom">
+    <section id="testimonials" className="py-20 lg:py-28 bg-gray-900/50">
+      <div className="container mx-auto px-6 lg:px-8">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -45,8 +45,8 @@ export default function Testimonials() {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <h2 className="heading-2 text-white mb-4">What People Say</h2>
-          <p className="body-large text-white/70 max-w-2xl mx-auto">
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4">What People Say</h2>
+          <p className="text-xl md:text-2xl lg:text-3xl text-white/70 max-w-2xl mx-auto">
             Testimonials and recommendations from colleagues, professors, and
             clients I've had the pleasure to work with
           </p>
@@ -68,12 +68,12 @@ export default function Testimonials() {
                 transition={{ duration: 0.5 }}
                 className="absolute inset-0"
               >
-                <Card className="bg-portfolio-bg border-white/10 h-full">
+                <Card className="bg-white/5 border-white/10 h-full">
                   <CardContent className="p-8 h-full flex flex-col justify-between">
                     {/* Quote Icon */}
                     <div className="flex justify-center mb-6">
-                      <div className="w-16 h-16 bg-portfolio-primary/20 rounded-full flex items-center justify-center">
-                        <Quote className="w-8 h-8 text-portfolio-primary" />
+                      <div className="w-16 h-16 bg-blue-500/20 rounded-full flex items-center justify-center">
+                        <Quote className="w-8 h-8 text-blue-400" />
                       </div>
                     </div>
 
@@ -105,7 +105,7 @@ export default function Testimonials() {
                           src={testimonials[currentIndex].image}
                           alt={testimonials[currentIndex].name}
                         />
-                        <AvatarFallback className="bg-portfolio-primary text-white text-lg">
+                        <AvatarFallback className="bg-blue-600 text-white text-lg">
                           {testimonials[currentIndex].name
                             .split(" ")
                             .map((n) => n[0])
@@ -117,7 +117,7 @@ export default function Testimonials() {
                         <h4 className="text-white font-semibold text-lg">
                           {testimonials[currentIndex].name}
                         </h4>
-                        <p className="text-portfolio-primary font-medium">
+                        <p className="text-blue-400 font-medium">
                           {testimonials[currentIndex].role}
                         </p>
                         <p className="text-white/60 text-sm">
@@ -158,7 +158,7 @@ export default function Testimonials() {
                   onClick={() => goToTestimonial(index)}
                   className={`w-3 h-3 rounded-full transition-all duration-300 ${
                     index === currentIndex
-                      ? "bg-portfolio-primary scale-125"
+                      ? "bg-blue-500 scale-125"
                       : "bg-white/30 hover:bg-white/50"
                   }`}
                 />
@@ -183,7 +183,7 @@ export default function Testimonials() {
                 onClick={() => goToTestimonial(index)}
                 className={`p-4 rounded-lg border transition-all duration-300 text-left ${
                   index === currentIndex
-                    ? "border-portfolio-primary bg-portfolio-primary/10"
+                    ? "border-blue-500 bg-blue-500/10"
                     : "border-white/10 bg-white/5 hover:bg-white/10"
                 }`}
                 whileHover={{ scale: 1.02 }}
@@ -195,7 +195,7 @@ export default function Testimonials() {
                       src={testimonial.image}
                       alt={testimonial.name}
                     />
-                    <AvatarFallback className="bg-portfolio-primary text-white text-sm">
+                    <AvatarFallback className="bg-blue-600 text-white text-sm">
                       {testimonial.name
                         .split(" ")
                         .map((n) => n[0])

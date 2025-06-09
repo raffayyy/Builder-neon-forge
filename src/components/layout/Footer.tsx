@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   Github,
   Linkedin,
@@ -42,23 +43,51 @@ const socialLinks = [
 ];
 
 const quickLinks = [
-  { name: "Home", href: "#home" },
-  { name: "Skills", href: "#skills" },
-  { name: "Experience", href: "#experience" },
-  { name: "Projects", href: "#projects" },
-  { name: "Achievements", href: "#achievements" },
-  { name: "Contact", href: "#contact" },
+  { name: "Home", href: "#home", type: "hash" },
+  { name: "Skills", href: "#skills", type: "hash" },
+  { name: "Experience", href: "#experience", type: "hash" },
+  { name: "Projects", href: "#projects", type: "hash" },
+  { name: "Achievements", href: "#achievements", type: "hash" },
+  { name: "Blog", href: "/blog", type: "route" },
+  { name: "Resume", href: "/resume", type: "route" },
 ];
 
 export default function Footer() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const scrollToSection = (href: string) => {
-    const element = document.querySelector(href);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
+  const handleNavigation = (item: typeof quickLinks[0]) => {
+    if (item.type === "hash") {
+      // If we're not on the home page, navigate to home first
+      if (location.pathname !== "/") {
+        navigate("/");
+        // Wait for navigation to complete, then scroll
+        setTimeout(() => {
+          const element = document.querySelector(item.href);
+          if (element) {
+            element.scrollIntoView({
+              behavior: "smooth",
+              block: "start",
+            });
+          }
+        }, 100);
+      } else {
+        // Already on home page, just scroll
+        const element = document.querySelector(item.href);
+        if (element) {
+          element.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
+        }
+      }
+    } else {
+      // Route navigation
+      navigate(item.href);
     }
   };
 
@@ -125,7 +154,7 @@ export default function Footer() {
               {quickLinks.map((link) => (
                 <motion.button
                   key={link.name}
-                  onClick={() => scrollToSection(link.href)}
+                  onClick={() => handleNavigation(link)}
                   className="block text-gray-400 hover:text-white transition-colors duration-200 text-left"
                   whileHover={{ x: 5 }}
                   transition={{ duration: 0.2 }}

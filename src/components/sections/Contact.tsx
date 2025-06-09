@@ -375,29 +375,6 @@ export default function Contact() {
                 ))}
               </div>
             </div>
-
-            {/* Availability */}
-            <div className="bg-gray-900/30 border border-gray-700/50 rounded-xl p-6">
-              <h3 className="text-xl font-bold text-white mb-4">
-                Current Availability
-              </h3>
-              <div className="space-y-3">
-                <div className="flex items-center gap-3">
-                  <div className="w-3 h-3 bg-emerald-400 rounded-full animate-pulse" />
-                  <span className="text-emerald-400 font-medium">
-                    Available for new projects
-                  </span>
-                </div>
-                <div className="text-gray-400 text-sm">
-                  I typically respond within 24 hours during business days.
-                </div>
-                <div className="text-gray-400 text-sm">
-                  <strong>Best times to reach me:</strong>
-                  <br />
-                  Monday - Friday: 9 AM - 6 PM PST
-                </div>
-              </div>
-            </div>
           </motion.div>
         </div>
       </div>

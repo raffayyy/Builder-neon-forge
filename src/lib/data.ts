@@ -281,6 +281,83 @@ export const blogPosts = [
     title: "Building Scalable AI Applications with React and TensorFlow",
     summary:
       "A comprehensive guide to integrating machine learning models into React applications for production use.",
+    content: `
+      <div class="space-y-6">
+        <h2 class="text-2xl font-bold text-coral mb-4">Introduction to AI-Powered Web Applications</h2>
+        <p class="text-white/80 leading-relaxed">
+          The intersection of artificial intelligence and web development has opened up exciting possibilities 
+          for creating intelligent, responsive applications. In this comprehensive guide, we'll explore how to 
+          seamlessly integrate TensorFlow.js models into React applications for production-ready AI solutions.
+        </p>
+        
+        <h3 class="text-xl font-semibold text-emerald mb-3">Why TensorFlow.js for Web AI?</h3>
+        <p class="text-white/80 leading-relaxed">
+          TensorFlow.js brings machine learning capabilities directly to the browser and Node.js environments. 
+          This means we can run AI models client-side, reducing server costs and improving response times while 
+          maintaining user privacy.
+        </p>
+        
+        <h3 class="text-xl font-semibold text-emerald mb-3">Setting Up Your Development Environment</h3>
+        <div class="bg-gray-900/50 rounded-lg p-4 border border-white/10">
+          <pre class="text-green-400"><code>npm install @tensorflow/tfjs @tensorflow/tfjs-react-native
+npm install react react-dom</code></pre>
+        </div>
+        
+        <h3 class="text-xl font-semibold text-emerald mb-3">Building Your First AI Component</h3>
+        <p class="text-white/80 leading-relaxed">
+          Let's create a React component that uses a pre-trained model for image classification. This example 
+          demonstrates the core concepts you'll need for more complex AI integrations.
+        </p>
+        
+        <div class="bg-gray-900/50 rounded-lg p-4 border border-white/10">
+          <pre class="text-blue-400"><code>import * as tf from '@tensorflow/tfjs';
+import { useEffect, useState } from 'react';
+
+const ImageClassifier = () => {
+  const [model, setModel] = useState(null);
+  const [prediction, setPrediction] = useState('');
+  
+  useEffect(() => {
+    const loadModel = async () => {
+      const loadedModel = await tf.loadLayersModel('/models/mobilenet/model.json');
+      setModel(loadedModel);
+    };
+    loadModel();
+  }, []);
+  
+  return (
+    &lt;div className="ai-component"&gt;
+      {/* Component JSX */}
+    &lt;/div&gt;
+  );
+};</code></pre>
+        </div>
+        
+        <h3 class="text-xl font-semibold text-emerald mb-3">Performance Optimization Strategies</h3>
+        <ul class="list-disc list-inside space-y-2 text-white/80">
+          <li>Model quantization for reduced file sizes</li>
+          <li>Lazy loading of AI models to improve initial page load</li>
+          <li>Web Workers for intensive computations</li>
+          <li>Model caching strategies</li>
+        </ul>
+        
+        <h3 class="text-xl font-semibold text-emerald mb-3">Production Deployment Considerations</h3>
+        <p class="text-white/80 leading-relaxed">
+          When deploying AI-powered React applications, consider model versioning, fallback strategies 
+          for unsupported browsers, and monitoring model performance in production environments.
+        </p>
+        
+        <div class="bg-amber/10 border border-amber/20 rounded-lg p-4 mt-6">
+          <h4 class="text-amber font-semibold mb-2">Key Takeaways</h4>
+          <ul class="list-disc list-inside space-y-1 text-white/80 text-sm">
+            <li>TensorFlow.js enables client-side AI without server dependencies</li>
+            <li>React hooks provide clean integration patterns for AI models</li>
+            <li>Performance optimization is crucial for user experience</li>
+            <li>Consider progressive enhancement for broader browser support</li>
+          </ul>
+        </div>
+      </div>
+    `,
     url: "https://dev.to/alexjohnson/building-scalable-ai-apps",
     platform: "Dev.to",
     date: "2024-01-10",
@@ -293,6 +370,69 @@ export const blogPosts = [
     title: "The Future of 3D Web Experiences",
     summary:
       "Exploring the potential of WebGL and React Three Fiber in creating immersive web applications.",
+    content: `
+      <div class="space-y-6">
+        <h2 class="text-2xl font-bold text-coral mb-4">The Evolution of Web-Based 3D Graphics</h2>
+        <p class="text-white/80 leading-relaxed">
+          The web is evolving beyond flat, 2D interfaces into immersive 3D experiences that rival native applications. 
+          With WebGL, React Three Fiber, and modern browser capabilities, we're entering a new era of web development 
+          where 3D interactions are becoming mainstream.
+        </p>
+        
+        <h3 class="text-xl font-semibold text-emerald mb-3">WebGL: The Foundation of Web 3D</h3>
+        <p class="text-white/80 leading-relaxed">
+          WebGL (Web Graphics Library) provides a JavaScript API for rendering interactive 2D and 3D graphics 
+          within any compatible web browser without the use of plug-ins. It's based on OpenGL ES and brings 
+          GPU-accelerated graphics to the web platform.
+        </p>
+        
+        <h3 class="text-xl font-semibold text-emerald mb-3">React Three Fiber: Declarative 3D</h3>
+        <p class="text-white/80 leading-relaxed">
+          React Three Fiber is a React renderer for Three.js that allows us to build 3D scenes declaratively 
+          with reusable components. It brings the component-based architecture of React to 3D development.
+        </p>
+        
+        <div class="bg-gray-900/50 rounded-lg p-4 border border-white/10">
+          <pre class="text-blue-400"><code>import { Canvas } from '@react-three/fiber'
+import { Box, Sphere } from '@react-three/drei'
+
+function Scene() {
+  return (
+    &lt;Canvas&gt;
+      &lt;ambientLight intensity={0.5} /&gt;
+      &lt;pointLight position={[10, 10, 10]} /&gt;
+      &lt;Box position={[-1.2, 0, 0]} /&gt;
+      &lt;Sphere position={[1.2, 0, 0]} /&gt;
+    &lt;/Canvas&gt;
+  )
+}</code></pre>
+        </div>
+        
+        <h3 class="text-xl font-semibold text-emerald mb-3">Performance Considerations</h3>
+        <ul class="list-disc list-inside space-y-2 text-white/80">
+          <li>Frustum culling to render only visible objects</li>
+          <li>Level of detail (LOD) systems for complex models</li>
+          <li>Texture optimization and compression</li>
+          <li>Efficient animation and physics calculations</li>
+        </ul>
+        
+        <h3 class="text-xl font-semibold text-emerald mb-3">Real-World Applications</h3>
+        <p class="text-white/80 leading-relaxed">
+          From e-commerce product visualizations to interactive educational content, architectural walkthroughs, 
+          and immersive storytelling, 3D web experiences are transforming how users interact with digital content.
+        </p>
+        
+        <div class="bg-lavender/10 border border-lavender/20 rounded-lg p-4 mt-6">
+          <h4 class="text-lavender font-semibold mb-2">Future Trends</h4>
+          <ul class="list-disc list-inside space-y-1 text-white/80 text-sm">
+            <li>WebXR for virtual and augmented reality experiences</li>
+            <li>AI-powered 3D content generation</li>
+            <li>Real-time collaboration in 3D spaces</li>
+            <li>Integration with IoT and physical world data</li>
+          </ul>
+        </div>
+      </div>
+    `,
     url: "https://medium.com/@alexjohnson/future-3d-web",
     platform: "Medium",
     date: "2023-12-22",
@@ -305,6 +445,83 @@ export const blogPosts = [
     title: "Optimizing React Performance with Modern Techniques",
     summary:
       "Deep dive into React 18 features and performance optimization strategies for large-scale applications.",
+    content: `
+      <div class="space-y-6">
+        <h2 class="text-2xl font-bold text-coral mb-4">React 18: Performance by Default</h2>
+        <p class="text-white/80 leading-relaxed">
+          React 18 introduces groundbreaking features that fundamentally change how we think about performance 
+          optimization. With concurrent features, automatic batching, and Suspense improvements, building fast 
+          React applications has never been more achievable.
+        </p>
+        
+        <h3 class="text-xl font-semibold text-emerald mb-3">Concurrent Features</h3>
+        <p class="text-white/80 leading-relaxed">
+          The most significant addition in React 18 is concurrent rendering, which allows React to prepare 
+          multiple versions of the UI at the same time, interrupting rendering work to handle high-priority updates.
+        </p>
+        
+        <div class="bg-gray-900/50 rounded-lg p-4 border border-white/10">
+          <pre class="text-blue-400"><code>import { startTransition } from 'react';
+
+// Mark updates as non-urgent
+startTransition(() => {
+  setSearchResults(filterLargeList(query));
+});</code></pre>
+        </div>
+        
+        <h3 class="text-xl font-semibold text-emerald mb-3">Automatic Batching</h3>
+        <p class="text-white/80 leading-relaxed">
+          React 18 automatically batches multiple state updates into a single re-render for better performance, 
+          even when they occur in promises, timeouts, or native event handlers.
+        </p>
+        
+        <h3 class="text-xl font-semibold text-emerald mb-3">Optimizing Component Re-renders</h3>
+        <ul class="list-disc list-inside space-y-2 text-white/80">
+          <li>Use React.memo() for component memoization</li>
+          <li>Implement useMemo() for expensive calculations</li>
+          <li>Apply useCallback() for stable function references</li>
+          <li>Leverage useTransition() for non-urgent updates</li>
+        </ul>
+        
+        <div class="bg-gray-900/50 rounded-lg p-4 border border-white/10">
+          <pre class="text-green-400"><code>const ExpensiveComponent = React.memo(({ data, onUpdate }) => {
+  const expensiveValue = useMemo(() => {
+    return data.reduce((acc, item) => acc + item.value, 0);
+  }, [data]);
+  
+  const handleClick = useCallback(() => {
+    onUpdate(data.id);
+  }, [data.id, onUpdate]);
+  
+  return &lt;div onClick={handleClick}&gt;{expensiveValue}&lt;/div&gt;;
+});</code></pre>
+        </div>
+        
+        <h3 class="text-xl font-semibold text-emerald mb-3">Bundle Optimization Strategies</h3>
+        <ul class="list-disc list-inside space-y-2 text-white/80">
+          <li>Code splitting with React.lazy() and Suspense</li>
+          <li>Tree shaking for eliminating dead code</li>
+          <li>Dynamic imports for route-based code splitting</li>
+          <li>Bundle analysis to identify optimization opportunities</li>
+        </ul>
+        
+        <h3 class="text-xl font-semibold text-emerald mb-3">Measuring Performance</h3>
+        <p class="text-white/80 leading-relaxed">
+          Use React DevTools Profiler, browser performance tools, and real user monitoring to identify 
+          performance bottlenecks and validate optimization efforts.
+        </p>
+        
+        <div class="bg-emerald/10 border border-emerald/20 rounded-lg p-4 mt-6">
+          <h4 class="text-emerald font-semibold mb-2">Best Practices Summary</h4>
+          <ul class="list-disc list-inside space-y-1 text-white/80 text-sm">
+            <li>Profile before optimizing to identify real bottlenecks</li>
+            <li>Use concurrent features for better user experience</li>
+            <li>Implement proper memoization strategies</li>
+            <li>Monitor performance in production environments</li>
+          </ul>
+        </div>
+      </div>
+    `,
     url: "https://dev.to/alexjohnson/react-performance-optimization",
     platform: "Dev.to",
     date: "2023-11-15",
@@ -312,6 +529,222 @@ export const blogPosts = [
     tags: ["React", "Performance", "Optimization", "JavaScript"],
     featured: false,
   },
+  {
+    id: 4,
+    title: "Implementing Dark Mode with CSS Custom Properties",
+    summary:
+      "A modern approach to building theme systems using CSS custom properties and React context.",
+    content: `
+      <div class="space-y-6">
+        <h2 class="text-2xl font-bold text-coral mb-4">Modern Theme Systems with CSS Custom Properties</h2>
+        <p class="text-white/80 leading-relaxed">
+          Creating a robust dark mode implementation goes beyond simple class toggling. By leveraging 
+          CSS custom properties and React context, we can build scalable theme systems that provide 
+          excellent user experience and developer experience.
+        </p>
+        
+        <h3 class="text-xl font-semibold text-emerald mb-3">CSS Custom Properties Foundation</h3>
+        <div class="bg-gray-900/50 rounded-lg p-4 border border-white/10">
+          <pre class="text-purple-400"><code>:root {
+  --color-background: #ffffff;
+  --color-text: #1a1a1a;
+  --color-primary: #3b82f6;
+}
+
+[data-theme="dark"] {
+  --color-background: #1a1a1a;
+  --color-text: #ffffff;
+  --color-primary: #60a5fa;
+}</code></pre>
+        </div>
+        
+        <h3 class="text-xl font-semibold text-emerald mb-3">React Theme Context</h3>
+        <p class="text-white/80 leading-relaxed">
+          Using React Context API, we can provide theme state and controls throughout our application 
+          while maintaining clean separation of concerns.
+        </p>
+        
+        <div class="bg-gray-900/50 rounded-lg p-4 border border-white/10">
+          <pre class="text-blue-400"><code>const ThemeContext = createContext();
+
+export const ThemeProvider = ({ children }) => {
+  const [theme, setTheme] = useState('light');
+  
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+  }, [theme]);
+  
+  return (
+    &lt;ThemeContext.Provider value={{ theme, setTheme }}&gt;
+      {children}
+    &lt;/ThemeContext.Provider&gt;
+  );
+};</code></pre>
+        </div>
+        
+        <h3 class="text-xl font-semibold text-emerald mb-3">System Preference Detection</h3>
+        <p class="text-white/80 leading-relaxed">
+          Respect user preferences by detecting system-level dark mode settings and providing 
+          options for manual override.
+        </p>
+        
+        <div class="bg-gray-900/50 rounded-lg p-4 border border-white/10">
+          <pre class="text-green-400"><code>const useSystemTheme = () => {
+  const [systemTheme, setSystemTheme] = useState(
+    window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+  );
+  
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const handleChange = (e) => setSystemTheme(e.matches ? 'dark' : 'light');
+    
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
+  }, []);
+  
+  return systemTheme;
+};</code></pre>
+        </div>
+        
+        <h3 class="text-xl font-semibold text-emerald mb-3">Animation and Transitions</h3>
+        <p class="text-white/80 leading-relaxed">
+          Smooth transitions between themes enhance user experience. However, be mindful of users 
+          who prefer reduced motion.
+        </p>
+        
+        <div class="bg-amber/10 border border-amber/20 rounded-lg p-4 mt-6">
+          <h4 class="text-amber font-semibold mb-2">Implementation Tips</h4>
+          <ul class="list-disc list-inside space-y-1 text-white/80 text-sm">
+            <li>Use semantic color names rather than literal values</li>
+            <li>Test accessibility in both light and dark modes</li>
+            <li>Consider intermediate themes (dim, high contrast)</li>
+            <li>Persist user preferences in localStorage</li>
+          </ul>
+        </div>
+      </div>
+    `,
+    url: "https://css-tricks.com/alexjohnson/modern-dark-mode",
+    platform: "CSS-Tricks",
+    date: "2023-10-28",
+    readTime: 7,
+    tags: ["CSS", "React", "Design System", "UX"],
+    featured: false,
+  },
+  {
+    id: 5,
+    title: "Building Real-time Applications with WebSockets and React",
+    summary:
+      "Learn how to implement real-time features in React applications using WebSockets and modern state management.",
+    content: `
+      <div class="space-y-6">
+        <h2 class="text-2xl font-bold text-coral mb-4">Real-time Web Applications with WebSockets</h2>
+        <p class="text-white/80 leading-relaxed">
+          Real-time features have become essential for modern web applications. From live chat and 
+          collaborative editing to real-time notifications and live data feeds, WebSockets provide 
+          the foundation for building responsive, interactive user experiences.
+        </p>
+        
+        <h3 class="text-xl font-semibold text-emerald mb-3">WebSocket Fundamentals</h3>
+        <p class="text-white/80 leading-relaxed">
+          Unlike traditional HTTP requests, WebSockets provide full-duplex communication channels 
+          over a single TCP connection, enabling real-time data exchange between client and server.
+        </p>
+        
+        <div class="bg-gray-900/50 rounded-lg p-4 border border-white/10">
+          <pre class="text-blue-400"><code>const useWebSocket = (url) => {
+  const [socket, setSocket] = useState(null);
+  const [isConnected, setIsConnected] = useState(false);
+  
+  useEffect(() => {
+    const ws = new WebSocket(url);
+    
+    ws.onopen = () => {
+      setSocket(ws);
+      setIsConnected(true);
+    };
+    
+    ws.onclose = () => {
+      setIsConnected(false);
+    };
+    
+    return () => ws.close();
+  }, [url]);
+  
+  return { socket, isConnected };
+};</code></pre>
+        </div>
+        
+        <h3 class="text-xl font-semibold text-emerald mb-3">State Management for Real-time Data</h3>
+        <p class="text-white/80 leading-relaxed">
+          Managing real-time data requires careful consideration of state updates, conflict resolution, 
+          and optimistic updates to maintain smooth user experience.
+        </p>
+        
+        <div class="bg-gray-900/50 rounded-lg p-4 border border-white/10">
+          <pre class="text-green-400"><code>const useRealtimeData = (socket, initialData = []) => {
+  const [data, setData] = useState(initialData);
+  
+  useEffect(() => {
+    if (!socket) return;
+    
+    const handleMessage = (event) => {
+      const message = JSON.parse(event.data);
+      
+      switch (message.type) {
+        case 'CREATE':
+          setData(prev => [...prev, message.payload]);
+          break;
+        case 'UPDATE':
+          setData(prev => prev.map(item => 
+            item.id === message.payload.id ? message.payload : item
+          ));
+          break;
+        case 'DELETE':
+          setData(prev => prev.filter(item => item.id !== message.payload.id));
+          break;
+      }
+    };
+    
+    socket.addEventListener('message', handleMessage);
+    return () => socket.removeEventListener('message', handleMessage);
+  }, [socket]);
+  
+  return data;
+};</code></pre>
+        </div>
+        
+        <h3 class="text-xl font-semibold text-emerald mb-3">Connection Management</h3>
+        <ul class="list-disc list-inside space-y-2 text-white/80">
+          <li>Automatic reconnection with exponential backoff</li>
+          <li>Connection state indicators for user feedback</li>
+          <li>Offline detection and queue management</li>
+          <li>Heartbeat mechanisms for connection health</li>
+        </ul>
+        
+        <h3 class="text-xl font-semibold text-emerald mb-3">Performance Considerations</h3>
+        <p class="text-white/80 leading-relaxed">
+          Real-time applications can generate high-frequency updates. Implement throttling, 
+          debouncing, and selective updates to maintain optimal performance.
+        </p>
+        
+        <div class="bg-lavender/10 border border-lavender/20 rounded-lg p-4 mt-6">
+          <h4 class="text-lavender font-semibold mb-2">Best Practices</h4>
+          <ul class="list-disc list-inside space-y-1 text-white/80 text-sm">
+            <li>Implement proper error handling and fallbacks</li>
+            <li>Use message batching for high-frequency updates</li>
+            <li>Consider using libraries like Socket.IO for production</li>
+            <li>Test with various network conditions and latencies</li>
+          </ul>
+        </div>
+      </div>
+    `,
+    url: "https://dev.to/alexjohnson/websockets-react-realtime",
+    platform: "Dev.to",
+    date: "2023-09-12",
+    readTime: 10,
+    tags: ["WebSockets", "React", "Real-time", "JavaScript"],
+    featured: false,
+  }
 ];
 
 export const experience = [

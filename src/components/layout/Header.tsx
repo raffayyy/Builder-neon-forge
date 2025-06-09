@@ -1,50 +1,77 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const navigation = [
-  { name: "Home", href: "#home" },
-  { name: "Projects", href: "#projects" },
-  { name: "About", href: "#skills" },
-  { name: "GitHub", href: "#github" },
-  { name: "Contact", href: "#contact" },
+  { name: "Home", href: "#home", type: "hash" },
+  { name: "Projects", href: "#projects", type: "hash" },
+  { name: "Blog", href: "/blog", type: "route" },
+  { name: "Resume", href: "/resume", type: "route" },
 ];
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
       const scrollY = window.scrollY;
       setIsScrolled(scrollY > 50);
 
-      // Update active section based on scroll position
-      const sections = navigation.map((item) => item.href.substring(1));
-      const currentSection = sections.find((section) => {
-        const element = document.getElementById(section);
-        if (element) {
-          const rect = element.getBoundingClientRect();
-          return rect.top <= 100 && rect.bottom >= 100;
-        }
-        return false;
-      });
+      // Only update active section for hash navigation when on home page
+      if (location.pathname === "/") {
+        const sections = navigation
+          .filter(item => item.type === "hash")
+          .map((item) => item.href.substring(1));
+        const currentSection = sections.find((section) => {
+          const element = document.getElementById(section);
+          if (element) {
+            const rect = element.getBoundingClientRect();
+            return rect.top <= 100 && rect.bottom >= 100;
+          }
+          return false;
+        });
 
-      if (currentSection) {
-        setActiveSection(currentSection);
+        if (currentSection) {
+          setActiveSection(currentSection);
+        }
       }
     };
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [location.pathname]);
 
-  const scrollToSection = (href: string) => {
-    const element = document.querySelector(href);
-    if (element) {
-      element.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
+  const handleNavigation = (item: typeof navigation[0]) => {
+    if (item.type === "hash") {
+      // If we're not on the home page, navigate to home first
+      if (location.pathname !== "/") {
+        navigate("/");
+        // Wait for navigation to complete, then scroll
+        setTimeout(() => {
+          const element = document.querySelector(item.href);
+          if (element) {
+            element.scrollIntoView({
+              behavior: "smooth",
+              block: "start",
+            });
+          }
+        }, 100);
+      } else {
+        // Already on home page, just scroll
+        const element = document.querySelector(item.href);
+        if (element) {
+          element.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
+        }
+      }
+    } else {
+      // Route navigation
+      navigate(item.href);
     }
   };
 
@@ -80,12 +107,14 @@ export default function Header() {
               className={`flex items-center gap-1 ${isScrolled ? "gap-1" : "gap-8"}`}
             >
               {navigation.map((item) => {
-                const isActive = activeSection === item.href.substring(1);
+                const isActive = item.type === "hash" 
+                  ? activeSection === item.href.substring(1) && location.pathname === "/"
+                  : location.pathname === item.href;
 
                 return (
                   <motion.button
                     key={item.name}
-                    onClick={() => scrollToSection(item.href)}
+                    onClick={() => handleNavigation(item)}
                     className={`relative px-4 py-2 rounded-full font-medium transition-all duration-300 ${
                       isActive ? "text-white" : "text-gray-400 hover:text-white"
                     } ${isScrolled ? "text-sm" : "text-base"}`}

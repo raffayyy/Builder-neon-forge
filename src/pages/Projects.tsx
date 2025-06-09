@@ -55,10 +55,18 @@ export default function Projects() {
   ).sort();
 
   return (
-    <div className="min-h-screen bg-portfolio-bg">
+    <div className="min-h-screen bg-gray-950">
+      {/* Sophisticated background effects matching landing page */}
+      <div className="fixed inset-0 pointer-events-none z-0">
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-purple-500/5 to-emerald-500/5" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.1),transparent_70%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(168,85,247,0.08),transparent_50%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_80%,rgba(16,185,129,0.08),transparent_50%)]" />
+      </div>
+
       <Header />
 
-      <main className="pt-20 lg:pt-24">
+      <main className="pt-20 lg:pt-24 relative z-10">
         {/* Hero Section */}
         <section className="section-padding">
           <div className="container-custom">
@@ -68,8 +76,8 @@ export default function Projects() {
               transition={{ duration: 0.6 }}
               className="text-center mb-16"
             >
-              <h1 className="heading-1 text-white mb-6">My Projects</h1>
-              <p className="body-large text-white/70 max-w-3xl mx-auto">
+              <h1 className="heading-2 gradient-text-coral mb-6">My Projects</h1>
+              <p className="body-regular text-white/70 max-w-3xl mx-auto">
                 A comprehensive showcase of my work in AI, web development, and
                 creative technology. Each project represents a unique challenge
                 and learning experience.
@@ -81,42 +89,44 @@ export default function Projects() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="flex flex-col md:flex-row gap-4 mb-12"
+              className="glass-card p-6 mb-12"
             >
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/40 w-5 h-5" />
-                <Input
-                  placeholder="Search projects..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 bg-white/5 border-white/20 text-white placeholder:text-white/40"
-                />
+              <div className="flex flex-col md:flex-row gap-4">
+                <div className="relative flex-1">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-coral/60 w-5 h-5" />
+                  <Input
+                    placeholder="Search projects..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-10 bg-white/5 border-white/20 text-white placeholder:text-white/40 focus:border-coral/50 focus:ring-coral/20"
+                  />
+                </div>
+
+                <Select value={selectedStatus} onValueChange={setSelectedStatus}>
+                  <SelectTrigger className="w-full md:w-48 bg-white/5 border-white/20 text-white hover:border-emerald/50">
+                    <SelectValue placeholder="Filter by status" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-slate-900 border-white/20">
+                    <SelectItem value="all">All Status</SelectItem>
+                    <SelectItem value="Completed">Completed</SelectItem>
+                    <SelectItem value="In Progress">In Progress</SelectItem>
+                  </SelectContent>
+                </Select>
+
+                <Select value={selectedTech} onValueChange={setSelectedTech}>
+                  <SelectTrigger className="w-full md:w-48 bg-white/5 border-white/20 text-white hover:border-lavender/50">
+                    <SelectValue placeholder="Filter by tech" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-slate-900 border-white/20">
+                    <SelectItem value="all">All Technologies</SelectItem>
+                    {allTechnologies.map((tech) => (
+                      <SelectItem key={tech} value={tech}>
+                        {tech}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
-
-              <Select value={selectedStatus} onValueChange={setSelectedStatus}>
-                <SelectTrigger className="w-full md:w-48 bg-white/5 border-white/20 text-white">
-                  <SelectValue placeholder="Filter by status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Status</SelectItem>
-                  <SelectItem value="Completed">Completed</SelectItem>
-                  <SelectItem value="In Progress">In Progress</SelectItem>
-                </SelectContent>
-              </Select>
-
-              <Select value={selectedTech} onValueChange={setSelectedTech}>
-                <SelectTrigger className="w-full md:w-48 bg-white/5 border-white/20 text-white">
-                  <SelectValue placeholder="Filter by tech" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Technologies</SelectItem>
-                  {allTechnologies.map((tech) => (
-                    <SelectItem key={tech} value={tech}>
-                      {tech}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
             </motion.div>
 
             {/* Results Count */}
@@ -127,7 +137,8 @@ export default function Projects() {
               className="mb-8"
             >
               <p className="text-white/70">
-                Showing {filteredProjects.length} of {projects.length} projects
+                Showing <span className="text-coral font-semibold">{filteredProjects.length}</span> of{" "}
+                <span className="text-emerald font-semibold">{projects.length}</span> projects
               </p>
             </motion.div>
           </div>
@@ -146,18 +157,20 @@ export default function Projects() {
                   viewport={{ once: true }}
                   className="group"
                 >
-                  <Card className="bg-portfolio-surface border-white/10 overflow-hidden card-hover h-full">
+                  <Card className="glass-card overflow-hidden hover:shadow-glass-lg h-full group">
                     {/* 3D Model */}
                     <div className="relative">
                       <ProjectModel
                         title={project.title}
                         technologies={project.technologies}
                         color={
-                          index % 3 === 0
-                            ? "#6366f1"
-                            : index % 3 === 1
-                              ? "#8b5cf6"
-                              : "#06b6d4"
+                          index % 4 === 0
+                            ? "#ff6b6b" // coral
+                            : index % 4 === 1
+                              ? "#4ecdc4" // emerald
+                              : index % 4 === 2
+                                ? "#a55eea" // lavender
+                                : "#feca57" // amber
                         }
                       />
 
@@ -171,8 +184,8 @@ export default function Projects() {
                           }
                           className={
                             project.status === "Completed"
-                              ? "bg-green-500/20 text-green-400 border-green-500/30"
-                              : "bg-yellow-500/20 text-yellow-400 border-yellow-500/30"
+                              ? "bg-emerald/20 text-emerald border-emerald/30"
+                              : "bg-amber/20 text-amber border-amber/30"
                           }
                         >
                           {project.status}
@@ -195,7 +208,7 @@ export default function Projects() {
                           <Badge
                             key={tech}
                             variant="outline"
-                            className="border-white/20 text-white/80 hover:border-portfolio-primary hover:text-portfolio-primary transition-colors"
+                            className="border-white/20 text-white/80 hover:border-coral/50 hover:text-coral transition-colors"
                           >
                             {tech}
                           </Badge>
@@ -257,7 +270,7 @@ export default function Projects() {
                       <div className="flex items-center space-x-3 pt-4">
                         <Button
                           variant="outline"
-                          className="border-white/20 text-white hover:bg-white/10 flex-1"
+                          className="border-white/20 text-white hover:bg-white/10 hover:border-coral/50 flex-1 group"
                           asChild
                         >
                           <a
@@ -265,14 +278,14 @@ export default function Projects() {
                             target="_blank"
                             rel="noopener noreferrer"
                           >
-                            <Github className="w-4 h-4 mr-2" />
+                            <Github className="w-4 h-4 mr-2 group-hover:text-coral transition-colors" />
                             View Code
                           </a>
                         </Button>
 
                         {project.demo && (
                           <Button
-                            className="bg-portfolio-primary hover:bg-portfolio-primary/80 text-white flex-1"
+                            className="btn-coral flex-1"
                             asChild
                           >
                             <a
@@ -300,8 +313,8 @@ export default function Projects() {
                 transition={{ duration: 0.6 }}
                 className="text-center py-16"
               >
-                <div className="w-24 h-24 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <Search className="w-12 h-12 text-white/40" />
+                <div className="w-24 h-24 glass-card rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Search className="w-12 h-12 text-coral/60" />
                 </div>
                 <h3 className="text-white text-xl font-semibold mb-4">
                   No projects found
@@ -316,7 +329,7 @@ export default function Projects() {
                     setSelectedStatus("all");
                     setSelectedTech("all");
                   }}
-                  className="border-white/20 text-white hover:bg-white/10"
+                  className="border-white/20 text-white hover:bg-white/10 hover:border-coral/50"
                 >
                   Clear Filters
                 </Button>

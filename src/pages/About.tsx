@@ -12,10 +12,18 @@ export default function About() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-portfolio-bg">
+    <div className="min-h-screen bg-gray-950">
+      {/* Sophisticated background effects matching landing page */}
+      <div className="fixed inset-0 pointer-events-none z-0">
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-purple-500/5 to-emerald-500/5" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.1),transparent_70%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(168,85,247,0.08),transparent_50%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_80%,rgba(16,185,129,0.08),transparent_50%)]" />
+      </div>
+
       <Header />
 
-      <main className="pt-20 lg:pt-24">
+      <main className="pt-20 lg:pt-24 relative z-10">
         {/* Hero Section */}
         <section className="section-padding">
           <div className="container-custom">
@@ -28,14 +36,14 @@ export default function About() {
                 className="space-y-8"
               >
                 <div>
-                  <h1 className="heading-1 text-white mb-6">About Me</h1>
-                  <p className="body-large text-white/70 leading-relaxed">
+                  <h1 className="heading-2 gradient-text-coral mb-6">About Me</h1>
+                  <p className="body-regular text-white/70 leading-relaxed">
                     {personalInfo.bio}
                   </p>
                 </div>
 
                 <div className="space-y-6">
-                  <h2 className="heading-3 text-white">My Journey</h2>
+                  <h2 className="heading-3 gradient-text-emerald">My Journey</h2>
                   <div className="space-y-4 text-white/70">
                     <p>
                       I graduated with a First Class Honours degree in Computer
@@ -67,7 +75,7 @@ export default function About() {
                   <h3 className="text-white text-xl font-semibold">
                     What Drives Me
                   </h3>
-                  <blockquote className="text-portfolio-primary text-lg italic border-l-4 border-portfolio-primary pl-4">
+                  <blockquote className="text-coral text-lg italic border-l-4 border-coral pl-4">
                     "{personalInfo.quote}"
                   </blockquote>
                 </div>
@@ -80,9 +88,9 @@ export default function About() {
                 transition={{ duration: 0.6, delay: 0.2 }}
                 className="relative"
               >
-                <div className="aspect-square bg-gradient-to-br from-portfolio-primary to-portfolio-secondary rounded-2xl p-8 flex items-center justify-center">
+                <div className="aspect-square glass-card p-8 flex items-center justify-center">
                   <div className="text-center space-y-4">
-                    <div className="w-32 h-32 bg-white/20 rounded-full flex items-center justify-center mx-auto">
+                    <div className="w-32 h-32 bg-gradient-to-br from-coral to-emerald rounded-full flex items-center justify-center mx-auto">
                       <span className="text-4xl font-bold text-white">AJ</span>
                     </div>
                     <div className="text-white">
@@ -98,9 +106,9 @@ export default function About() {
                 </div>
 
                 {/* Floating Elements */}
-                <div className="absolute -top-4 -right-4 w-20 h-20 bg-portfolio-accent/20 rounded-lg animate-float" />
+                <div className="absolute -top-4 -right-4 w-20 h-20 bg-lavender/20 rounded-lg animate-float-gentle" />
                 <div
-                  className="absolute -bottom-4 -left-4 w-16 h-16 bg-portfolio-secondary/20 rounded-lg animate-float"
+                  className="absolute -bottom-4 -left-4 w-16 h-16 bg-emerald/20 rounded-lg animate-float-gentle"
                   style={{ animationDelay: "1s" }}
                 />
               </motion.div>
@@ -109,7 +117,7 @@ export default function About() {
         </section>
 
         {/* Skills Overview */}
-        <section className="section-padding bg-portfolio-surface">
+        <section className="section-padding">
           <div className="container-custom">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -118,8 +126,8 @@ export default function About() {
               viewport={{ once: true }}
               className="text-center mb-16"
             >
-              <h2 className="heading-2 text-white mb-4">Core Competencies</h2>
-              <p className="body-large text-white/70 max-w-2xl mx-auto">
+              <h2 className="heading-2 gradient-text-coral mb-4">Core Competencies</h2>
+              <p className="body-regular text-white/70 max-w-2xl mx-auto">
                 A breakdown of my key skills and areas of expertise
               </p>
             </motion.div>
@@ -130,19 +138,19 @@ export default function About() {
                   title: "Frontend Development",
                   skills: ["React", "TypeScript", "Next.js", "Tailwind CSS"],
                   icon: "🎨",
-                  color: "from-blue-500 to-cyan-500",
+                  color: "from-coral to-coral-light",
                 },
                 {
                   title: "Backend Development",
                   skills: ["Node.js", "Python", "PostgreSQL", "GraphQL"],
                   icon: "⚙️",
-                  color: "from-green-500 to-emerald-500",
+                  color: "from-emerald to-emerald-light",
                 },
                 {
                   title: "AI & Machine Learning",
                   skills: ["TensorFlow", "PyTorch", "OpenAI API", "LangChain"],
                   icon: "🧠",
-                  color: "from-purple-500 to-pink-500",
+                  color: "from-lavender to-lavender-light",
                 },
                 {
                   title: "3D & Creative Tech",
@@ -153,7 +161,7 @@ export default function About() {
                     "Framer Motion",
                   ],
                   icon: "🎯",
-                  color: "from-orange-500 to-red-500",
+                  color: "from-amber to-amber-light",
                 },
               ].map((category, index) => (
                 <motion.div
@@ -164,7 +172,7 @@ export default function About() {
                   viewport={{ once: true }}
                   className="group"
                 >
-                  <div className="bg-portfolio-bg border border-white/10 rounded-lg p-6 card-hover h-full">
+                  <div className="glass-card p-6 hover:shadow-glass-lg h-full">
                     <div
                       className={`w-16 h-16 bg-gradient-to-r ${category.color} rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}
                     >
@@ -181,7 +189,7 @@ export default function About() {
                           key={skill}
                           className="text-white/70 text-sm flex items-center"
                         >
-                          <span className="w-1.5 h-1.5 bg-portfolio-primary rounded-full mr-2" />
+                          <span className="w-1.5 h-1.5 bg-coral rounded-full mr-2" />
                           {skill}
                         </li>
                       ))}
