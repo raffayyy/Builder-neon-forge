@@ -16,7 +16,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import GitHubCalendar from "react-github-calendar";
 
-// Types for GitHub API responses
+// Types for GitHub data
 interface GitHubRepo {
   id: number;
   name: string;
@@ -41,161 +41,112 @@ interface LanguageStats {
   [key: string]: number;
 }
 
-// GitHub username - replace with actual username
-const GITHUB_USERNAME = "alexjohnson"; // Replace with actual GitHub username
-
-// Sample data for demonstration (fallback when API is not available)
-const sampleUser: GitHubUser = {
+// Dummy data that displays immediately
+const dummyUser: GitHubUser = {
   login: "alexjohnson",
   name: "Alex Johnson",
-  public_repos: 42,
-  followers: 156,
-  following: 89,
+  public_repos: 47,
+  followers: 234,
+  following: 156,
   avatar_url: "https://github.com/alexjohnson.png",
 };
 
-const sampleRepos: GitHubRepo[] = [
+const dummyRepos: GitHubRepo[] = [
   {
     id: 1,
     name: "ai-code-reviewer",
     description:
-      "An intelligent code review tool powered by machine learning that identifies bugs, suggests optimizations, and enforces coding standards.",
-    stargazers_count: 342,
-    forks_count: 67,
+      "Intelligent code review assistant powered by GPT-4 and machine learning algorithms for automated bug detection and code optimization.",
+    stargazers_count: 1247,
+    forks_count: 186,
     language: "TypeScript",
     html_url: "https://github.com/alexjohnson/ai-code-reviewer",
-    updated_at: "2024-01-15T10:30:00Z",
+    updated_at: "2024-01-18T14:30:00Z",
   },
   {
     id: 2,
-    name: "portfolio-website",
+    name: "nextjs-portfolio-3d",
     description:
-      "Modern, responsive portfolio website built with React, TypeScript, and Three.js featuring dark theme and smooth animations.",
-    stargazers_count: 128,
-    forks_count: 23,
-    language: "React",
-    html_url: "https://github.com/alexjohnson/portfolio-website",
-    updated_at: "2024-01-12T14:45:00Z",
+      "Modern 3D portfolio website built with Next.js, Three.js, and Framer Motion featuring interactive animations and dark theme.",
+    stargazers_count: 892,
+    forks_count: 145,
+    language: "TypeScript",
+    html_url: "https://github.com/alexjohnson/nextjs-portfolio-3d",
+    updated_at: "2024-01-17T09:15:00Z",
   },
   {
     id: 3,
-    name: "ml-toolkit",
+    name: "ml-data-pipeline",
     description:
-      "Comprehensive machine learning toolkit with pre-built models, data preprocessing utilities, and visualization tools.",
-    stargazers_count: 245,
-    forks_count: 89,
+      "Scalable machine learning data pipeline with Apache Airflow, Docker, and MLflow for model training and deployment automation.",
+    stargazers_count: 634,
+    forks_count: 98,
     language: "Python",
-    html_url: "https://github.com/alexjohnson/ml-toolkit",
-    updated_at: "2024-01-10T09:15:00Z",
+    html_url: "https://github.com/alexjohnson/ml-data-pipeline",
+    updated_at: "2024-01-16T16:45:00Z",
   },
   {
     id: 4,
-    name: "3d-portfolio-ecosystem",
+    name: "react-dashboard-analytics",
     description:
-      "Interactive 3D portfolio experience showcasing projects in a virtual space using Three.js and WebGL.",
-    stargazers_count: 89,
-    forks_count: 34,
+      "Real-time analytics dashboard with React, D3.js, and WebSocket connections for live data visualization and business intelligence.",
+    stargazers_count: 567,
+    forks_count: 89,
     language: "JavaScript",
-    html_url: "https://github.com/alexjohnson/3d-portfolio-ecosystem",
-    updated_at: "2024-01-08T16:20:00Z",
+    html_url: "https://github.com/alexjohnson/react-dashboard-analytics",
+    updated_at: "2024-01-15T11:20:00Z",
   },
   {
     id: 5,
-    name: "nextjs-dashboard",
+    name: "microservices-k8s-deployment",
     description:
-      "Full-stack dashboard application with authentication, real-time data visualization, and modern UI components.",
-    stargazers_count: 167,
-    forks_count: 45,
-    language: "TypeScript",
-    html_url: "https://github.com/alexjohnson/nextjs-dashboard",
-    updated_at: "2024-01-05T11:30:00Z",
+      "Production-ready microservices architecture with Kubernetes, Istio service mesh, and CI/CD pipelines using GitHub Actions.",
+    stargazers_count: 423,
+    forks_count: 67,
+    language: "Go",
+    html_url: "https://github.com/alexjohnson/microservices-k8s-deployment",
+    updated_at: "2024-01-14T13:30:00Z",
   },
   {
     id: 6,
-    name: "api-gateway-microservices",
+    name: "blockchain-voting-system",
     description:
-      "Scalable microservices architecture with API gateway, service discovery, and container orchestration.",
-    stargazers_count: 198,
-    forks_count: 76,
-    language: "Go",
-    html_url: "https://github.com/alexjohnson/api-gateway-microservices",
-    updated_at: "2024-01-03T13:45:00Z",
+      "Secure blockchain-based voting system using Ethereum smart contracts, Web3.js, and IPFS for decentralized governance.",
+    stargazers_count: 789,
+    forks_count: 124,
+    language: "Solidity",
+    html_url: "https://github.com/alexjohnson/blockchain-voting-system",
+    updated_at: "2024-01-13T10:45:00Z",
   },
 ];
 
-const sampleLanguageStats: LanguageStats = {
-  TypeScript: 12,
-  JavaScript: 8,
-  Python: 7,
-  React: 6,
-  Go: 4,
-  Java: 3,
-  Swift: 2,
+const dummyLanguageStats: LanguageStats = {
+  TypeScript: 15,
+  JavaScript: 12,
+  Python: 8,
+  Go: 6,
+  Java: 4,
+  Solidity: 2,
+  Rust: 1,
 };
 
+// GitHub username for the calendar (can be any valid GitHub user)
+const GITHUB_USERNAME = "torvalds"; // Using Linus Torvalds as example since he has public contributions
+
 export default function GitHubContribution() {
-  const [user, setUser] = useState<GitHubUser | null>(null);
-  const [repos, setRepos] = useState<GitHubRepo[]>([]);
-  const [languages, setLanguages] = useState<LanguageStats>({});
+  const [user] = useState<GitHubUser>(dummyUser);
+  const [repos] = useState<GitHubRepo[]>(dummyRepos);
+  const [languages] = useState<LanguageStats>(dummyLanguageStats);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetchGitHubData();
-  }, []);
-
-  const fetchGitHubData = async () => {
-    try {
-      setLoading(true);
-
-      // Try to fetch real data first
-      try {
-        // Fetch user data
-        const userResponse = await fetch(
-          `https://api.github.com/users/${GITHUB_USERNAME}`,
-        );
-        if (userResponse.ok) {
-          const userData = await userResponse.json();
-          setUser(userData);
-        } else {
-          throw new Error("API not available");
-        }
-
-        // Fetch repositories
-        const reposResponse = await fetch(
-          `https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=updated&per_page=6`,
-        );
-        if (reposResponse.ok) {
-          const reposData = await reposResponse.json();
-          setRepos(reposData);
-
-          // Calculate language statistics
-          const langStats: LanguageStats = {};
-          reposData.forEach((repo: GitHubRepo) => {
-            if (repo.language) {
-              langStats[repo.language] = (langStats[repo.language] || 0) + 1;
-            }
-          });
-          setLanguages(langStats);
-        } else {
-          throw new Error("API not available");
-        }
-      } catch (apiError) {
-        // Fallback to sample data for demonstration
-        console.log("Using sample data for GitHub component");
-        setUser(sampleUser);
-        setRepos(sampleRepos);
-        setLanguages(sampleLanguageStats);
-      }
-    } catch (err) {
-      // If everything fails, still show sample data
-      setUser(sampleUser);
-      setRepos(sampleRepos);
-      setLanguages(sampleLanguageStats);
-    } finally {
+    // Simulate loading for realistic effect
+    const timer = setTimeout(() => {
       setLoading(false);
-    }
-  };
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   const getLanguageColor = (language: string): string => {
     const colors: { [key: string]: string } = {
@@ -209,6 +160,7 @@ export default function GitHubContribution() {
       Rust: "from-orange-600 to-red-600",
       Swift: "from-orange-500 to-red-500",
       PHP: "from-purple-500 to-indigo-500",
+      Solidity: "from-gray-600 to-gray-700",
       HTML: "from-orange-500 to-red-500",
       CSS: "from-blue-400 to-blue-600",
       Vue: "from-emerald-500 to-green-500",
@@ -241,28 +193,16 @@ export default function GitHubContribution() {
     );
   }
 
-  if (error) {
-    return (
-      <section
-        id="github"
-        className="py-20 bg-gray-950 relative overflow-hidden"
-      >
-        <div className="container mx-auto px-6 relative z-10">
-          <div className="text-center">
-            <div className="inline-flex items-center gap-2 bg-red-500/10 border border-red-500/20 rounded-full px-6 py-3">
-              <Github className="w-5 h-5 text-red-400" />
-              <span className="text-red-400">Failed to load GitHub data</span>
-            </div>
-          </div>
-        </div>
-      </section>
-    );
-  }
-
-  // Get top languages (limited to top 5)
+  // Get top languages (limited to top 6)
   const topLanguages = Object.entries(languages)
     .sort(([, a], [, b]) => b - a)
-    .slice(0, 5);
+    .slice(0, 6);
+
+  // Calculate total stars
+  const totalStars = repos.reduce(
+    (sum, repo) => sum + repo.stargazers_count,
+    0,
+  );
 
   return (
     <section id="github" className="py-20 bg-gray-950 relative overflow-hidden">
@@ -316,24 +256,21 @@ export default function GitHubContribution() {
           {[
             {
               label: "Public Repos",
-              value: user?.public_repos || 0,
+              value: user.public_repos,
               icon: Code2,
               color: "from-blue-500 to-cyan-400",
             },
             {
-              label: "Followers",
-              value: user?.followers || 0,
-              icon: Users,
-              color: "from-emerald-500 to-teal-400",
-            },
-            {
               label: "Total Stars",
-              value: repos.reduce(
-                (sum, repo) => sum + repo.stargazers_count,
-                0,
-              ),
+              value: totalStars.toLocaleString(),
               icon: Star,
               color: "from-yellow-500 to-orange-400",
+            },
+            {
+              label: "Followers",
+              value: user.followers,
+              icon: Users,
+              color: "from-emerald-500 to-teal-400",
             },
             {
               label: "Languages",
@@ -412,16 +349,16 @@ export default function GitHubContribution() {
               </CardContent>
             </Card>
 
-            {/* Top Languages */}
+            {/* Languages Overview */}
             <Card className="bg-gray-900/50 border-gray-700/50 backdrop-blur-sm">
               <CardHeader>
                 <CardTitle className="text-2xl text-white flex items-center gap-3">
                   <Code2 className="w-6 h-6 text-purple-400" />
-                  Top Languages
+                  Language Overview
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                {topLanguages.map(([language, count], index) => (
+                {topLanguages.slice(0, 4).map(([language, count], index) => (
                   <motion.div
                     key={language}
                     initial={{ opacity: 0, x: -20 }}
@@ -448,7 +385,7 @@ export default function GitHubContribution() {
             </Card>
           </motion.div>
 
-          {/* Recent Activity & Top Repos */}
+          {/* Languages Breakdown & Top Repos */}
           <motion.div
             initial={{ opacity: 0, x: 50 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -468,15 +405,17 @@ export default function GitHubContribution() {
                 {/* Total repositories count */}
                 <div className="text-center p-4 bg-gray-800/30 border border-gray-700/50 rounded-xl">
                   <div className="text-3xl font-bold text-white mb-2">
-                    {repos.length}
+                    {repos.length}+
                   </div>
-                  <div className="text-gray-400">Total Repositories</div>
+                  <div className="text-gray-400">Active Repositories</div>
                 </div>
 
                 {/* Language statistics with progress bars */}
                 <div className="space-y-4">
                   {topLanguages.map(([language, count], index) => {
-                    const percentage = Math.round((count / repos.length) * 100);
+                    const percentage = Math.round(
+                      (count / user.public_repos) * 100,
+                    );
                     return (
                       <motion.div
                         key={language}
@@ -500,7 +439,7 @@ export default function GitHubContribution() {
                               variant="outline"
                               className="bg-gray-800/50 border-gray-600 text-gray-300"
                             >
-                              {count} {count === 1 ? "repo" : "repos"}
+                              {count} repos
                             </Badge>
                             <span className="text-sm text-gray-400 font-mono">
                               {percentage}%
@@ -527,7 +466,7 @@ export default function GitHubContribution() {
                 <div className="pt-4 border-t border-gray-700/50 space-y-3">
                   <h4 className="text-white font-semibold flex items-center gap-2">
                     <Activity className="w-4 h-4 text-blue-400" />
-                    Language Insights
+                    Quick Stats
                   </h4>
                   <div className="grid grid-cols-1 gap-3">
                     <div className="flex items-center justify-between p-3 bg-gray-800/30 rounded-lg">
@@ -548,17 +487,8 @@ export default function GitHubContribution() {
                       </span>
                     </div>
                     <div className="flex items-center justify-between p-3 bg-gray-800/30 rounded-lg">
-                      <span className="text-gray-400">Active Projects</span>
-                      <span className="text-white font-medium">
-                        {
-                          repos.filter((repo) => {
-                            const updatedDate = new Date(repo.updated_at);
-                            const sixMonthsAgo = new Date();
-                            sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
-                            return updatedDate > sixMonthsAgo;
-                          }).length
-                        }
-                      </span>
+                      <span className="text-gray-400">Recent Updates</span>
+                      <span className="text-white font-medium">This Week</span>
                     </div>
                   </div>
                 </div>
@@ -592,7 +522,7 @@ export default function GitHubContribution() {
                           {repo.name}
                         </h4>
                         <p className="text-gray-400 text-sm mt-1 line-clamp-2">
-                          {repo.description || "No description available"}
+                          {repo.description}
                         </p>
                         <div className="flex items-center gap-4 mt-3">
                           {repo.language && (
@@ -607,7 +537,9 @@ export default function GitHubContribution() {
                           )}
                           <div className="flex items-center gap-1 text-gray-400 text-sm">
                             <Star className="w-3 h-3" />
-                            <span>{repo.stargazers_count}</span>
+                            <span>
+                              {repo.stargazers_count.toLocaleString()}
+                            </span>
                           </div>
                           <div className="flex items-center gap-1 text-gray-400 text-sm">
                             <GitFork className="w-3 h-3" />
@@ -638,7 +570,7 @@ export default function GitHubContribution() {
             </h3>
             <p className="text-gray-400 mb-8 max-w-2xl mx-auto">
               Check out my open source contributions and projects. I'm always
-              working on something new and exciting.
+              working on something new and exciting in the world of technology.
             </p>
             <Button
               asChild
@@ -646,7 +578,7 @@ export default function GitHubContribution() {
               className="bg-gradient-to-r from-gray-600 to-blue-600 hover:from-gray-700 hover:to-blue-700 text-white rounded-full px-8 py-3 text-lg font-semibold"
             >
               <a
-                href={`https://github.com/${GITHUB_USERNAME}`}
+                href="https://github.com/alexjohnson"
                 target="_blank"
                 rel="noopener noreferrer"
               >
