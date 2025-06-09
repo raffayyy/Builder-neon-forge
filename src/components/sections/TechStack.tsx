@@ -1,383 +1,218 @@
-import { useState, useRef, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { useState, useRef } from "react";
+import { motion } from "framer-motion";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-  Zap,
-  Code,
+  Code2,
   Database,
   Brain,
-  Cpu,
-  Globe,
-  Terminal,
-  Activity,
-  Eye,
-  Filter,
-  BarChart3,
+  Cloud,
+  Server,
+  Smartphone,
+  Palette,
+  Shield,
+  Zap,
+  Star,
+  TrendingUp,
+  Award,
 } from "lucide-react";
-import TechGlobe from "@/components/3d/TechGlobe";
-import { skills } from "@/lib/data";
 
-const iconMap: Record<string, string> = {
-  react: "⚛️",
-  typescript: "🔷",
-  nextjs: "▲",
-  vue: "💚",
-  threejs: "🎯",
-  tailwind: "🎨",
-  nodejs: "🟢",
-  python: "🐍",
-  express: "🚂",
-  graphql: "📊",
-  postgresql: "🐘",
-  mongodb: "🍃",
-  tensorflow: "🧠",
-  pytorch: "🔥",
-  sklearn: "📈",
-  openai: "🤖",
-  huggingface: "🤗",
-  langchain: "🔗",
-  aws: "☁️",
-  docker: "🐳",
-  kubernetes: "⚓",
-  vercel: "▲",
-  github: "🐙",
-  terraform: "🏗️",
-};
+// Modern tech stack data with categories
+const techStackData = [
+  {
+    category: "Frontend Development",
+    icon: Code2,
+    color: "from-blue-500 to-cyan-400",
+    skills: [
+      { name: "React", level: 95, experience: "5 years", icon: "⚛️" },
+      { name: "Next.js", level: 90, experience: "3 years", icon: "▲" },
+      { name: "TypeScript", level: 88, experience: "4 years", icon: "🔷" },
+      { name: "Tailwind CSS", level: 92, experience: "3 years", icon: "🎨" },
+      { name: "Vue.js", level: 75, experience: "2 years", icon: "💚" },
+      { name: "Three.js", level: 70, experience: "2 years", icon: "🎯" },
+    ],
+  },
+  {
+    category: "Backend Development",
+    icon: Server,
+    color: "from-emerald-500 to-teal-400",
+    skills: [
+      { name: "Node.js", level: 90, experience: "4 years", icon: "🟢" },
+      { name: "Python", level: 85, experience: "5 years", icon: "🐍" },
+      { name: "Express.js", level: 88, experience: "4 years", icon: "🚂" },
+      { name: "FastAPI", level: 80, experience: "2 years", icon: "⚡" },
+      { name: "GraphQL", level: 75, experience: "2 years", icon: "📊" },
+      { name: "REST APIs", level: 92, experience: "5 years", icon: "🌐" },
+    ],
+  },
+  {
+    category: "AI & Machine Learning",
+    icon: Brain,
+    color: "from-purple-500 to-pink-400",
+    skills: [
+      { name: "TensorFlow", level: 85, experience: "3 years", icon: "🧠" },
+      { name: "PyTorch", level: 80, experience: "2 years", icon: "🔥" },
+      { name: "Scikit-learn", level: 88, experience: "4 years", icon: "📈" },
+      { name: "OpenAI API", level: 90, experience: "2 years", icon: "🤖" },
+      { name: "Hugging Face", level: 85, experience: "2 years", icon: "🤗" },
+      { name: "LangChain", level: 75, experience: "1 year", icon: "🔗" },
+    ],
+  },
+  {
+    category: "Database & Cloud",
+    icon: Database,
+    color: "from-orange-500 to-red-400",
+    skills: [
+      { name: "PostgreSQL", level: 88, experience: "4 years", icon: "🐘" },
+      { name: "MongoDB", level: 82, experience: "3 years", icon: "🍃" },
+      { name: "AWS", level: 85, experience: "3 years", icon: "☁️" },
+      { name: "Docker", level: 80, experience: "3 years", icon: "🐳" },
+      { name: "Vercel", level: 90, experience: "2 years", icon: "▲" },
+      { name: "Firebase", level: 75, experience: "2 years", icon: "🔥" },
+    ],
+  },
+];
 
-const categoryIcons = {
-  "Frontend Development": Code,
-  "Backend Development": Database,
-  "AI & Machine Learning": Brain,
-  "Cloud & DevOps": Globe,
-};
-
-const categoryColors = {
-  "Frontend Development": "neon-cyan",
-  "Backend Development": "neon-green",
-  "AI & Machine Learning": "neon-purple",
-  "Cloud & DevOps": "neon-pink",
-};
-
-const SkillCard = ({ skill, categoryColor, index, isSelected, onSelect }) => {
+const SkillCard = ({ skill, index, categoryColor }) => {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
     <motion.div
-      className="group cursor-pointer"
-      initial={{ opacity: 0, scale: 0.8, rotateY: -90 }}
-      animate={{ opacity: 1, scale: 1, rotateY: 0 }}
-      transition={{ duration: 0.6, delay: index * 0.1 }}
-      whileHover={{ scale: 1.05, z: 20 }}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: index * 0.1 }}
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
-      onClick={() => onSelect(skill.name)}
+      className="group"
     >
-      <div
-        className={`relative p-4 cyber-border rounded-lg transition-all duration-300 ${
-          isSelected
-            ? `bg-${categoryColor}/20 border-${categoryColor}/50`
-            : "hover:border-white/30"
-        }`}
-      >
-        {/* Holographic background */}
-        <motion.div
-          className="absolute inset-0 bg-hologram opacity-0 group-hover:opacity-30 rounded-lg"
-          animate={{
-            backgroundPosition: isHovered
-              ? ["0% 0%", "100% 100%", "0% 0%"]
-              : "0% 0%",
-          }}
-          transition={{ duration: 3, repeat: Infinity }}
-        />
-
-        {/* Circuit pattern */}
-        <div className="absolute inset-0 opacity-10 pointer-events-none">
-          <svg viewBox="0 0 100 100" className="w-full h-full">
-            <path
-              d="M10 10h80v80H10z M25 25h50v50H25z M50 10v80 M10 50h80"
-              stroke="currentColor"
-              strokeWidth="1"
-              fill="none"
-              className={`text-${categoryColor}`}
-            />
-          </svg>
-        </div>
-
-        {/* Scanning line */}
-        <motion.div
-          className={`absolute top-0 left-0 w-full h-0.5 bg-${categoryColor} opacity-0 group-hover:opacity-100`}
-          animate={
-            isHovered
-              ? {
-                  y: [0, 80, 0],
-                }
-              : {}
-          }
-          transition={{ duration: 2, repeat: Infinity }}
-        />
-
-        <div className="relative z-10 space-y-3">
-          {/* Icon and name */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
+      <Card className="bg-gray-900/50 border-gray-700/50 hover:border-gray-600 transition-all duration-300 backdrop-blur-sm">
+        <CardContent className="p-6">
+          <div className="flex items-start justify-between mb-4">
+            <div className="flex items-center gap-3">
               <motion.div
-                className={`w-10 h-10 rounded-lg bg-${categoryColor}/20 flex items-center justify-center font-bold text-lg`}
-                animate={
-                  isHovered
-                    ? {
-                        rotate: [0, 180, 360],
-                        scale: [1, 1.2, 1],
-                      }
-                    : {}
-                }
-                transition={{ duration: 1 }}
+                className={`w-12 h-12 rounded-xl bg-gradient-to-br ${categoryColor} p-0.5`}
+                whileHover={{ scale: 1.1, rotate: 5 }}
+                transition={{ duration: 0.3 }}
               >
-                {iconMap[skill.icon] || "⚡"}
+                <div className="w-full h-full bg-gray-900 rounded-xl flex items-center justify-center text-xl">
+                  {skill.icon}
+                </div>
               </motion.div>
               <div>
-                <h4
-                  className={`font-medium font-cyber ${
-                    isSelected ? `text-${categoryColor}` : "text-white"
-                  }`}
-                >
+                <h4 className="text-white font-semibold text-lg">
                   {skill.name}
                 </h4>
-                <div className="text-xs text-white/60 font-matrix">
-                  {skill.level}% Proficiency
-                </div>
+                <p className="text-gray-400 text-sm">{skill.experience}</p>
               </div>
             </div>
-
-            {/* Level indicator */}
-            <motion.div
-              className={`w-8 h-8 rounded-full border-2 border-${categoryColor}/30 flex items-center justify-center text-xs font-cyber`}
-              animate={
-                isHovered
-                  ? {
-                      borderColor: `rgba(0,255,255,0.8)`,
-                      scale: [1, 1.2, 1],
-                    }
-                  : {}
-              }
-              transition={{ duration: 0.5 }}
-            >
-              {Math.round(skill.level / 10)}
-            </motion.div>
-          </div>
-
-          {/* Progress bar */}
-          <div className="space-y-2">
-            <div className="flex items-center justify-between text-xs">
-              <span className="text-white/70">Skill Level</span>
-              <span className={`text-${categoryColor} font-cyber`}>
-                {skill.level}%
-              </span>
-            </div>
-            <div className="relative">
-              <Progress
-                value={skill.level}
-                className="h-2 bg-white/10 rounded-full overflow-hidden"
-              />
-              <motion.div
-                className="absolute top-0 left-0 h-full bg-gradient-to-r from-white/20 to-transparent rounded-full"
-                style={{ width: `${skill.level}%` }}
-                animate={
-                  isHovered
-                    ? {
-                        opacity: [0.5, 1, 0.5],
-                      }
-                    : {}
-                }
-                transition={{ duration: 1.5, repeat: Infinity }}
-              />
-            </div>
-          </div>
-
-          {/* Experience years */}
-          <motion.div
-            className="flex items-center justify-between pt-2 border-t border-white/10"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.3 }}
-          >
-            <div className="flex items-center space-x-2">
-              <Activity className="w-3 h-3 text-white/50" />
-              <span className="text-xs text-white/50 font-matrix">
-                {Math.floor(skill.level / 20) + 1}+ years
-              </span>
-            </div>
             <Badge
-              variant="outline"
-              className={`border-${categoryColor}/30 text-${categoryColor} text-xs`}
+              variant="secondary"
+              className="bg-gray-800 text-gray-300 border-gray-700"
             >
-              Active
+              {skill.level}%
             </Badge>
-          </motion.div>
+          </div>
 
-          {/* Floating particles */}
-          {isHovered &&
-            Array.from({ length: 5 }).map((_, i) => (
+          {/* Progress Bar */}
+          <div className="space-y-2">
+            <div className="flex justify-between text-sm">
+              <span className="text-gray-400">Proficiency</span>
+              <span className="text-white font-medium">{skill.level}%</span>
+            </div>
+            <div className="relative h-2 bg-gray-800 rounded-full overflow-hidden">
               <motion.div
-                key={i}
-                className={`absolute w-1 h-1 bg-${categoryColor} rounded-full`}
-                style={{
-                  left: `${20 + i * 15}%`,
-                  top: `${20 + i * 15}%`,
-                }}
-                animate={{
-                  scale: [0, 1, 0],
-                  opacity: [0, 1, 0],
-                  x: [0, Math.random() * 20 - 10],
-                  y: [0, Math.random() * 20 - 10],
-                }}
-                transition={{
-                  duration: 2,
-                  delay: i * 0.2,
-                  repeat: Infinity,
-                }}
+                className={`h-full bg-gradient-to-r ${categoryColor} rounded-full`}
+                initial={{ width: 0 }}
+                animate={{ width: `${skill.level}%` }}
+                transition={{ duration: 1, delay: index * 0.1 }}
               />
-            ))}
+              {isHovered && (
+                <motion.div
+                  className="absolute top-0 left-0 h-full w-full bg-white/20 rounded-full"
+                  animate={{ x: ["-100%", "100%"] }}
+                  transition={{ duration: 1.5, repeat: Infinity }}
+                />
+              )}
+            </div>
+          </div>
+
+          {/* Skill Level Indicator */}
+          <div className="mt-4 flex items-center gap-2">
+            <div className="flex gap-1">
+              {[...Array(5)].map((_, i) => (
+                <Star
+                  key={i}
+                  className={`w-4 h-4 ${
+                    i < Math.floor(skill.level / 20)
+                      ? "text-yellow-400 fill-current"
+                      : "text-gray-600"
+                  }`}
+                />
+              ))}
+            </div>
+            <span className="text-gray-500 text-xs ml-auto">
+              {skill.level >= 90
+                ? "Expert"
+                : skill.level >= 80
+                  ? "Advanced"
+                  : skill.level >= 70
+                    ? "Intermediate"
+                    : "Beginner"}
+            </span>
+          </div>
+        </CardContent>
+      </Card>
+    </motion.div>
+  );
+};
+
+const CategorySection = ({ category, index }) => {
+  const Icon = category.icon;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, delay: index * 0.2 }}
+      className="space-y-6"
+    >
+      {/* Category Header */}
+      <div className="flex items-center gap-4 mb-8">
+        <motion.div
+          className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${category.color} p-0.5`}
+          whileHover={{ scale: 1.05, rotate: 5 }}
+          transition={{ duration: 0.3 }}
+        >
+          <div className="w-full h-full bg-gray-900 rounded-2xl flex items-center justify-center">
+            <Icon className="w-8 h-8 text-white" />
+          </div>
+        </motion.div>
+        <div>
+          <h3 className="text-2xl font-bold text-white mb-1">
+            {category.category}
+          </h3>
+          <p className="text-gray-400">{category.skills.length} technologies</p>
         </div>
+      </div>
+
+      {/* Skills Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {category.skills.map((skill, skillIndex) => (
+          <SkillCard
+            key={skill.name}
+            skill={skill}
+            index={skillIndex}
+            categoryColor={category.color}
+          />
+        ))}
       </div>
     </motion.div>
   );
 };
 
-const CategoryCard = ({ category, isExpanded, onToggle, selectedSkill }) => {
-  const Icon = categoryIcons[category.category];
-  const color = categoryColors[category.category];
-
-  return (
-    <motion.div
-      className="space-y-4"
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8 }}
-    >
-      {/* Category header */}
-      <motion.button
-        onClick={onToggle}
-        className="w-full cyber-border rounded-lg p-6 group relative overflow-hidden"
-        whileHover={{ scale: 1.02 }}
-        whileTap={{ scale: 0.98 }}
-      >
-        {/* Background gradient */}
-        <motion.div
-          className={`absolute inset-0 bg-gradient-to-r from-${color}/10 to-transparent opacity-0 group-hover:opacity-100`}
-          transition={{ duration: 0.3 }}
-        />
-
-        {/* Data stream effect */}
-        <motion.div
-          className={`absolute top-0 left-0 w-full h-0.5 bg-${color} opacity-0 group-hover:opacity-100`}
-          animate={{ x: ["-100%", "100%"] }}
-          transition={{ duration: 2, repeat: Infinity }}
-        />
-
-        <div className="relative z-10 flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <motion.div
-              className={`w-12 h-12 rounded-lg bg-${color}/20 flex items-center justify-center`}
-              whileHover={{ rotate: 360 }}
-              transition={{ duration: 0.6 }}
-            >
-              <Icon className={`w-6 h-6 text-${color}`} />
-            </motion.div>
-            <div className="text-left">
-              <h3 className="text-white text-lg font-cyber">
-                {category.category}
-              </h3>
-              <p className="text-white/60 text-sm font-matrix">
-                {category.items.length} Technologies
-              </p>
-            </div>
-          </div>
-          <div className="flex items-center space-x-4">
-            <motion.div
-              className={`text-${color} font-cyber`}
-              animate={{
-                textShadow: [
-                  "0 0 10px rgba(0,255,255,0.5)",
-                  "0 0 20px rgba(0,255,255,0.8)",
-                  "0 0 10px rgba(0,255,255,0.5)",
-                ],
-              }}
-              transition={{ duration: 2, repeat: Infinity }}
-            >
-              {Math.round(
-                category.items.reduce((acc, item) => acc + item.level, 0) /
-                  category.items.length,
-              )}
-              %
-            </motion.div>
-            <motion.div
-              animate={{ rotate: isExpanded ? 180 : 0 }}
-              transition={{ duration: 0.3 }}
-            >
-              <BarChart3 className="w-5 h-5 text-white/70" />
-            </motion.div>
-          </div>
-        </div>
-      </motion.button>
-
-      {/* Skills grid */}
-      <AnimatePresence>
-        {isExpanded && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.4 }}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
-          >
-            {category.items.map((skill, index) => (
-              <SkillCard
-                key={skill.name}
-                skill={skill}
-                categoryColor={color}
-                index={index}
-                isSelected={selectedSkill === skill.name}
-                onSelect={() => {}}
-              />
-            ))}
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.div>
-  );
-};
-
 export default function TechStack() {
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [selectedSkill, setSelectedSkill] = useState<string | null>(null);
-  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-  const [filterLevel, setFilterLevel] = useState(0);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const sectionRef = useRef<HTMLElement>(null);
-
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      if (sectionRef.current) {
-        const rect = sectionRef.current.getBoundingClientRect();
-        setMousePosition({
-          x: e.clientX - rect.left,
-          y: e.clientY - rect.top,
-        });
-      }
-    };
-
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, []);
+  const [selectedCategory, setSelectedCategory] = useState("all");
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -385,357 +220,194 @@ export default function TechStack() {
       opacity: 1,
       transition: {
         staggerChildren: 0.1,
-        delayChildren: 0.3,
+        delayChildren: 0.2,
       },
     },
   };
 
-  const itemVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.6,
-      },
-    },
-  };
+  const filteredData =
+    selectedCategory === "all"
+      ? techStackData
+      : techStackData.filter((cat) => cat.category === selectedCategory);
 
-  const filteredSkills = skills.filter((category) =>
-    category.items.some((skill) => skill.level >= filterLevel),
+  // Calculate overall stats
+  const totalSkills = techStackData.reduce(
+    (acc, cat) => acc + cat.skills.length,
+    0,
+  );
+  const avgProficiency = Math.round(
+    techStackData.reduce(
+      (acc, cat) =>
+        acc +
+        cat.skills.reduce((skillAcc, skill) => skillAcc + skill.level, 0) /
+          cat.skills.length,
+      0,
+    ) / techStackData.length,
   );
 
   return (
     <section
-      ref={sectionRef}
       id="skills"
-      className="section-padding relative overflow-hidden"
+      className="min-h-screen py-20 bg-gray-950 relative overflow-hidden"
     >
-      {/* Background effects */}
-      <div className="absolute inset-0 bg-neural-network opacity-20" />
+      {/* Background Effects */}
+      <div className="absolute inset-0">
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-purple-500/5 to-emerald-500/5" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.1),transparent_70%)]" />
+      </div>
 
-      {/* Mouse follower */}
-      <motion.div
-        className="absolute w-40 h-40 rounded-full bg-neon-purple/10 blur-2xl pointer-events-none"
-        style={{
-          left: mousePosition.x - 80,
-          top: mousePosition.y - 80,
-        }}
-        animate={{
-          scale: [1, 1.3, 1],
-          opacity: [0.3, 0.6, 0.3],
-        }}
-        transition={{ duration: 3, repeat: Infinity }}
-      />
-
-      <div className="container-custom relative z-10">
-        {/* Enhanced Section Header */}
+      <div className="container mx-auto px-6 relative z-10">
+        {/* Header Section */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
-          className="text-center mb-20"
+          className="text-center mb-16"
         >
-          {/* Terminal header */}
           <motion.div
-            className="inline-block p-4 cyber-border rounded-lg font-matrix text-sm text-neon-green mb-8"
-            animate={{
-              borderColor: [
-                "rgba(139,92,246,0.3)",
-                "rgba(139,92,246,0.8)",
-                "rgba(139,92,246,0.3)",
-              ],
-            }}
-            transition={{ duration: 3, repeat: Infinity }}
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="inline-flex items-center gap-2 bg-blue-500/10 border border-blue-500/20 rounded-full px-6 py-2 mb-6"
           >
-            <div className="flex items-center justify-center space-x-2">
-              <Terminal className="w-4 h-4" />
-              <span>skills@portfolio:~$</span>
-              <motion.span
-                animate={{ opacity: [1, 0, 1] }}
-                transition={{ duration: 1, repeat: Infinity }}
-              >
-                _
-              </motion.span>
-            </div>
-            <div className="mt-2">
-              <span className="text-neon-cyan">
-                Analyzing skills matrix...{" "}
-              </span>
-              <span className="text-neon-green">ANALYSIS_COMPLETE ✓</span>
-            </div>
-          </motion.div>
-
-          <motion.h2
-            className="heading-2 mb-6 relative"
-            whileHover={{ scale: 1.05 }}
-            transition={{ duration: 0.3 }}
-          >
-            <span className="text-shimmer bg-gradient-to-r from-neon-purple via-neon-cyan to-neon-pink bg-clip-text text-transparent">
+            <Zap className="w-5 h-5 text-blue-400" />
+            <span className="text-blue-400 font-medium">
               Technical Expertise
             </span>
-
-            {/* Floating tech icons */}
-            {[Cpu, Brain, Code, Database].map((Icon, i) => (
-              <motion.div
-                key={i}
-                className="absolute"
-                style={{
-                  left: `${110 + i * 8}%`,
-                  top: `${-10 + i * 5}%`,
-                }}
-                animate={{
-                  y: [0, -20, 0],
-                  rotate: [0, 360],
-                  opacity: [0.3, 0.8, 0.3],
-                }}
-                transition={{
-                  duration: 4,
-                  delay: i * 0.5,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
-              >
-                <Icon className="w-6 h-6 text-neon-purple" />
-              </motion.div>
-            ))}
-          </motion.h2>
-
-          <motion.p
-            className="body-large text-white/70 max-w-3xl mx-auto mb-12"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1, delay: 0.5 }}
-          >
-            <span className="text-neon-purple font-cyber">&gt; </span>
-            Comprehensive technical proficiency across multiple domains and
-            cutting-edge technologies
-            <motion.span
-              className="inline-block w-2 h-6 bg-neon-purple ml-2"
-              animate={{ opacity: [1, 0, 1] }}
-              transition={{ duration: 2, repeat: Infinity }}
-            />
-          </motion.p>
-
-          {/* Control panel */}
-          <motion.div
-            className="flex flex-wrap items-center justify-center gap-4 mb-16"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.8 }}
-          >
-            <div className="flex items-center space-x-2">
-              <Button
-                onClick={() =>
-                  setViewMode(viewMode === "grid" ? "list" : "grid")
-                }
-                className="neon-button font-cyber text-sm"
-                variant="outline"
-              >
-                <Eye className="w-4 h-4 mr-2" />
-                {viewMode === "grid" ? "LIST_VIEW" : "GRID_VIEW"}
-              </Button>
-
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <div className="flex items-center space-x-3 cyber-border rounded-lg px-4 py-2">
-                      <Filter className="w-4 h-4 text-neon-purple" />
-                      <span className="text-sm font-matrix text-white/70">
-                        Min Level: {filterLevel}%
-                      </span>
-                      <input
-                        type="range"
-                        min="0"
-                        max="100"
-                        value={filterLevel}
-                        onChange={(e) => setFilterLevel(Number(e.target.value))}
-                        className="w-20"
-                      />
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Filter skills by proficiency level</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </div>
-          </motion.div>
-        </motion.div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
-          {/* 3D Tech Globe */}
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="order-2 lg:order-1"
-          >
-            <div className="relative">
-              <TechGlobe />
-
-              {/* Globe info panel */}
-              <motion.div
-                className="absolute bottom-0 left-0 right-0 cyber-border rounded-lg p-4 bg-black/80 backdrop-blur-xl mx-4"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 1 }}
-              >
-                <h4 className="text-neon-cyan font-cyber text-sm mb-2">
-                  INTERACTIVE_TECH_GLOBE
-                </h4>
-                <p className="text-white/70 text-xs font-matrix">
-                  3D visualization of technical expertise. Hover and rotate to
-                  explore technologies.
-                </p>
-              </motion.div>
-            </div>
           </motion.div>
 
-          {/* Skills Categories */}
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            className="space-y-8 order-1 lg:order-2"
-          >
-            {filteredSkills.map((category, index) => (
-              <motion.div key={category.category} variants={itemVariants}>
-                <CategoryCard
-                  category={category}
-                  isExpanded={selectedCategory === category.category}
-                  onToggle={() =>
-                    setSelectedCategory(
-                      selectedCategory === category.category
-                        ? null
-                        : category.category,
-                    )
-                  }
-                  selectedSkill={selectedSkill}
-                />
-              </motion.div>
-            ))}
+          <h2 className="text-5xl md:text-6xl font-bold text-white mb-6">
+            My{" "}
+            <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-emerald-400 bg-clip-text text-transparent">
+              Tech Stack
+            </span>
+          </h2>
 
-            {/* Quick expand all button */}
-            <motion.div className="text-center pt-8" variants={itemVariants}>
-              <Button
-                onClick={() =>
-                  setSelectedCategory(selectedCategory ? null : "all")
-                }
-                className="holo-button font-cyber tracking-wider"
-                size="lg"
-              >
-                <Zap className="w-5 h-5 mr-2" />
-                {selectedCategory ? "COLLAPSE_ALL" : "EXPAND_ALL"}
-              </Button>
-            </motion.div>
-          </motion.div>
-        </div>
+          <p className="text-xl text-gray-400 max-w-3xl mx-auto mb-12">
+            A comprehensive overview of my technical skills and expertise across
+            different domains of software development
+          </p>
 
-        {/* Skills Summary Stats */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-          viewport={{ once: true }}
-          className="mt-20"
-        >
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          {/* Stats Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-12">
             {[
               {
-                label: "Programming Languages",
-                value: "12+",
-                color: "neon-cyan",
-                icon: Code,
+                label: "Technologies",
+                value: totalSkills,
+                icon: Code2,
+                color: "from-blue-500 to-cyan-400",
               },
               {
-                label: "Frameworks & Libraries",
-                value: "25+",
-                color: "neon-purple",
-                icon: Database,
+                label: "Avg Proficiency",
+                value: `${avgProficiency}%`,
+                icon: TrendingUp,
+                color: "from-purple-500 to-pink-400",
               },
               {
                 label: "Years Experience",
                 value: "5+",
-                color: "neon-pink",
-                icon: Activity,
-              },
-              {
-                label: "Active Projects",
-                value: "15+",
-                color: "neon-green",
-                icon: Zap,
+                icon: Award,
+                color: "from-emerald-500 to-teal-400",
               },
             ].map((stat, index) => (
               <motion.div
                 key={stat.label}
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                viewport={{ once: true }}
-                className="text-center cyber-border rounded-lg p-6 group relative overflow-hidden"
-                whileHover={{ scale: 1.05, y: -5 }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.8 + index * 0.1 }}
+                className="bg-gray-900/50 border border-gray-700/50 rounded-2xl p-6 backdrop-blur-sm"
               >
-                {/* Background pulse */}
-                <motion.div
-                  className={`absolute inset-0 bg-${stat.color}/10 rounded-lg opacity-0 group-hover:opacity-100`}
-                  transition={{ duration: 0.3 }}
-                />
-
-                {/* Icon */}
-                <motion.div
-                  className={`w-12 h-12 mx-auto mb-4 rounded-lg bg-${stat.color}/20 flex items-center justify-center`}
-                  whileHover={{ rotate: 360 }}
-                  transition={{ duration: 0.6 }}
+                <div
+                  className={`w-12 h-12 rounded-xl bg-gradient-to-br ${stat.color} p-0.5 mx-auto mb-4`}
                 >
-                  <stat.icon className={`w-6 h-6 text-${stat.color}`} />
-                </motion.div>
-
-                {/* Value */}
-                <motion.div
-                  className={`text-3xl font-bold mb-2 text-${stat.color} font-cyber`}
-                  animate={{
-                    textShadow: [
-                      "0 0 10px rgba(0,255,255,0.5)",
-                      "0 0 20px rgba(0,255,255,0.8)",
-                      "0 0 10px rgba(0,255,255,0.5)",
-                    ],
-                  }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                >
-                  {stat.value}
-                </motion.div>
-
-                {/* Label */}
-                <div className="text-white/70 text-sm font-matrix">
-                  {stat.label}
+                  <div className="w-full h-full bg-gray-900 rounded-xl flex items-center justify-center">
+                    <stat.icon className="w-6 h-6 text-white" />
+                  </div>
                 </div>
-
-                {/* Floating particles */}
-                {Array.from({ length: 3 }).map((_, i) => (
-                  <motion.div
-                    key={i}
-                    className={`absolute w-1 h-1 bg-${stat.color} rounded-full opacity-0 group-hover:opacity-100`}
-                    style={{
-                      left: `${20 + i * 20}%`,
-                      top: `${30 + i * 10}%`,
-                    }}
-                    animate={{
-                      scale: [0, 1, 0],
-                      y: [0, -20, 0],
-                    }}
-                    transition={{
-                      duration: 2,
-                      delay: i * 0.3,
-                      repeat: Infinity,
-                    }}
-                  />
-                ))}
+                <div className="text-3xl font-bold text-white mb-2">
+                  {stat.value}
+                </div>
+                <div className="text-gray-400">{stat.label}</div>
               </motion.div>
             ))}
+          </div>
+
+          {/* Category Filter */}
+          <div className="flex flex-wrap justify-center gap-3">
+            <Button
+              onClick={() => setSelectedCategory("all")}
+              variant={selectedCategory === "all" ? "default" : "outline"}
+              className={`rounded-full ${
+                selectedCategory === "all"
+                  ? "bg-blue-500 hover:bg-blue-600 text-white"
+                  : "border-gray-600 text-gray-300 hover:bg-gray-800"
+              }`}
+            >
+              All Technologies
+            </Button>
+            {techStackData.map((category) => (
+              <Button
+                key={category.category}
+                onClick={() => setSelectedCategory(category.category)}
+                variant={
+                  selectedCategory === category.category ? "default" : "outline"
+                }
+                className={`rounded-full ${
+                  selectedCategory === category.category
+                    ? "bg-blue-500 hover:bg-blue-600 text-white"
+                    : "border-gray-600 text-gray-300 hover:bg-gray-800"
+                }`}
+              >
+                {category.category}
+              </Button>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* Skills Categories */}
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          className="space-y-20"
+        >
+          {filteredData.map((category, index) => (
+            <CategorySection
+              key={category.category}
+              category={category}
+              index={index}
+            />
+          ))}
+        </motion.div>
+
+        {/* Call to Action */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 1 }}
+          className="text-center mt-20"
+        >
+          <div className="bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-emerald-500/10 border border-gray-700/50 rounded-3xl p-12 backdrop-blur-sm">
+            <h3 className="text-3xl font-bold text-white mb-4">
+              Ready to work together?
+            </h3>
+            <p className="text-gray-400 mb-8 max-w-2xl mx-auto">
+              I'm always excited to take on new challenges and collaborate on
+              innovative projects. Let's discuss how my technical expertise can
+              help bring your ideas to life.
+            </p>
+            <Button
+              size="lg"
+              className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white rounded-full px-8 py-3 text-lg font-semibold"
+              onClick={() =>
+                document
+                  .getElementById("contact")
+                  ?.scrollIntoView({ behavior: "smooth" })
+              }
+            >
+              <Zap className="w-5 h-5 mr-2" />
+              Let's Connect
+            </Button>
           </div>
         </motion.div>
       </div>
