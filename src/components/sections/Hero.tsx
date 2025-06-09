@@ -91,17 +91,12 @@ function Hero3DScene() {
     <Canvas
       camera={{ position: [0, 0, 5], fov: 50 }}
       style={{ background: "transparent" }}
+      dpr={[1, 2]}
+      performance={{ min: 0.5 }}
     >
       <ambientLight intensity={0.5} />
       <pointLight position={[10, 10, 10]} intensity={1} color="#ff6b6b" />
       <pointLight position={[-10, -10, -10]} intensity={0.5} color="#4ecdc4" />
-      <spotLight
-        position={[0, 10, 0]}
-        angle={0.3}
-        penumbra={1}
-        intensity={1}
-        color="#a55eea"
-      />
 
       {/* Floating orbs */}
       <FloatingOrb position={[-2, 1, 0]} color="#ff6b6b" scale={0.8} />
@@ -120,11 +115,12 @@ function Hero3DScene() {
         enableZoom={false}
         autoRotate
         autoRotateSpeed={0.5}
+        maxPolarAngle={Math.PI / 2}
+        minPolarAngle={Math.PI / 2}
       />
     </Canvas>
   );
 }
-
 // Animated Background Particles
 const AnimatedParticles = () => {
   return (
