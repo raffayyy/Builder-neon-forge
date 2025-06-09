@@ -1,15 +1,7 @@
 import { useEffect } from "react";
 import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
 import Hero from "@/components/sections/Hero";
 import Projects from "@/components/sections/Projects";
-// import TechStack from "@/components/sections/TechStack";
-// import Experience from "@/components/sections/Experience";
-// import Achievements from "@/components/sections/Achievements";
-// import Testimonials from "@/components/sections/Testimonials";
-// import Blog from "@/components/sections/Blog";
-// import GitHubContribution from "@/components/sections/GitHubContribution";
-// import Contact from "@/components/sections/Contact";
 
 export default function Index() {
   useEffect(() => {
@@ -81,18 +73,18 @@ export default function Index() {
       <main className="relative z-10">
         <Hero />
         <Projects />
-        {/* 
-        <TechStack />
-        <Experience />
-        <Achievements />
-        <Testimonials />
-        <Blog />
-        <GitHubContribution />
-        <Contact />
-        */}
       </main>
 
-      <Footer />
+      {/* Simple Footer */}
+      <footer className="relative z-10 border-t border-white/10 bg-deep-navy/50 backdrop-blur-xl">
+        <div className="container-custom py-12">
+          <div className="text-center">
+            <p className="text-light-slate text-sm">
+              © 2024 Alex Johnson. Built with React, TypeScript & Tailwind CSS
+            </p>
+          </div>
+        </div>
+      </footer>
 
       {/* Floating action button for quick contact */}
       <div className="fixed bottom-8 right-8 z-40">
