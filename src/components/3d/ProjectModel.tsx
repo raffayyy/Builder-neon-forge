@@ -94,7 +94,7 @@ function ProjectStructure({
               color="white"
               anchorX="center"
               anchorY="middle"
-              font="/fonts/JetBrainsMono-Regular.woff"
+              font="https://fonts.gstatic.com/s/jetbrainsmono/v13/tDbY2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKxTN1OVgaQA.woff2"
             >
               {tech}
             </Text>
