@@ -3,84 +3,77 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import Hero from "@/components/sections/Hero";
 import Projects from "@/components/sections/Projects";
-import TechStack from "@/components/sections/TechStack";
-import Experience from "@/components/sections/Experience";
-import Achievements from "@/components/sections/Achievements";
-import Testimonials from "@/components/sections/Testimonials";
-import Blog from "@/components/sections/Blog";
-import GitHubContribution from "@/components/sections/GitHubContribution";
-import Contact from "@/components/sections/Contact";
+// import TechStack from "@/components/sections/TechStack";
+// import Experience from "@/components/sections/Experience";
+// import Achievements from "@/components/sections/Achievements";
+// import Testimonials from "@/components/sections/Testimonials";
+// import Blog from "@/components/sections/Blog";
+// import GitHubContribution from "@/components/sections/GitHubContribution";
+// import Contact from "@/components/sections/Contact";
 
 export default function Index() {
   useEffect(() => {
     // Force dark mode for the portfolio
     document.documentElement.classList.add("dark");
 
-    // Add custom cyber cursor
-    const cursor = document.createElement("div");
-    cursor.className =
-      "fixed w-4 h-4 border border-neon-cyan/50 rounded-full pointer-events-none z-50 mix-blend-difference transition-transform duration-200";
-    cursor.style.transform = "translate(-50%, -50%)";
-    document.body.appendChild(cursor);
-
-    const handleMouseMove = (e: MouseEvent) => {
-      cursor.style.left = e.clientX + "px";
-      cursor.style.top = e.clientY + "px";
+    // Initialize scroll-triggered animations
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: "0px 0px -50px 0px",
     };
 
-    const handleMouseDown = () => {
-      cursor.style.transform = "translate(-50%, -50%) scale(0.8)";
-    };
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("in-view");
+        }
+      });
+    }, observerOptions);
 
-    const handleMouseUp = () => {
-      cursor.style.transform = "translate(-50%, -50%) scale(1)";
-    };
+    // Observe all elements with animation classes
+    const animatedElements = document.querySelectorAll(
+      ".animate-on-scroll, .animate-on-scroll-left, .animate-on-scroll-right, .animate-on-scroll-scale",
+    );
 
-    document.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mousedown", handleMouseDown);
-    document.addEventListener("mouseup", handleMouseUp);
+    animatedElements.forEach((el) => observer.observe(el));
+
+    // Smooth scrolling enhancement
+    document.documentElement.style.scrollBehavior = "smooth";
 
     return () => {
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mousedown", handleMouseDown);
-      document.removeEventListener("mouseup", handleMouseUp);
-      document.body.removeChild(cursor);
+      observer.disconnect();
     };
   }, []);
 
   return (
-    <div className="min-h-screen bg-dark-void relative overflow-x-hidden">
-      {/* Global background effects */}
+    <div className="min-h-screen bg-deep-navy relative overflow-x-hidden">
+      {/* Global background with improved gradients */}
       <div className="fixed inset-0 pointer-events-none z-0">
-        {/* Animated gradient background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-dark-void via-deep-space to-cosmic-blue" />
+        {/* Primary gradient background */}
+        <div className="absolute inset-0 bg-hero-gradient opacity-90" />
 
-        {/* Neural network overlay */}
-        <div className="absolute inset-0 bg-neural-network opacity-20" />
+        {/* Animated gradient orbs */}
+        <div className="absolute top-0 left-0 w-[800px] h-[800px] bg-electric-blue/10 rounded-full blur-3xl animate-float opacity-60" />
+        <div
+          className="absolute top-1/2 right-0 w-[600px] h-[600px] bg-electric-violet/10 rounded-full blur-3xl animate-float opacity-40"
+          style={{ animationDelay: "3s" }}
+        />
+        <div
+          className="absolute bottom-0 left-1/3 w-[700px] h-[700px] bg-gradient-teal/10 rounded-full blur-3xl animate-float opacity-50"
+          style={{ animationDelay: "6s" }}
+        />
 
-        {/* Cyber grid */}
-        <div className="absolute inset-0 bg-cyber-grid bg-[size:100px_100px] opacity-10" />
-
-        {/* Floating energy orbs */}
-        {Array.from({ length: 6 }).map((_, i) => (
-          <div
-            key={i}
-            className="absolute energy-orb"
-            style={{
-              width: `${Math.random() * 200 + 100}px`,
-              height: `${Math.random() * 200 + 100}px`,
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              background: [
-                "radial-gradient(circle, rgba(0,255,255,0.1) 0%, transparent 70%)",
-                "radial-gradient(circle, rgba(191,0,255,0.1) 0%, transparent 70%)",
-                "radial-gradient(circle, rgba(255,0,128,0.1) 0%, transparent 70%)",
-                "radial-gradient(circle, rgba(0,255,136,0.1) 0%, transparent 70%)",
-              ][i % 4],
-              animationDelay: `${i * 2}s`,
-            }}
-          />
-        ))}
+        {/* Subtle grid pattern */}
+        <div
+          className="absolute inset-0 opacity-[0.02]"
+          style={{
+            backgroundImage: `
+              linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px)
+            `,
+            backgroundSize: "50px 50px",
+          }}
+        />
       </div>
 
       <Header />
@@ -88,6 +81,7 @@ export default function Index() {
       <main className="relative z-10">
         <Hero />
         <Projects />
+        {/* 
         <TechStack />
         <Experience />
         <Achievements />
@@ -95,12 +89,32 @@ export default function Index() {
         <Blog />
         <GitHubContribution />
         <Contact />
+        */}
       </main>
 
       <Footer />
 
-      {/* Global scan line effect */}
-      <div className="scan-line" />
+      {/* Floating action button for quick contact */}
+      <div className="fixed bottom-8 right-8 z-40">
+        <a
+          href="mailto:alex.johnson@email.com"
+          className="w-14 h-14 glass-card flex items-center justify-center text-white hover:text-electric-blue transition-all duration-300 micro-scale"
+        >
+          <svg
+            className="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+            />
+          </svg>
+        </a>
+      </div>
     </div>
   );
 }
