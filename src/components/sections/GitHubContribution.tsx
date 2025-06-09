@@ -7,7 +7,6 @@ import {
   Calendar,
   Code2,
   Activity,
-  TrendingUp,
   ExternalLink,
   Users,
 } from "lucide-react";
@@ -309,7 +308,6 @@ export default function GitHubContribution() {
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="space-y-8"
           >
             <Card className="bg-gray-900/50 border-gray-700/50 backdrop-blur-sm">
               <CardHeader>
@@ -348,52 +346,15 @@ export default function GitHubContribution() {
                 </div>
               </CardContent>
             </Card>
-
-            {/* Languages Overview */}
-            <Card className="bg-gray-900/50 border-gray-700/50 backdrop-blur-sm">
-              <CardHeader>
-                <CardTitle className="text-2xl text-white flex items-center gap-3">
-                  <Code2 className="w-6 h-6 text-purple-400" />
-                  Language Overview
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {topLanguages.slice(0, 4).map(([language, count], index) => (
-                  <motion.div
-                    key={language}
-                    initial={{ opacity: 0, x: -20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.5, delay: index * 0.1 }}
-                    viewport={{ once: true }}
-                    className="flex items-center justify-between"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div
-                        className={`w-4 h-4 rounded-full bg-gradient-to-r ${getLanguageColor(language)}`}
-                      />
-                      <span className="text-white font-medium">{language}</span>
-                    </div>
-                    <Badge
-                      variant="outline"
-                      className="bg-gray-800/50 border-gray-600 text-gray-300"
-                    >
-                      {count} {count === 1 ? "repo" : "repos"}
-                    </Badge>
-                  </motion.div>
-                ))}
-              </CardContent>
-            </Card>
           </motion.div>
 
-          {/* Languages Breakdown & Top Repos */}
+          {/* Languages Breakdown */}
           <motion.div
             initial={{ opacity: 0, x: 50 }}
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="space-y-8"
           >
-            {/* Languages Breakdown */}
             <Card className="bg-gray-900/50 border-gray-700/50 backdrop-blur-sm">
               <CardHeader>
                 <CardTitle className="text-2xl text-white flex items-center gap-3">
@@ -492,65 +453,6 @@ export default function GitHubContribution() {
                     </div>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
-
-            {/* Top Repositories */}
-            <Card className="bg-gray-900/50 border-gray-700/50 backdrop-blur-sm">
-              <CardHeader>
-                <CardTitle className="text-2xl text-white flex items-center gap-3">
-                  <TrendingUp className="w-6 h-6 text-emerald-400" />
-                  Top Repositories
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {repos.slice(0, 3).map((repo, index) => (
-                  <motion.a
-                    key={repo.id}
-                    href={repo.html_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: index * 0.1 }}
-                    viewport={{ once: true }}
-                    className="block p-4 bg-gray-800/30 border border-gray-700/50 rounded-xl hover:border-gray-600 transition-all duration-300 group"
-                  >
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="flex-1 min-w-0">
-                        <h4 className="text-white font-semibold group-hover:text-emerald-400 transition-colors">
-                          {repo.name}
-                        </h4>
-                        <p className="text-gray-400 text-sm mt-1 line-clamp-2">
-                          {repo.description}
-                        </p>
-                        <div className="flex items-center gap-4 mt-3">
-                          {repo.language && (
-                            <div className="flex items-center gap-2">
-                              <div
-                                className={`w-3 h-3 rounded-full bg-gradient-to-r ${getLanguageColor(repo.language)}`}
-                              />
-                              <span className="text-gray-400 text-sm">
-                                {repo.language}
-                              </span>
-                            </div>
-                          )}
-                          <div className="flex items-center gap-1 text-gray-400 text-sm">
-                            <Star className="w-3 h-3" />
-                            <span>
-                              {repo.stargazers_count.toLocaleString()}
-                            </span>
-                          </div>
-                          <div className="flex items-center gap-1 text-gray-400 text-sm">
-                            <GitFork className="w-3 h-3" />
-                            <span>{repo.forks_count}</span>
-                          </div>
-                        </div>
-                      </div>
-                      <ExternalLink className="w-4 h-4 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
-                    </div>
-                  </motion.a>
-                ))}
               </CardContent>
             </Card>
           </motion.div>
