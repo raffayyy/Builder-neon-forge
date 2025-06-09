@@ -98,7 +98,7 @@ export default function Header() {
                 <motion.button
                   key={item.name}
                   onClick={() => scrollToSection(item.href)}
-                  className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-all duration-200 ${
+                  className={`relative flex items-center space-x-2 px-3 py-2 rounded-lg transition-all duration-200 ${
                     isActive
                       ? "bg-blue-500/20 text-blue-400"
                       : "text-white/70 hover:text-white hover:bg-white/10"
@@ -109,10 +109,7 @@ export default function Header() {
                   <Icon className="w-4 h-4" />
                   <span className="font-medium">{item.name}</span>
                   {isActive && (
-                    <motion.div
-                      className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-400"
-                      layoutId="activeTab"
-                    />
+                    <div className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-400 rounded-full" />
                   )}
                 </motion.button>
               );
