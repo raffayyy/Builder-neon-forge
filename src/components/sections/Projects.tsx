@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { motion, AnimatePresence, useAnimation } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   ExternalLink,
   Github,
@@ -245,7 +245,6 @@ export default function Projects() {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const sectionRef = useRef<HTMLElement>(null);
-  const controls = useAnimation();
 
   const featuredProjects = projects.filter((project) => project.featured);
 
@@ -421,8 +420,8 @@ export default function Projects() {
             transition={{ duration: 1, delay: 0.5 }}
           >
             <span className="text-neon-cyan font-cyber">&gt; </span>
-            Cutting-edge projects showcasing the intersection of AI, web development,
-            and creative technology
+            Cutting-edge projects showcasing the intersection of AI, web
+            development, and creative technology
             <motion.span
               className="inline-block w-2 h-6 bg-neon-cyan ml-2"
               animate={{ opacity: [1, 0, 1] }}
@@ -462,7 +461,9 @@ export default function Projects() {
             {/* View toggle */}
             <div className="flex items-center space-x-2">
               <motion.button
-                onClick={() => setViewMode(viewMode === "grid" ? "list" : "grid")}
+                onClick={() =>
+                  setViewMode(viewMode === "grid" ? "list" : "grid")
+                }
                 className="px-4 py-2 cyber-border rounded-lg text-white/70 hover:text-neon-cyan font-matrix"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -476,11 +477,15 @@ export default function Projects() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                {autoRotate ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+                {autoRotate ? (
+                  <Pause className="w-4 h-4" />
+                ) : (
+                  <Play className="w-4 h-4" />
+                )}
                 <span>{autoRotate ? "PAUSE" : "PLAY"}</span>
               </motion.button>
             </div>
-          </div>
+          </motion.div>
         </motion.div>
 
         {/* Enhanced Projects Grid */}
@@ -512,8 +517,8 @@ export default function Projects() {
                         index % 3 === 0
                           ? "#00ffff"
                           : index % 3 === 1
-                          ? "#bf00ff"
-                          : "#ff0080"
+                            ? "#bf00ff"
+                            : "#ff0080"
                       }
                     />
 
@@ -620,41 +625,42 @@ export default function Projects() {
                     )}
 
                     {/* Collaborators section */}
-                    {project.collaborators && project.collaborators.length > 0 && (
-                      <motion.div
-                        className="space-y-3"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.6, delay: 0.4 }}
-                      >
-                        <div className="flex items-center text-neon-purple text-sm font-cyber">
-                          <Users className="w-4 h-4 mr-2" />
-                          COLLABORATORS
-                        </div>
-                        <div className="grid grid-cols-1 gap-2">
-                          {project.collaborators.map((collaborator, idx) => (
-                            <motion.div
-                              key={idx}
-                              className="flex items-center justify-between p-3 cyber-border rounded-lg hover:bg-neon-purple/10 transition-all duration-300 group"
-                              whileHover={{ x: 5, scale: 1.02 }}
-                              initial={{ opacity: 0, x: -20 }}
-                              animate={{ opacity: 1, x: 0 }}
-                              transition={{ duration: 0.4, delay: idx * 0.1 }}
-                            >
-                              <span className="text-white font-medium font-futuristic">
-                                {collaborator.name}
-                              </span>
-                              <Badge
-                                variant="outline"
-                                className="border-neon-purple/30 text-neon-purple text-xs font-matrix group-hover:border-neon-purple group-hover:text-neon-purple"
+                    {project.collaborators &&
+                      project.collaborators.length > 0 && (
+                        <motion.div
+                          className="space-y-3"
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.6, delay: 0.4 }}
+                        >
+                          <div className="flex items-center text-neon-purple text-sm font-cyber">
+                            <Users className="w-4 h-4 mr-2" />
+                            COLLABORATORS
+                          </div>
+                          <div className="grid grid-cols-1 gap-2">
+                            {project.collaborators.map((collaborator, idx) => (
+                              <motion.div
+                                key={idx}
+                                className="flex items-center justify-between p-3 cyber-border rounded-lg hover:bg-neon-purple/10 transition-all duration-300 group"
+                                whileHover={{ x: 5, scale: 1.02 }}
+                                initial={{ opacity: 0, x: -20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ duration: 0.4, delay: idx * 0.1 }}
                               >
-                                {collaborator.role}
-                              </Badge>
-                            </motion.div>
-                          ))}
-                        </div>
-                      </motion.div>
-                    )}
+                                <span className="text-white font-medium font-futuristic">
+                                  {collaborator.name}
+                                </span>
+                                <Badge
+                                  variant="outline"
+                                  className="border-neon-purple/30 text-neon-purple text-xs font-matrix group-hover:border-neon-purple group-hover:text-neon-purple"
+                                >
+                                  {collaborator.role}
+                                </Badge>
+                              </motion.div>
+                            ))}
+                          </div>
+                        </motion.div>
+                      )}
 
                     {/* Enhanced action buttons */}
                     <motion.div
@@ -663,7 +669,10 @@ export default function Projects() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.6, delay: 0.6 }}
                     >
-                      <motion.div className="flex-1" whileHover={{ scale: 1.02 }}>
+                      <motion.div
+                        className="flex-1"
+                        whileHover={{ scale: 1.02 }}
+                      >
                         <Button
                           variant="outline"
                           className="w-full neon-button font-cyber tracking-wider group"
@@ -681,7 +690,10 @@ export default function Projects() {
                       </motion.div>
 
                       {project.demo && (
-                        <motion.div className="flex-1" whileHover={{ scale: 1.02 }}>
+                        <motion.div
+                          className="flex-1"
+                          whileHover={{ scale: 1.02 }}
+                        >
                           <Button
                             className="w-full holo-button font-cyber tracking-wider group relative overflow-hidden"
                             asChild
