@@ -29,6 +29,7 @@ import AnalyticsDashboard from "@/components/admin/AnalyticsDashboard";
 import IntegrationsManager from "@/components/admin/IntegrationsManager";
 import SecuritySettings from "@/components/admin/SecuritySettings";
 import PreviewMode from "@/components/admin/PreviewMode";
+import { AdminApiService } from "@/lib/admin-api-service";
 
 interface AdminState {
   isAuthenticated: boolean;
@@ -115,21 +116,26 @@ export default function Admin() {
 
   // Authentication check
   useEffect(() => {
-    const checkAuth = () => {
-      const token = localStorage.getItem("admin_token");
-      const userData = localStorage.getItem("admin_user");
+    const checkAuth = async () => {
+      const token = AdminApiService.getToken();
       
-      if (token && userData) {
+      if (token) {
         try {
-          const user = JSON.parse(userData);
+          // Verify token with backend
+          const user = await AdminApiService.getProfile();
           setAdminState(prev => ({
             ...prev,
             isAuthenticated: true,
-            user,
+            user: {
+              name: user.username,
+              role: user.role,
+              lastLogin: new Date().toISOString(),
+            },
           }));
         } catch (error) {
-          localStorage.removeItem("admin_token");
-          localStorage.removeItem("admin_user");
+          // Token is invalid, remove it
+          AdminApiService.removeToken();
+          console.log('Token verification failed:', error);
         }
       }
     };
@@ -137,44 +143,46 @@ export default function Admin() {
     checkAuth();
   }, []);
 
-  const handleLogin = (credentials: { username: string; password: string }) => {
+  const handleLogin = async (credentials: { username: string; password: string }) => {
     setIsLoading(true);
     
-    // Simulate authentication
-    setTimeout(() => {
-      if (credentials.username === "admin" && credentials.password === "admin123") {
-        const user = {
-          name: "Portfolio Admin",
-          role: "Administrator",
-          lastLogin: new Date().toISOString(),
-        };
-        
-        localStorage.setItem("admin_token", "admin_token_" + Date.now());
-        localStorage.setItem("admin_user", JSON.stringify(user));
-        
-        setAdminState(prev => ({
-          ...prev,
-          isAuthenticated: true,
-          user,
-        }));
-        
-        addNotification({
-          type: "success",
-          message: "Successfully logged in to Admin Panel",
-        });
-      } else {
-        addNotification({
-          type: "error",
-          message: "Invalid credentials. Please try again.",
-        });
-      }
+    try {
+      const result = await AdminApiService.login(credentials.username, credentials.password);
+      
+      const user = {
+        name: result.user.username,
+        role: result.user.role,
+        lastLogin: new Date().toISOString(),
+      };
+      
+      setAdminState(prev => ({
+        ...prev,
+        isAuthenticated: true,
+        user,
+      }));
+      
+      addNotification({
+        type: "success",
+        message: "Successfully logged in to Admin Panel",
+      });
+    } catch (error) {
+      console.error('Login failed:', error);
+      addNotification({
+        type: "error",
+        message: "Invalid credentials. Please try again.",
+      });
+    } finally {
       setIsLoading(false);
-    }, 1500);
+    }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("admin_token");
-    localStorage.removeItem("admin_user");
+  const handleLogout = async () => {
+    try {
+      await AdminApiService.logout();
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+    
     setAdminState(prev => ({
       ...prev,
       isAuthenticated: false,

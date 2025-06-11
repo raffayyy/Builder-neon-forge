@@ -111,6 +111,8 @@ export interface SiteSettings {
   updatedAt: Date;
 }
 
+import { Request } from 'express';
+
 export interface AuthRequest extends Request {
   user?: User;
 }

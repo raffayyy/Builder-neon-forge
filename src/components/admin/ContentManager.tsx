@@ -48,11 +48,16 @@ const ContentManager = () => {
         AdminDataService.getTestimonials()
       ]);
       
-      setProjects(projectsData);
-      setBlogPosts(blogData);
-      setTestimonials(testimonialsData);
+      // Ensure we always have arrays, even if API returns undefined/null
+      setProjects(Array.isArray(projectsData) ? projectsData : []);
+      setBlogPosts(Array.isArray(blogData) ? blogData : []);
+      setTestimonials(Array.isArray(testimonialsData) ? testimonialsData : []);
     } catch (error) {
       console.error("Failed to load data:", error);
+      // Set empty arrays on error to prevent .map() failures
+      setProjects([]);
+      setBlogPosts([]);
+      setTestimonials([]);
     } finally {
       setLoading(false);
     }
@@ -262,7 +267,7 @@ const ContentManager = () => {
         {/* Projects Tab */}
         <TabsContent value="projects" className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {projects.map((project) => (
+            {Array.isArray(projects) && projects.map((project) => (
               <Card key={project.id} className="group hover:shadow-lg transition-shadow">
                 <CardHeader className="pb-3">
                   <div className="flex items-start justify-between">
@@ -344,7 +349,7 @@ const ContentManager = () => {
         {/* Blog Tab */}
         <TabsContent value="blog" className="space-y-6">
           <div className="space-y-4">
-            {blogPosts.map((post) => (
+            {Array.isArray(blogPosts) && blogPosts.map((post) => (
               <Card key={post.id} className="group hover:shadow-lg transition-shadow">
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between">
@@ -412,7 +417,7 @@ const ContentManager = () => {
         {/* Testimonials Tab */}
         <TabsContent value="testimonials" className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {testimonials.map((testimonial) => (
+            {Array.isArray(testimonials) && testimonials.map((testimonial) => (
               <Card key={testimonial.id} className="group hover:shadow-lg transition-shadow">
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between mb-4">
